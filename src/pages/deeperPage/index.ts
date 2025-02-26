@@ -1,1 +1,1 @@
-export { default as DeeperPage } from './ui/DeeperPage';
+export { default } from './ui/DeeperPage';

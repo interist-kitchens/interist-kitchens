@@ -1,1 +1,1 @@
-export { DeeperPage as default } from '../../src/pages/deeperPage';
+export { default } from '../../src/pages/deeperPage';
