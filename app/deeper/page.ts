@@ -1,1 +1,1 @@
-export { default } from '../../src/pages/deeperPage';
+export { default } from '@/pages/deeperPage';
