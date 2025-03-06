@@ -1,6 +1,14 @@
 'use client';
 
-import { Button, Flex, Form, Input, message, Typography } from 'antd';
+import {
+    Button,
+    Flex,
+    Form,
+    FormProps,
+    Input,
+    message,
+    Typography,
+} from 'antd';
 import { sessionModel } from '@/entities/session';
 import { useUnit } from 'effector-react';
 import { useEffect } from 'react';
@@ -21,7 +29,9 @@ export const RegistrationForm = () => {
 
     const [messageApi, contextHolder] = message.useMessage();
 
-    const handleSubmit = async (values: FieldType) => {
+    const handleSubmit: FormProps<FieldType>['onFinish'] = async (
+        values: FieldType
+    ) => {
         start(values);
     };
 
@@ -30,7 +40,7 @@ export const RegistrationForm = () => {
             messageApi.error(error);
             clearErrors();
         }
-    }, [error]);
+    }, [error, clearErrors, messageApi]);
 
     return (
         <>

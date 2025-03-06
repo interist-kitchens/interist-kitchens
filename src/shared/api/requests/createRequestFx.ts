@@ -1,7 +1,7 @@
 import { createEffect } from 'effector';
-import { type FetchOptions, ofetch } from 'ofetch';
+import axios, { AxiosHeaders, AxiosRequestConfig, AxiosResponse } from 'axios';
 
-type CreateRequestParams = FetchOptions & {
+type CreateRequestParams = AxiosRequestConfig & {
     url: string;
 };
 
@@ -29,23 +29,21 @@ const createRequestInstance = <P = CreateRequestParams, R = void>({
     payload,
     withTokenInHeaders,
 }: CreateRequestInstanceParams<P>) =>
-    createEffect<P, R, Error>(async (params) => {
+    createEffect<P, AxiosResponse<R>, Error>(async (params) => {
         const { url, ...fetchOptions } = getConfig(payload, params);
 
-        const newHeaders = new Headers(headers);
+        const newHeaders = { ...headers } as AxiosHeaders;
 
         if (withTokenInHeaders) {
-            newHeaders.append(
-                'Authorization',
-                `Bearer ${localStorage.getItem('accessToken')}`
-            );
+            newHeaders['Authorization'] =
+                `Bearer ${localStorage.getItem('accessToken')}`;
         }
 
-        return ofetch<R>(url, {
+        return axios.request<R>({
+            url,
             ...fetchOptions,
             headers: newHeaders,
             baseURL,
-            responseType: 'json',
         });
     });
 
