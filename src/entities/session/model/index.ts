@@ -1,6 +1,7 @@
 import { atom } from '@/shared/factory/atom';
 import { signUpQuery } from '@/entities/session';
 import { createEvent, createStore, sample } from 'effector';
+import axios from 'axios';
 
 export const sessionModel = atom(() => {
     const submitRegistration = signUpQuery.start;
@@ -12,15 +13,8 @@ export const sessionModel = atom(() => {
     sample({
         source: signUpQuery.finished.failure,
         fn: (res) => {
-            if (
-                res.error &&
-                typeof res.error === 'object' &&
-                'data' in res.error &&
-                res.error.data &&
-                typeof res.error.data === 'object' &&
-                'message' in res.error.data
-            ) {
-                return res.error.data.message as string;
+            if (axios.isAxiosError(res.error)) {
+                return res.error.response?.data?.message;
             }
             return 'Неизвестная ошибка';
         },

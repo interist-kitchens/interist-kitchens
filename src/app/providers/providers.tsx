@@ -5,19 +5,21 @@ import { ConfigProvider } from 'antd';
 
 export const Providers: FC<PropsWithChildren> = ({ children }) => {
     return (
-        <AntdRegistry>
-            <ConfigProvider
-                theme={{
-                    token: {
-                        fontSize: 16,
-                        colorPrimary: '#5e94b9',
-                        colorInfo: '#5e94b9',
-                        borderRadius: 8,
-                    },
-                }}
-            >
-                <EffectorNext>{children}</EffectorNext>
-            </ConfigProvider>
-        </AntdRegistry>
+        <EffectorNext>
+            <AntdRegistry>
+                <ConfigProvider
+                    theme={{
+                        token: {
+                            fontSize: 16,
+                            colorPrimary: '#5e94b9',
+                            colorInfo: '#5e94b9',
+                            borderRadius: 8,
+                        },
+                    }}
+                >
+                    {children}
+                </ConfigProvider>
+            </AntdRegistry>
+        </EffectorNext>
     );
 };
