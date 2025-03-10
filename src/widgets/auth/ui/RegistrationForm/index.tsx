@@ -1,17 +1,8 @@
 'use client';
 
-import {
-    Button,
-    Flex,
-    Form,
-    FormProps,
-    Input,
-    message,
-    Typography,
-} from 'antd';
-import { sessionModel } from '@/entities/session';
+import { Button, Form, FormProps, Input } from 'antd';
+import { FormLayout, sessionModel } from '@/entities/session';
 import { useUnit } from 'effector-react';
-import { useEffect } from 'react';
 
 type FieldType = {
     name: string;
@@ -27,34 +18,19 @@ export const RegistrationForm = () => {
         sessionModel.clearErrors,
     ]);
 
-    const [messageApi, contextHolder] = message.useMessage();
-
     const handleSubmit: FormProps<FieldType>['onFinish'] = async (
         values: FieldType
     ) => {
         start(values);
     };
 
-    useEffect(() => {
-        if (error) {
-            messageApi.error(error);
-            clearErrors();
-        }
-    }, [error, clearErrors, messageApi]);
-
     return (
         <>
-            {contextHolder}
-            <Flex
-                vertical
-                style={{
-                    border: '1px solid #ccc',
-                    padding: '3rem',
-                    borderRadius: 8,
-                    backgroundColor: '#fff',
-                }}
+            <FormLayout
+                name={'Регистрация'}
+                error={error}
+                clearErrors={clearErrors}
             >
-                <Typography.Title>Регистрация</Typography.Title>
                 <Form
                     name="registration"
                     layout="vertical"
@@ -114,7 +90,7 @@ export const RegistrationForm = () => {
                         </Button>
                     </Form.Item>
                 </Form>
-            </Flex>
+            </FormLayout>
         </>
     );
 };

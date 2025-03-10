@@ -1,8 +1,8 @@
-import { RegistrationForm } from '@/widgets/auth/ui/RegistrationForm';
 import { NextPage } from 'next';
+import { LoginForm } from '@/widgets/auth/ui/LoginForm';
 import { Flex } from 'antd';
 
-export const RegistrationPage: NextPage = () => {
+export const LoginPage: NextPage = () => {
     return (
         <Flex
             justify={'center'}
@@ -10,7 +10,7 @@ export const RegistrationPage: NextPage = () => {
             vertical
             style={{ height: '100%', backgroundColor: '#cdddea' }}
         >
-            <RegistrationForm />
+            <LoginForm />
         </Flex>
     );
 };
