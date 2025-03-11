@@ -39,7 +39,7 @@ export async function POST(req: Request) {
             id: user.id,
             name: user.name,
             email: user.email,
-            password: password,
+            password,
         });
     } catch (error: unknown) {
         if (error instanceof PrismaClientKnownRequestError) {

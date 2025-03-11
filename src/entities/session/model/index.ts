@@ -2,7 +2,7 @@ import { atom } from '@/shared/factory/atom';
 import { AuthDto, signUpQuery } from '@/entities/session';
 import { createEffect, createEvent, createStore, sample } from 'effector';
 import axios from 'axios';
-import { signIn } from 'next-auth/react';
+import { signIn, SignInResponse } from 'next-auth/react';
 import { or } from 'patronum';
 
 export const sessionModel = atom(() => {
@@ -10,19 +10,21 @@ export const sessionModel = atom(() => {
     const submitRegistration = signUpQuery.start;
     const clearErrors = createEvent();
 
-    const submitLoginFx = createEffect(async (data: AuthDto) => {
-        const res = await signIn('credentials', {
-            email: data?.email,
-            password: data?.password,
-            callbackUrl: '/',
-        });
+    const submitLoginFx = createEffect<AuthDto, SignInResponse, Error>(
+        async (data: AuthDto) => {
+            const res = await signIn('credentials', {
+                email: data?.email,
+                password: data?.password,
+                callbackUrl: '/',
+            });
 
-        if (res?.status !== 200) {
-            return Promise.reject(res?.error);
+            if (res?.status !== 200) {
+                return Promise.reject(res?.error);
+            }
+
+            return res;
         }
-
-        return res;
-    });
+    );
 
     const $pending = or(signUpQuery.$pending, submitLoginFx.pending);
     const $error = createStore('').reset(clearErrors);
