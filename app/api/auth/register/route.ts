@@ -12,13 +12,9 @@ export async function POST(req: Request) {
         };
 
         if (!name || !email || !password) {
-            return new NextResponse(
-                JSON.stringify({
-                    message: 'Отсутствуют обязательные поля',
-                    status: 'error',
-                }),
-                { status: 400 }
-            );
+            return new NextResponse('Отсутствуют обязательные поля', {
+                status: 400,
+            });
         }
 
         const existingUser = await prisma.user.findUnique({
@@ -26,13 +22,7 @@ export async function POST(req: Request) {
         });
 
         if (existingUser) {
-            return new NextResponse(
-                JSON.stringify({
-                    message: 'Такой Email уже занят',
-                    status: 'error',
-                }),
-                { status: 409 }
-            );
+            return new NextResponse('Такой Email уже занят', { status: 409 });
         }
 
         const hashedPassword = await hash(password, 12);
@@ -46,39 +36,26 @@ export async function POST(req: Request) {
         });
 
         return NextResponse.json({
-            user: {
-                name: user.name,
-                email: user.email,
-            },
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            password,
         });
     } catch (error: unknown) {
         if (error instanceof PrismaClientKnownRequestError) {
             // Обработка специфичных ошибок Prisma
             if (error.code === 'P2002') {
                 // Пример: ошибка уникального ограничения
-                return new NextResponse(
-                    JSON.stringify({
-                        message: 'Такой Email уже занят',
-                        status: 'error',
-                    }),
-                    { status: 409 }
-                );
+                return new NextResponse('Такой Email уже занят', {
+                    status: 409,
+                });
             }
         }
 
         if (error instanceof Error) {
-            return new NextResponse(
-                JSON.stringify({ message: error.message, status: 'error' }),
-                { status: 500 }
-            );
+            return new NextResponse(error.message, { status: 500 });
         }
 
-        return new NextResponse(
-            JSON.stringify({
-                message: 'Неизвестная ошибка',
-                status: 'error',
-            }),
-            { status: 500 }
-        );
+        return new NextResponse('Неизвестная ошибка', { status: 500 });
     }
 }

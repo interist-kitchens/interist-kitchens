@@ -2,7 +2,8 @@ import { compare } from 'bcryptjs';
 import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { prisma } from '@/shared/prisma/prisma-client';
-// TODO Заделка для авторизации
+import { PrismaAdapter } from '@auth/prisma-adapter';
+
 export const authOptions: NextAuthOptions = {
     pages: {
         signIn: '/login',
@@ -10,9 +11,12 @@ export const authOptions: NextAuthOptions = {
     session: {
         strategy: 'jwt',
     },
+    adapter: PrismaAdapter(prisma),
+    secret: process.env.NEXTAUTH_SECRET,
     providers: [
         CredentialsProvider({
-            name: 'Sign in',
+            name: 'credentials',
+            id: 'credentials',
             credentials: {
                 email: {
                     label: 'Email',
@@ -23,50 +27,66 @@ export const authOptions: NextAuthOptions = {
             },
             async authorize(credentials) {
                 if (!credentials?.email || !credentials.password) {
-                    return null;
+                    throw new Error('Введите почту и пароль');
                 }
 
                 const user = await prisma.user.findUnique({
                     where: {
-                        email: credentials.email,
+                        email: credentials?.email,
                     },
                 });
 
-                if (
-                    !user ||
-                    !(await compare(credentials.password, user.password))
-                ) {
-                    return null;
+                if (!user || !user?.password) {
+                    throw new Error('Пользователь не найден');
+                }
+
+                const passwordMatch = await compare(
+                    credentials.password,
+                    user.password
+                );
+
+                if (!passwordMatch) {
+                    throw new Error('Не верный пароль');
                 }
 
                 return {
                     id: user.id,
-                    email: user.email,
                     name: user.name,
-                    randomKey: 'Hey cool',
+                    email: user.email,
+                    role: user.role,
                 };
             },
         }),
     ],
     callbacks: {
-        session: ({ session, token }) => {
+        async jwt({ token }) {
+            if (!token.email) {
+                return token;
+            }
+
+            const user = await prisma.user.findFirst({
+                where: {
+                    email: token.email,
+                },
+            });
+
+            if (user) {
+                token.id = user.id;
+                token.email = user.email;
+                token.role = user.role;
+            }
+
+            return token;
+        },
+        session({ session, token }) {
             return {
                 ...session,
                 user: {
                     ...session.user,
                     id: token.id,
-                    randomKey: token.randomKey,
+                    role: token.role,
                 },
             };
-        },
-        jwt: ({ token, user }) => {
-            if (user) {
-                return {
-                    ...token,
-                    id: user.id,
-                };
-            }
-            return token;
         },
     },
 };

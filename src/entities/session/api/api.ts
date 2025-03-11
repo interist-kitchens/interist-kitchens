@@ -1,10 +1,10 @@
 import { createMutation } from '@farfetched/core';
 import { createInternalRequestFx } from '@/shared/api/requests';
-import { AuthDto, TokensDto } from '@/entities/session/api/types';
+import { AuthDto, RegistrationDto } from '@/entities/session/api/types';
 
 export const signUpQuery = createMutation({
-    effect: createInternalRequestFx<AuthDto, TokensDto>((data) => ({
-        url: '/register',
+    effect: createInternalRequestFx<RegistrationDto, AuthDto>((data) => ({
+        url: '/auth/register',
         method: 'post',
         data,
     })),
