@@ -4,6 +4,8 @@ import { Button, Flex, Form, FormProps, Input, Typography } from 'antd';
 import { FormLayout, sessionModel } from '@/entities/session';
 import { useUnit } from 'effector-react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
+import { redirect } from 'next/navigation';
 
 type FieldType = {
     name: string;
@@ -12,6 +14,8 @@ type FieldType = {
 };
 
 export const LoginForm = () => {
+    const { status } = useSession();
+
     const [pending, start, error, clearErrors] = useUnit([
         sessionModel.$pending,
         sessionModel.submitLogin,
@@ -24,6 +28,10 @@ export const LoginForm = () => {
     ) => {
         start(values);
     };
+
+    if (status === 'authenticated') {
+        return redirect('/');
+    }
 
     return (
         <FormLayout name={'Вход'} error={error} clearErrors={clearErrors}>

@@ -14,7 +14,7 @@ export const sessionModel = atom(() => {
         const res = await signIn('credentials', {
             email: data?.email,
             password: data?.password,
-            redirect: false,
+            callbackUrl: '/',
         });
 
         if (res?.status !== 200) {
@@ -51,6 +51,12 @@ export const sessionModel = atom(() => {
 
     sample({
         clock: submitLogin,
+        target: submitLoginFx,
+    });
+
+    sample({
+        source: signUpQuery.finished.success,
+        fn: (res) => res.result.data,
         target: submitLoginFx,
     });
 

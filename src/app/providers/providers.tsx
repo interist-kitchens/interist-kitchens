@@ -20,7 +20,12 @@ export const Providers: FC<PropsWithChildren> = ({ children }) => {
                         },
                     }}
                 >
-                    <SessionProvider>{children}</SessionProvider>
+                    <SessionProvider
+                        refetchInterval={5 * 60}
+                        refetchOnWindowFocus
+                    >
+                        {children}
+                    </SessionProvider>
                 </ConfigProvider>
             </AntdRegistry>
         </EffectorNext>

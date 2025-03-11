@@ -3,7 +3,7 @@ import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { prisma } from '@/shared/prisma/prisma-client';
 import { PrismaAdapter } from '@auth/prisma-adapter';
-// TODO Заделка для авторизации
+
 export const authOptions: NextAuthOptions = {
     pages: {
         signIn: '/login',
@@ -49,8 +49,44 @@ export const authOptions: NextAuthOptions = {
                     throw new Error('Не верный пароль');
                 }
 
-                return user;
+                return {
+                    id: user.id,
+                    name: user.name,
+                    email: user.email,
+                    role: user.role,
+                };
             },
         }),
     ],
+    callbacks: {
+        async jwt({ token }) {
+            if (!token.email) {
+                return token;
+            }
+
+            const user = await prisma.user.findFirst({
+                where: {
+                    email: token.email,
+                },
+            });
+
+            if (user) {
+                token.id = user.id;
+                token.email = user.email;
+                token.role = user.role;
+            }
+
+            return token;
+        },
+        session({ session, token }) {
+            return {
+                ...session,
+                user: {
+                    ...session.user,
+                    id: token.id,
+                    role: token.role,
+                },
+            };
+        },
+    },
 };

@@ -1,8 +1,25 @@
 import Image from 'next/image';
+import { Avatar, Flex, Typography } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/shared/constants/authOptions';
+import { LogoutButton } from '@/features/session/logout';
 
-export default function Home() {
+export default async function Home() {
+    const session = await getServerSession(authOptions);
+
     return (
         <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+            {session && (
+                <Flex justify={'end'} align={'center'} gap={4}>
+                    <Typography>{session?.user?.name}</Typography>
+                    <Avatar
+                        size={64}
+                        icon={session?.user?.image ?? <UserOutlined />}
+                    />
+                    <LogoutButton />
+                </Flex>
+            )}
             <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
                 <Image
                     className="dark:invert"
