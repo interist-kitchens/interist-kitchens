@@ -1,7 +1,10 @@
+'use client';
+
 import { FC, PropsWithChildren } from 'react';
 import { EffectorNext } from '@effector/next';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { ConfigProvider } from 'antd';
+import { SessionProvider } from 'next-auth/react';
 
 export const Providers: FC<PropsWithChildren> = ({ children }) => {
     return (
@@ -17,7 +20,7 @@ export const Providers: FC<PropsWithChildren> = ({ children }) => {
                         },
                     }}
                 >
-                    {children}
+                    <SessionProvider>{children}</SessionProvider>
                 </ConfigProvider>
             </AntdRegistry>
         </EffectorNext>

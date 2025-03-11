@@ -2,6 +2,7 @@ import { compare } from 'bcryptjs';
 import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { prisma } from '@/shared/prisma/prisma-client';
+import { PrismaAdapter } from '@auth/prisma-adapter';
 // TODO Заделка для авторизации
 export const authOptions: NextAuthOptions = {
     pages: {
@@ -10,9 +11,12 @@ export const authOptions: NextAuthOptions = {
     session: {
         strategy: 'jwt',
     },
+    adapter: PrismaAdapter(prisma),
+    secret: process.env.NEXTAUTH_SECRET,
     providers: [
         CredentialsProvider({
-            name: 'Sign in',
+            name: 'credentials',
+            id: 'credentials',
             credentials: {
                 email: {
                     label: 'Email',
@@ -23,50 +27,30 @@ export const authOptions: NextAuthOptions = {
             },
             async authorize(credentials) {
                 if (!credentials?.email || !credentials.password) {
-                    return null;
+                    throw new Error('Введите почту и пароль');
                 }
 
                 const user = await prisma.user.findUnique({
                     where: {
-                        email: credentials.email,
+                        email: credentials?.email,
                     },
                 });
 
-                if (
-                    !user ||
-                    !(await compare(credentials.password, user.password))
-                ) {
-                    return null;
+                if (!user || !user?.password) {
+                    throw new Error('Пользователь не найден');
                 }
 
-                return {
-                    id: user.id,
-                    email: user.email,
-                    name: user.name,
-                    randomKey: 'Hey cool',
-                };
+                const passwordMatch = await compare(
+                    credentials.password,
+                    user.password
+                );
+
+                if (!passwordMatch) {
+                    throw new Error('Не верный пароль');
+                }
+
+                return user;
             },
         }),
     ],
-    callbacks: {
-        session: ({ session, token }) => {
-            return {
-                ...session,
-                user: {
-                    ...session.user,
-                    id: token.id,
-                    randomKey: token.randomKey,
-                },
-            };
-        },
-        jwt: ({ token, user }) => {
-            if (user) {
-                return {
-                    ...token,
-                    id: user.id,
-                };
-            }
-            return token;
-        },
-    },
 };

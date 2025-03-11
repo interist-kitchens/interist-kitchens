@@ -8,7 +8,7 @@ export const RegistrationPage: NextPage = () => {
             justify={'center'}
             align={'center'}
             vertical
-            style={{ height: '100%', backgroundColor: '#cdddea' }}
+            style={{ height: '100%' }}
         >
             <RegistrationForm />
         </Flex>

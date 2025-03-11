@@ -1,8 +1,9 @@
 'use client';
 
-import { Button, Form, FormProps, Input } from 'antd';
+import { Button, Flex, Form, FormProps, Input, Typography } from 'antd';
 import { FormLayout, sessionModel } from '@/entities/session';
 import { useUnit } from 'effector-react';
+import Link from 'next/link';
 
 type FieldType = {
     name: string;
@@ -85,11 +86,23 @@ export const RegistrationForm = () => {
                             type="primary"
                             htmlType="submit"
                             loading={pending}
+                            className={
+                                'shadow-lg mt-6 p-2 text-white rounded-lg w-full hover:scale-105 transition duration-300 ease-in-out'
+                            }
                         >
                             Зарегистрироваться
                         </Button>
                     </Form.Item>
                 </Form>
+                <Flex
+                    vertical
+                    justify={'center'}
+                    align={'center'}
+                    className={'text-sm'}
+                >
+                    <Typography>Уже есть аккаунт?</Typography>
+                    <Link href={'/login'}>Войти</Link>
+                </Flex>
             </FormLayout>
         </>
     );

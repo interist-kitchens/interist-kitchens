@@ -1,23 +1,37 @@
 import { atom } from '@/shared/factory/atom';
-import { signInQuery, signUpQuery } from '@/entities/session';
-import { createEvent, createStore, sample } from 'effector';
+import { AuthDto, signUpQuery } from '@/entities/session';
+import { createEffect, createEvent, createStore, sample } from 'effector';
 import axios from 'axios';
+import { signIn } from 'next-auth/react';
 import { or } from 'patronum';
 
 export const sessionModel = atom(() => {
+    const submitLogin = createEvent<AuthDto>();
     const submitRegistration = signUpQuery.start;
-    const submitLogin = signInQuery.start;
-
     const clearErrors = createEvent();
 
-    const $pending = or(signUpQuery.$pending, signInQuery.$pending);
+    const submitLoginFx = createEffect(async (data: AuthDto) => {
+        const res = await signIn('credentials', {
+            email: data?.email,
+            password: data?.password,
+            redirect: false,
+        });
+
+        if (res?.status !== 200) {
+            return Promise.reject(res?.error);
+        }
+
+        return res;
+    });
+
+    const $pending = or(signUpQuery.$pending, submitLoginFx.pending);
     const $error = createStore('').reset(clearErrors);
 
     sample({
         source: signUpQuery.finished.failure,
         fn: (res) => {
             if (axios.isAxiosError(res.error)) {
-                return res.error.response?.data?.message;
+                return res.error.response?.data;
             }
             return 'Неизвестная ошибка';
         },
@@ -25,15 +39,27 @@ export const sessionModel = atom(() => {
     });
 
     sample({
-        source: signInQuery.finished.failure,
+        source: submitLoginFx.fail,
         fn: (res) => {
             if (axios.isAxiosError(res.error)) {
-                return res.error.response?.data?.message;
+                return res.error.response?.data;
             }
-            return 'Неизвестная ошибка';
+            return res.error ?? 'Неизвестная ошибка';
         },
         target: $error,
     });
 
-    return { $pending, submitRegistration, $error, clearErrors, submitLogin };
+    sample({
+        clock: submitLogin,
+        target: submitLoginFx,
+    });
+
+    return {
+        $pending,
+        submitRegistration,
+        $error,
+        clearErrors,
+        submitLoginFx,
+        submitLogin,
+    };
 });

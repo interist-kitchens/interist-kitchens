@@ -27,14 +27,17 @@ export const FormLayout: FC<PropsWithChildren<Props>> = ({
             {contextHolder}
             <Flex
                 vertical
-                style={{
-                    border: '1px solid #ccc',
-                    padding: '3rem',
-                    borderRadius: 8,
-                    backgroundColor: '#fff',
-                }}
+                className={
+                    'border-[20px] border-transparent rounded-[20px] dark:bg-gray-900 bg-white shadow-lg xl:p-10 2xl:p-10 lg:p-10 md:p-10 sm:p-2 m-2'
+                }
             >
-                <Typography.Title>{name}</Typography.Title>
+                <Typography.Title
+                    className={
+                        'pt-8 pb-6 font-bold dark:text-gray-400 text-5xl text-center cursor-default'
+                    }
+                >
+                    {name}
+                </Typography.Title>
                 {children}
             </Flex>
         </>
