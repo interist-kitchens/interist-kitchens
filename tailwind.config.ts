@@ -14,6 +14,9 @@ const config: Config = {
                 foreground: 'var(--foreground)',
             },
         },
+        token: {
+            headerBg: 'var(--background)',
+        },
     },
     plugins: [],
 };
