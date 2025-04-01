@@ -5,6 +5,11 @@
 :root {
     --background: #ffffff;
     --foreground: #171717;
+    --hover-default: rgb(133, 175, 199);
+    --background-layer: -1;
+    --default-layer: 0;
+    --foreground-layer: 1;
+    --sticky-layer: 10;
 }
 
 body {
