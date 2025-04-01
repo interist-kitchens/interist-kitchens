@@ -1,6 +1,6 @@
 export const paths = {
     home: '/',
     login: '/login',
-    register: '/register',
+    register: '/registration',
     admin: '/admin',
 };
