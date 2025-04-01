@@ -1,12 +1,19 @@
 'use client';
 
+import { modalModel } from '@/shared/ui/ModalManager';
 import { Button } from 'antd';
-import { useRouter } from 'next/navigation';
+import { useUnit } from 'effector-react';
 
 export const CallBackButton = () => {
-    const { push } = useRouter();
+    const [openModal] = useUnit([modalModel.openModal]);
+
     const handleCallBack = () => {
-        push('/callback');
+        openModal({
+            type: 'callback',
+            onSubmit: () => {
+                console.log('Submit form');
+            },
+        });
     };
 
     return (

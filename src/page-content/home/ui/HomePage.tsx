@@ -6,8 +6,7 @@ import { Layout, Header, Content, Footer } from '@/shared/ui/Layout';
 import { ContactsBlock } from './ContactsBlock';
 import { UserInfo } from '@/widgets/userInfo/ui/Userinfo';
 import { HeaderMenu } from '@/widgets/headerMenu/ui/HeaderMenu';
-
-const mainLogoPath = require('@/app/assets/header-logo.jpg');
+import mainLogo from '@/app/assets/header-logo.jpg';
 
 const MAIN_COMPANY_INFO = {
     homeUrl: 'https://interest-kitchen.ru',
@@ -22,9 +21,10 @@ export default async function Home() {
             <Header>
                 <Flex align={'center'} gap={32}>
                     <Image
-                        src={mainLogoPath}
+                        src={mainLogo}
                         alt="interest-kitchen-logo"
-                        height={48}
+                        className="w-[120px] h-[48px]"
+                        priority
                     />
                     <HeaderMenu />
                 </Flex>

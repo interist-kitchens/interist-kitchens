@@ -1,12 +1,13 @@
 'use client';
 
-import { Button } from 'antd';
-import { signIn } from 'next-auth/react';
+import Link from 'next/link';
 
-export const LoginButton = () => {
-    const handleLogin = async () => {
-        await signIn();
-    };
-
-    return <Button onClick={handleLogin}>Войти</Button>;
-};
+export const LoginButton = () => (
+    <Link
+        type="button"
+        href="login"
+        className="ant-btn css-dev-only-do-not-override-hn3hpa ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+    >
+        Войти
+    </Link>
+);
