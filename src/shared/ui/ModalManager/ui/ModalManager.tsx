@@ -36,7 +36,7 @@ export const ModalManager: FC = () => {
             onOk={handleSubmit}
             onCancel={handleCancel}
         >
-            <p>Callback form content here...</p>
+            {modalState?.content}
         </Modal>
     );
 };

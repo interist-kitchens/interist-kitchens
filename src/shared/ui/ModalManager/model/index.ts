@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { createEvent, createStore, sample } from 'effector';
 import type { ModalType } from '@/shared/constants/modals';
 import { atom } from '@/shared/factory/atom';
@@ -5,6 +6,7 @@ import { atom } from '@/shared/factory/atom';
 type ModalState = {
     isOpen: boolean;
     type?: ModalType;
+    content?: ReactNode;
     onSubmit?(): void;
     onCancel?(): void;
 };

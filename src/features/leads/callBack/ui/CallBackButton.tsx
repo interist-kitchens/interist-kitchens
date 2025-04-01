@@ -13,6 +13,7 @@ export const CallBackButton = () => {
             onSubmit: () => {
                 console.log('Submit form');
             },
+            content: <div>Callback modal content here...</div>,
         });
     };
 
