@@ -1,5 +1,6 @@
 import { NextPage } from 'next';
+import { Typography } from 'antd';
 
 export const AdminPage: NextPage = () => {
-    return <>123</>;
+    return <Typography>Вы находитесь в админ панели</Typography>;
 };

@@ -1,8 +1,18 @@
 import { compare } from 'bcryptjs';
-import type { NextAuthOptions } from 'next-auth';
+import type { NextAuthOptions, Session } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { prisma } from '@/shared/prisma/prisma-client';
 import { PrismaAdapter } from '@auth/prisma-adapter';
+
+export interface UserSession extends Session {
+    user: {
+        name?: string | null;
+        email?: string | null;
+        image?: string | null;
+        id: string;
+        role: 'USER' | 'ADMIN';
+    };
+}
 
 export const authOptions: NextAuthOptions = {
     pages: {
@@ -78,13 +88,13 @@ export const authOptions: NextAuthOptions = {
 
             return token;
         },
-        session({ session, token }) {
+        async session({ session, token }): Promise<UserSession> {
             return {
                 ...session,
                 user: {
                     ...session.user,
-                    id: token.id,
-                    role: token.role,
+                    id: token.id as string,
+                    role: token.role as 'USER' | 'ADMIN',
                 },
             };
         },
