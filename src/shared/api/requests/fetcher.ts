@@ -31,7 +31,7 @@ export async function fetcher<Res, Req = never>({
         const response = await axios.request({
             url: url.href,
             method: method,
-            data: data ? JSON.stringify(data) : undefined,
+            data,
             headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',

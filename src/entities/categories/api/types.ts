@@ -1,25 +1,25 @@
 export type CategoriesResponse = {
-    id: string;
+    id: number;
     name: string;
-    text: string;
-    image: string;
+    text?: string | null;
+    image?: string | null;
     alias: string;
-    createdAt: string;
-    updatedAt: string;
-    meta_title: string;
-    meta_description: string;
+    createdAt: Date;
+    updatedAt: Date;
+    meta_title?: string | null;
+    meta_description?: string | null;
 };
 
 export type Categories = {
     id: string;
     name: string;
-    text: string;
-    image: string;
+    text?: string | null;
+    image?: string | null;
     alias: string;
     createdAt: string;
     updatedAt: string;
-    metaTitle: string;
-    metaDescription: string;
+    metaTitle?: string | null;
+    metaDescription?: string | null;
 };
 
 export type UploadFile = {

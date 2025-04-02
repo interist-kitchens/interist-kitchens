@@ -7,6 +7,7 @@ import {
 } from '@/entities/categories/api';
 import { fetcher } from '@/shared/api/requests/fetcher';
 import { mapCategories } from '@/entities/categories/lib';
+import dayjs from 'dayjs';
 
 export const getCategories = async (): Promise<Categories[]> => {
     const categories = await fetcher<CategoriesResponse[], void>({
@@ -56,6 +57,9 @@ export const getCategory = async (id: string): Promise<Categories> => {
 
     return {
         ...category,
+        id: String(id),
+        createdAt: dayjs(category.createdAt).format('DD.MM.YYYY'),
+        updatedAt: dayjs(category.updatedAt).format('DD.MM.YYYY'),
         metaTitle: category.meta_title,
         metaDescription: category.meta_description,
     };

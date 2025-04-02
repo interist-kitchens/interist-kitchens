@@ -31,6 +31,7 @@
     "patronum": "^2.3.0",
     "react": "^18",
     "react-dom": "^18",
+    "sharp": "^0.34.0",
     "vercel": "^41.4.1"
   },
   "devDependencies": {

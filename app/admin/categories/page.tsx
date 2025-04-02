@@ -1,14 +1,16 @@
 import { allSettled, fork, serialize } from 'effector';
 import { EffectorNext } from '@effector/next';
 import { CategoryListAdminPage } from '@/page-content/categories';
-import { categoryListAdminModel, getCategories } from '@/entities/categories';
+import { categoryListAdminModel } from '@/entities/categories';
+import { prisma } from '@/shared/prisma/prisma-client';
+import { mapCategories } from '@/entities/categories/lib';
 
 async function preload() {
     'use server';
 
-    const categories = await getCategories();
+    const categories = await prisma.category.findMany();
 
-    return categories;
+    return mapCategories(categories);
 }
 
 export default async function Page() {
