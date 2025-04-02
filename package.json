@@ -22,6 +22,7 @@
     "antd": "^5.24.2",
     "axios": "^1.8.1",
     "bcryptjs": "^3.0.2",
+    "dayjs": "^1.11.13",
     "effector": "^23.3.0",
     "effector-react": "^23.3.0",
     "next": "14.2.24",
