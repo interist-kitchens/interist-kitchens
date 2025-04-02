@@ -6,6 +6,7 @@ import { useUnit } from 'effector-react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
+import { paths } from '@/shared/routing';
 
 type FieldType = {
     name: string;
@@ -30,7 +31,7 @@ export const LoginForm = () => {
     };
 
     if (status === 'authenticated') {
-        return redirect('/');
+        return redirect(paths.home);
     }
 
     return (
@@ -91,7 +92,7 @@ export const LoginForm = () => {
                 className={'text-sm'}
             >
                 <Typography>Еще нет аккаунта?</Typography>
-                <Link href={'/registration'}>Зарегистрироваться</Link>
+                <Link href={paths.register}>Зарегистрироваться</Link>
             </Flex>
         </FormLayout>
     );

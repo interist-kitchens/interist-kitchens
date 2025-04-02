@@ -4,6 +4,7 @@ import { Button, Flex, Form, FormProps, Input, Typography } from 'antd';
 import { FormLayout, sessionModel } from '@/entities/session';
 import { useUnit } from 'effector-react';
 import Link from 'next/link';
+import { paths } from '@/shared/routing';
 
 type FieldType = {
     name: string;
@@ -101,7 +102,7 @@ export const RegistrationForm = () => {
                     className={'text-sm'}
                 >
                     <Typography>Уже есть аккаунт?</Typography>
-                    <Link href={'/login'}>Войти</Link>
+                    <Link href={paths.login}>Войти</Link>
                 </Flex>
             </FormLayout>
         </>
