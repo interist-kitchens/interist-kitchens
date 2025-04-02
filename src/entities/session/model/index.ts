@@ -16,6 +16,7 @@ export const sessionModel = atom(() => {
                 email: data?.email,
                 password: data?.password,
                 callbackUrl: '/',
+                redirect: false,
             });
 
             if (res?.status !== 200) {
