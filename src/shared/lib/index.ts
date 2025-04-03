@@ -1,0 +1,1 @@
+export { transliterateToSlug } from './transliterateToSlug';

@@ -19,6 +19,7 @@
     "@effector/next": "^0.7.0",
     "@farfetched/core": "^0.13.1",
     "@prisma/client": "^6.4.1",
+    "@vercel/blob": "^0.27.3",
     "antd": "^5.24.2",
     "axios": "^1.8.1",
     "bcryptjs": "^3.0.2",
@@ -29,9 +30,12 @@
     "next-auth": "^4.24.11",
     "patronum": "^2.3.0",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "vercel": "^41.4.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.26.10",
+    "@babel/plugin-proposal-private-methods": "^7.18.6",
     "@types/node": "18.15.11",
     "@types/react": "^18",
     "@types/react-dom": "^18",

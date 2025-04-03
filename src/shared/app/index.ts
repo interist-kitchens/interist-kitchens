@@ -1,7 +1,13 @@
 import { createEffect, createEvent, createStore, sample } from 'effector';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const pageTypes = ['registration', 'login', 'admin', 'categories'] as const;
+const pageTypes = [
+    'registration',
+    'login',
+    'admin',
+    'categoriesAdmin',
+    'categoriesAdminCreate',
+] as const;
 
 export const pageStarted = createEvent<{
     pageType: (typeof pageTypes)[number];

@@ -19,7 +19,7 @@ export async function fetcher<Res, Req = never>({
 }: FetchRequest<Req>): Promise<Res> {
     try {
         const url = new URL(
-            `${process.env.NEXT_PUBLIC_INTERNAL_API_URL}${path}`
+            `${process.env.NEXT_PUBLIC_API_URL}/${process.env.NEXT_PUBLIC_INTERNAL_API_URL}${path}`
         );
 
         if (query) {

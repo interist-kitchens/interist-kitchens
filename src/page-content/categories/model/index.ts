@@ -1,5 +1,9 @@
 import { declarePage } from '@/shared/app';
 
-export const categoriesPage = declarePage({
-    pageType: 'categories',
+export const categoriesAdminPage = declarePage({
+    pageType: 'categoriesAdmin',
+});
+
+export const categoriesAdminCreatePage = declarePage({
+    pageType: 'categoriesAdminCreate',
 });

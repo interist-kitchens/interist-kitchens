@@ -3,5 +3,6 @@ export const paths = {
     login: '/login',
     register: '/registration',
     admin: '/admin',
-    categories: '/categories',
+    categories: '/admin/categories',
+    categoriesCreate: '/admin/categories/create',
 };

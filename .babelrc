@@ -3,6 +3,7 @@
     "next/babel"
   ],
   "plugins": [
-    "effector/babel-plugin"
+    "effector/babel-plugin",
+    "@babel/plugin-proposal-private-methods"
   ]
 }

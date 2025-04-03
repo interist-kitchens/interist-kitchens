@@ -1,2 +1,2 @@
-export { CategoriesPage } from './ui/CategoriesPage';
+export { CategoriesAdminPage } from './ui/CategoriesAdminPage';
 export * from './model';

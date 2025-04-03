@@ -43,7 +43,7 @@ export const SidebarMenu = () => {
 
     const handleSelect = (item: MenuItemType) => {
         if (item) {
-            router.push(`${paths.admin}/${item.key}`);
+            router.push(`${item.key}`);
         }
     };
 
