@@ -10,6 +10,8 @@
     --default-layer: 0;
     --foreground-layer: 1;
     --sticky-layer: 10;
+    --info-color: rgb(81, 51, 237);
+    --info-color-hover: rgba(81, 51, 237, 0.7);
 }
 
 body {
