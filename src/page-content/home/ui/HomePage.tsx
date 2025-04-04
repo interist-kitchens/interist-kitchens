@@ -7,6 +7,7 @@ import { ContactsBlock } from './ContactsBlock';
 import { UserInfo } from '@/widgets/userInfo/ui/Userinfo';
 import { HeaderMenu } from '@/widgets/headerMenu/ui/HeaderMenu';
 import mainLogo from '@/app/assets/header-logo.jpg';
+import { MainPageSlider } from '@/widgets/mainPageSlider';
 
 const MAIN_COMPANY_INFO = {
     homeUrl: 'https://interest-kitchen.ru',
@@ -36,7 +37,10 @@ export default async function Home() {
                     <UserInfo session={session} />
                 </Flex>
             </Header>
-            <Content>Content here</Content>
+
+            <Content>
+                <MainPageSlider />
+            </Content>
             <Footer>Footer content here</Footer>
         </Layout>
     );

@@ -31,9 +31,7 @@ export const Header: React.FC<React.PropsWithChildren> = ({ children }) => {
 };
 
 export const Content: React.FC<React.PropsWithChildren> = ({ children }) => (
-    <DefaultContent className="flex grow p-6 h-full w-full">
-        {children}
-    </DefaultContent>
+    <DefaultContent className="h-full w-full">{children}</DefaultContent>
 );
 
 export const Footer: React.FC<React.PropsWithChildren> = ({ children }) => {
