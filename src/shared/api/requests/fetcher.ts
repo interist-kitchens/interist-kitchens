@@ -46,7 +46,6 @@ export async function fetcher<Res, Req = never>({
 
         return await response.data;
     } catch (error) {
-        console.error('Fetch Error:', error);
         throw error;
     }
 }

@@ -1,6 +1,20 @@
 import { createMutation } from '@farfetched/core';
 import { createInternalRequestFx } from '@/shared/api/requests';
-import { Error } from '@/entities/categories/api';
+import {
+    Categories,
+    CategoriesResponse,
+    Error,
+} from '@/entities/categories/api';
+import { fetcher } from '@/shared/api/requests/fetcher';
+import { mapCategories } from '@/entities/categories/lib';
+
+export const getCategories = async (): Promise<Categories[]> => {
+    const categories = await fetcher<CategoriesResponse[], void>({
+        path: '/categories',
+    });
+
+    return mapCategories(categories);
+};
 
 export const createCategory = createMutation({
     effect: createInternalRequestFx<FormData, void, Error>((data) => ({
@@ -20,3 +34,15 @@ export const deleteCategory = createMutation({
         data,
     })),
 });
+
+export const getCategory = async (id: string): Promise<Categories> => {
+    const category = await fetcher<CategoriesResponse, void>({
+        path: `/categories/${id}`,
+    });
+
+    return {
+        ...category,
+        metaTitle: category.meta_title,
+        metaDescription: category.meta_description,
+    };
+};

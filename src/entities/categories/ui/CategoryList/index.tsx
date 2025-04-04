@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 import { DeleteCategory } from '@/features/categories';
 import { useRouter } from 'next/navigation';
 import { useUnit } from 'effector-react';
+import { paths } from '@/shared/routing';
 
 type Props = {
     categories: Categories[];
@@ -91,10 +92,22 @@ export const CategoryList: FC<Props> = ({ categories }) => {
         updatedAt: dayjs(category.updatedAt).format('DD.MM.YYYY'),
     }));
 
+    const handleClickRow = (id: string) => {
+        router.push(`${paths.categories}/${id}`);
+    };
+
     return (
         <>
             {contextHolder}
-            <Table<DataType> columns={columns} dataSource={data} />
+            <Table<DataType>
+                columns={columns}
+                dataSource={data}
+                onRow={(record) => {
+                    return {
+                        onClick: () => handleClickRow(record.key),
+                    };
+                }}
+            />
         </>
     );
 };

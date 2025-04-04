@@ -1,2 +1,3 @@
 export { CategoriesAdminPage } from './ui/CategoriesAdminPage';
-export * from './model';
+export { CategoriesAdminCreatePage } from './ui/CategoriesAdminCreatePage';
+export { CategoryAdminPage } from './ui/CategoryAdminPage';

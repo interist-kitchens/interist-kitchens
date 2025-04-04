@@ -7,6 +7,7 @@ const pageTypes = [
     'admin',
     'categoriesAdmin',
     'categoriesAdminCreate',
+    'categoryAdmin',
 ] as const;
 
 export const pageStarted = createEvent<{

@@ -1,3 +1,5 @@
+'use client';
+
 import { FC } from 'react';
 import { Button, Tooltip } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';

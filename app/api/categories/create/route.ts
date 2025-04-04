@@ -19,7 +19,7 @@ export async function POST(request: Request) {
         let blob = null;
 
         if (image) {
-            blob = await put(imageName + '', image, {
+            blob = await put(`public/${imageName}`, image, {
                 token: process.env.NEXT_PUBLIC_READ_WRITE_TOKEN,
                 access: 'public',
             });

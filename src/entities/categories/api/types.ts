@@ -1,3 +1,15 @@
+export type CategoriesResponse = {
+    id: string;
+    name: string;
+    text: string;
+    image: string;
+    alias: string;
+    createdAt: string;
+    updatedAt: string;
+    meta_title: string;
+    meta_description: string;
+};
+
 export type Categories = {
     id: string;
     name: string;

@@ -1,6 +1,27 @@
 import { atom } from '@/shared/factory/atom';
-import { createCategory, deleteCategory } from '@/entities/categories';
-import { createStore, sample } from 'effector';
+import {
+    Categories,
+    createCategory,
+    deleteCategory,
+    getCategories,
+    getCategory,
+} from '@/entities/categories';
+import {
+    createEffect,
+    createEvent,
+    createStore,
+    sample,
+    split,
+    StoreValue,
+} from 'effector';
+import { declarePage } from '@/shared/app';
+
+export const categoriesModel = atom(() => {
+    const categoriesAdminPage = declarePage({
+        pageType: 'categoriesAdmin',
+    });
+    return { categoriesAdminPage };
+});
 
 export const createCategoryModel = atom(() => {
     const submitCreate = createCategory.start;
@@ -24,6 +45,10 @@ export const createCategoryModel = atom(() => {
         target: $error,
     });
 
+    const categoriesAdminCreatePage = declarePage({
+        pageType: 'categoriesAdminCreate',
+    });
+
     return {
         submitCreate,
         $pending,
@@ -31,6 +56,7 @@ export const createCategoryModel = atom(() => {
         $isError,
         $error,
         reset,
+        categoriesAdminCreatePage,
     };
 });
 
@@ -47,4 +73,81 @@ export const categoryDeleteModel = atom(() => {
     );
 
     return { submitDelete, $pending, $isSuccess, reset, $currentId };
+});
+
+export const categoryViewModel = atom(() => {
+    const categoryViewStarted = createEvent();
+    const singleRequested = createEvent<string>();
+
+    const categoryLoaded = createEvent<Categories>();
+    const categoryNotFound = createEvent<null>();
+
+    const getCategoriesFx = createEffect(getCategories);
+    const getCategoryFx = createEffect(getCategory);
+
+    const $categories = createStore<Categories[]>([]);
+    const $currentCategoryId = createStore<string | null>(null);
+    const $currentCategory = createStore<Categories | null>(null);
+
+    $categories.on(getCategoriesFx.doneData, (_, result) => [...result]);
+
+    $currentCategoryId.on(singleRequested, (_, id) => id);
+
+    split({
+        source: sample({
+            clock: singleRequested,
+            source: $categories,
+            fn: (categories, id) =>
+                categories.find((category) => category.id === id) ?? null,
+        }),
+        match: {
+            found: (category: Categories | null) => category !== null,
+        },
+        cases: {
+            found: categoryLoaded,
+            __: categoryNotFound,
+        },
+    });
+
+    sample({
+        clock: categoryNotFound,
+        source: $currentCategoryId,
+        filter: (id: StoreValue<typeof $currentCategoryId>): id is string =>
+            id !== null,
+        fn: (id: string) => id,
+        target: getCategoryFx,
+    });
+
+    sample({
+        clock: getCategoryFx.doneData,
+        fn: (res) => res ?? null,
+        target: $currentCategory,
+    });
+
+    sample({
+        clock: categoryLoaded,
+        target: $currentCategory,
+    });
+
+    const categoryAdminPage = declarePage<{ id: string }>({
+        pageType: 'categoryAdmin',
+    });
+
+    sample({
+        clock: categoryViewStarted,
+        target: getCategoriesFx,
+    });
+
+    sample({
+        clock: categoryAdminPage.open,
+        fn: ({ id }) => id,
+        target: singleRequested,
+    });
+
+    return {
+        categoryViewStarted,
+        $categories,
+        $currentCategory,
+        categoryAdminPage,
+    };
 });
