@@ -28,3 +28,13 @@ export type UploadFiles = {
     file: UploadFile;
     fileList: UploadFile[];
 };
+
+export type Error = {
+    name: string;
+    code: string;
+    clientVersion: string;
+    meta: {
+        modelName: string;
+        target: string[];
+    };
+};

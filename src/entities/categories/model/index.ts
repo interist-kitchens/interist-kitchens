@@ -1,9 +1,9 @@
 import { atom } from '@/shared/factory/atom';
-import { createCategory } from '@/entities/categories';
+import { createCategory, deleteCategory } from '@/entities/categories';
 import { createStore, sample } from 'effector';
 
 export const createCategoryModel = atom(() => {
-    const submitRegistration = createCategory.start;
+    const submitCreate = createCategory.start;
 
     const reset = createCategory.reset;
 
@@ -25,11 +25,26 @@ export const createCategoryModel = atom(() => {
     });
 
     return {
-        submitRegistration,
+        submitCreate,
         $pending,
         $isSuccess,
         $isError,
         $error,
         reset,
     };
+});
+
+export const categoryDeleteModel = atom(() => {
+    const submitDelete = deleteCategory.start;
+
+    const reset = deleteCategory.reset;
+
+    const $pending = deleteCategory.$pending;
+    const $isSuccess = deleteCategory.$finished;
+    const $currentId = createStore<string>('').on(
+        deleteCategory.start,
+        (_, payload) => payload.id
+    );
+
+    return { submitDelete, $pending, $isSuccess, reset, $currentId };
 });

@@ -34,7 +34,9 @@ export const sessionModel = atom(() => {
         source: signUpQuery.finished.failure,
         fn: (res) => {
             if (axios.isAxiosError(res.error)) {
-                return res.error.response?.data;
+                return (
+                    res.error.response?.data?.message ?? 'Неизвестная ошибка'
+                );
             }
             return 'Неизвестная ошибка';
         },

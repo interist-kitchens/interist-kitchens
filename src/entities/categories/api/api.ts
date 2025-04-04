@@ -1,15 +1,6 @@
 import { createMutation } from '@farfetched/core';
 import { createInternalRequestFx } from '@/shared/api/requests';
-
-type Error = {
-    name: string;
-    code: string;
-    clientVersion: string;
-    meta: {
-        modelName: string;
-        target: string[];
-    };
-};
+import { Error } from '@/entities/categories/api';
 
 export const createCategory = createMutation({
     effect: createInternalRequestFx<FormData, void, Error>((data) => ({
@@ -19,5 +10,13 @@ export const createCategory = createMutation({
         headers: {
             'Content-Type': 'multipart/form-data',
         },
+    })),
+});
+
+export const deleteCategory = createMutation({
+    effect: createInternalRequestFx<{ id: string }, void, Error>((data) => ({
+        url: '/categories/delete',
+        method: 'DELETE',
+        data,
     })),
 });

@@ -9,7 +9,9 @@ import { paths } from '@/shared/routing';
 async function preload() {
     'use server';
 
-    const res = await fetcher<Categories[], void>({ path: '/categories' });
+    const res = await fetcher<Categories[], void>({
+        path: '/categories',
+    });
 
     return res;
 }

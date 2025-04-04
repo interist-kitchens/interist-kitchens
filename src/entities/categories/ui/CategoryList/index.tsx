@@ -1,7 +1,12 @@
-import { FC } from 'react';
-import { Categories } from '@/entities/categories';
-import { Table, TableProps } from 'antd';
+'use client';
+
+import { FC, useEffect } from 'react';
+import { Categories, categoryDeleteModel } from '@/entities/categories';
+import { message, Table, TableProps } from 'antd';
 import dayjs from 'dayjs';
+import { DeleteCategory } from '@/features/categories';
+import { useRouter } from 'next/navigation';
+import { useUnit } from 'effector-react';
 
 type Props = {
     categories: Categories[];
@@ -41,9 +46,43 @@ const columns: TableProps<DataType>['columns'] = [
         dataIndex: 'updatedAt',
         key: 'updatedAt',
     },
+    {
+        title: '',
+        dataIndex: 'deleteAction',
+        key: 'deleteAction',
+        render: (_, record) => (
+            <>
+                <DeleteCategory id={record.key} />
+            </>
+        ),
+    },
 ];
 
 export const CategoryList: FC<Props> = ({ categories }) => {
+    const router = useRouter();
+
+    const [isSuccess, reset] = useUnit([
+        categoryDeleteModel.$isSuccess,
+        categoryDeleteModel.reset,
+    ]);
+
+    const [messageApi, contextHolder] = message.useMessage();
+
+    useEffect(() => {
+        if (isSuccess) {
+            messageApi
+                .open({
+                    type: 'success',
+                    content: 'Категория удалена успешно',
+                    duration: 1,
+                })
+                .then(() => {
+                    reset();
+                    router.refresh();
+                });
+        }
+    }, [messageApi, reset, isSuccess, router]);
+
     const data: DataType[] = categories.map((category) => ({
         key: category.id,
         name: category.name,
@@ -52,5 +91,10 @@ export const CategoryList: FC<Props> = ({ categories }) => {
         updatedAt: dayjs(category.updatedAt).format('DD.MM.YYYY'),
     }));
 
-    return <Table<DataType> columns={columns} dataSource={data} />;
+    return (
+        <>
+            {contextHolder}
+            <Table<DataType> columns={columns} dataSource={data} />
+        </>
+    );
 };

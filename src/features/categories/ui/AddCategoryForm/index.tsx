@@ -44,7 +44,7 @@ export const AddCategoryForm: FC = () => {
 
     const [loading, submit, isSuccess, isError, errorCode, reset] = useUnit([
         createCategoryModel.$pending,
-        createCategoryModel.submitRegistration,
+        createCategoryModel.submitCreate,
         createCategoryModel.$isSuccess,
         createCategoryModel.$isError,
         createCategoryModel.$error,
