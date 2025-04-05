@@ -1,18 +1,12 @@
 import { createMutation } from '@farfetched/core';
 import { createInternalRequestFx } from '@/shared/api/requests';
-import {
-    Categories,
-    CategoriesResponse,
-    Error,
-} from '@/entities/categories/api';
-import { fetcher } from '@/shared/api/requests/fetcher';
+import { Categories, Error } from '@/entities/categories/api';
 import { mapCategories } from '@/entities/categories/lib';
 import dayjs from 'dayjs';
+import { prisma } from '@/shared/prisma/prisma-client';
 
 export const getCategories = async (): Promise<Categories[]> => {
-    const categories = await fetcher<CategoriesResponse[], void>({
-        path: '/categories',
-    });
+    const categories = await prisma.category.findMany();
 
     return mapCategories(categories);
 };
@@ -50,17 +44,21 @@ export const updateCategory = createMutation({
     })),
 });
 
-export const getCategory = async (id: string): Promise<Categories> => {
-    const category = await fetcher<CategoriesResponse, void>({
-        path: `/categories/${id}`,
+export const getCategory = async (id: string): Promise<Categories | null> => {
+    const category = await prisma.category.findUnique({
+        where: { id: Number.parseInt(id) },
     });
 
-    return {
-        ...category,
-        id: String(id),
-        createdAt: dayjs(category.createdAt).format('DD.MM.YYYY'),
-        updatedAt: dayjs(category.updatedAt).format('DD.MM.YYYY'),
-        metaTitle: category.meta_title,
-        metaDescription: category.meta_description,
-    };
+    if (category) {
+        return {
+            ...category,
+            id: String(id),
+            createdAt: dayjs(category.createdAt).format('DD.MM.YYYY'),
+            updatedAt: dayjs(category.updatedAt).format('DD.MM.YYYY'),
+            metaTitle: category.meta_title,
+            metaDescription: category.meta_description,
+        };
+    }
+
+    return null;
 };

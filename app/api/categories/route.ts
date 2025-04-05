@@ -3,26 +3,6 @@ import { prisma } from '@/shared/prisma/prisma-client';
 import { getUUID } from 'rc-select/lib/hooks/useId';
 import { put } from '@vercel/blob';
 
-export async function GET() {
-    if (!process.env.DATABASE_URL) {
-        return NextResponse.json(
-            { error: 'DATABASE_URL is not set' },
-            { status: 500 }
-        );
-    }
-
-    try {
-        const categories = await prisma.category.findMany();
-
-        return NextResponse.json(categories ?? []);
-    } catch (error) {
-        return NextResponse.json(
-            { error: 'Failed to fetch categories: ' + error },
-            { status: 500 }
-        );
-    }
-}
-
 export async function POST(request: Request) {
     if (!process.env.DATABASE_URL) {
         return NextResponse.json(
