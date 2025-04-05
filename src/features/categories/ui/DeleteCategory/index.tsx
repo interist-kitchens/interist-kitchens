@@ -1,6 +1,6 @@
 'use client';
 
-import { FC } from 'react';
+import { FC, MouseEvent } from 'react';
 import { Button, Tooltip } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 import { useUnit } from 'effector-react';
@@ -17,8 +17,10 @@ export const DeleteCategory: FC<Props> = ({ id }) => {
         categoryDeleteModel.$currentId,
     ]);
 
-    const handleDelete = () => {
-        submit({ id });
+    const handleDelete = (e: MouseEvent) => {
+        e.stopPropagation();
+
+        submit(id);
     };
 
     return (
@@ -26,7 +28,7 @@ export const DeleteCategory: FC<Props> = ({ id }) => {
             <Button
                 shape="circle"
                 icon={<DeleteOutlined />}
-                onClick={handleDelete}
+                onClick={(e) => handleDelete(e)}
                 loading={currentId === id && loading}
             />
         </Tooltip>

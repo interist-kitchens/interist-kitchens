@@ -1,3 +1,3 @@
-export { CategoriesAdminPage } from './ui/CategoriesAdminPage';
-export { CategoriesAdminCreatePage } from './ui/CategoriesAdminCreatePage';
-export { CategoryAdminPage } from './ui/CategoryAdminPage';
+export { CategoryListAdminPage } from './ui/CategoryListAdminPage';
+export { CategoryCreateAdminPage } from './ui/CategoryCreateAdminPage';
+export { CategoryDetailAdminPage } from './ui/CategoryDetailAdminPage';

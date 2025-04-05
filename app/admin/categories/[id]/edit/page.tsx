@@ -1,14 +1,9 @@
 import { allSettled, fork, serialize } from 'effector';
-import { EffectorNext } from '@effector/next';
-import { CategoryDetailAdminPage } from '@/page-content/categories';
-import { categoryDetailAdminModel } from '@/entities/categories';
-import { notFound } from 'next/navigation';
-import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-    title: 'Просмотр категории',
-    description: 'Просмотр категории',
-};
+import { EffectorNext } from '@effector/next';
+import { categoryDetailAdminModel } from '@/entities/categories';
+import { CategoryEditAdminPage } from '@/page-content/categories/ui/CategoryEditAdminPage';
+import { notFound } from 'next/navigation';
 
 export async function generateStaticParams() {
     const scope = fork();
@@ -23,7 +18,7 @@ export async function generateStaticParams() {
 export default async function Page({ params }: { params: { id: string } }) {
     const scope = fork();
 
-    await allSettled(categoryDetailAdminModel.categoryDetailAdminPage.open, {
+    await allSettled(categoryDetailAdminModel.categoryEditAdminPage.open, {
         scope,
         params,
     });
@@ -36,7 +31,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
     return (
         <EffectorNext values={values}>
-            <CategoryDetailAdminPage
+            <CategoryEditAdminPage
                 category={scope.getState(
                     categoryDetailAdminModel.$currentCategory
                 )}

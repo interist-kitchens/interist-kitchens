@@ -18,7 +18,7 @@ export const getCategories = async (): Promise<Categories[]> => {
 
 export const createCategory = createMutation({
     effect: createInternalRequestFx<FormData, void, Error>((data) => ({
-        url: '/categories/create',
+        url: '/categories',
         method: 'POST',
         data,
         headers: {
@@ -28,10 +28,24 @@ export const createCategory = createMutation({
 });
 
 export const deleteCategory = createMutation({
-    effect: createInternalRequestFx<{ id: string }, void, Error>((data) => ({
-        url: '/categories/delete',
+    effect: createInternalRequestFx((id: string) => ({
+        url: `/categories/${id}`,
         method: 'DELETE',
-        data,
+    })),
+});
+
+export const updateCategory = createMutation({
+    effect: createInternalRequestFx<
+        { id: string; formData: FormData },
+        void,
+        Error
+    >((data) => ({
+        url: `/categories/${data.id}`,
+        method: 'PUT',
+        data: data.formData,
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
     })),
 });
 

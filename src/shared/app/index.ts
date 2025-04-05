@@ -5,9 +5,10 @@ const pageTypes = [
     'registration',
     'login',
     'admin',
-    'categoriesAdmin',
-    'categoriesAdminCreate',
-    'categoryAdmin',
+    'categoryListAdminModel',
+    'categoryCreateAdminPage',
+    'categoryDetailAdminPage',
+    'categoryEditAdminPage',
 ] as const;
 
 export const pageStarted = createEvent<{

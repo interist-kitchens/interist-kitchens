@@ -14,9 +14,12 @@ import {
 import { UploadOutlined } from '@ant-design/icons';
 import { transliterateToSlug } from '@/shared/lib';
 import { useUnit } from 'effector-react/compat';
-import { createCategory, createCategoryModel } from '@/entities/categories';
+import {
+    categoryCreateAdminModel,
+    createCategory,
+} from '@/entities/categories';
 import { useRouter } from 'next/navigation';
-import { normFile } from '@/features/categories/lib';
+import { normFile, uploadProps } from '@/features/categories/lib';
 import { paths } from '@/shared/routing';
 
 type FieldType = {
@@ -43,11 +46,11 @@ export const AddCategoryForm: FC = () => {
     const router = useRouter();
 
     const [loading, submit, isSuccess, isError, errorCode, reset] = useUnit([
-        createCategoryModel.$pending,
-        createCategoryModel.submitCreate,
-        createCategoryModel.$isSuccess,
-        createCategoryModel.$isError,
-        createCategoryModel.$error,
+        categoryCreateAdminModel.$pending,
+        categoryCreateAdminModel.submitCreate,
+        categoryCreateAdminModel.$isSuccess,
+        categoryCreateAdminModel.$isError,
+        categoryCreateAdminModel.$error,
         createCategory.reset,
     ]);
 
@@ -84,6 +87,7 @@ export const AddCategoryForm: FC = () => {
                 .open({
                     type: 'success',
                     content: 'Категория создана успешно',
+                    duration: 1,
                 })
                 .then(() => {
                     reset();
@@ -138,6 +142,7 @@ export const AddCategoryForm: FC = () => {
                             name="image"
                             listType="picture"
                             multiple={false}
+                            {...uploadProps}
                         >
                             <Button icon={<UploadOutlined />}>Загрузить</Button>
                         </Upload>

@@ -1,13 +1,13 @@
 import { allSettled, fork, serialize } from 'effector';
 
 import { EffectorNext } from '@effector/next';
-import { CategoriesAdminCreatePage } from '@/page-content/categories/ui/CategoriesAdminCreatePage';
-import { createCategoryModel } from '@/entities/categories';
+import { categoryCreateAdminModel } from '@/entities/categories';
+import { CategoryCreateAdminPage } from '@/page-content/categories';
 
 export default async function Page() {
     const scope = fork();
 
-    await allSettled(createCategoryModel.categoriesAdminCreatePage.open, {
+    await allSettled(categoryCreateAdminModel.categoryCreateAdminPage.open, {
         scope,
     });
 
@@ -15,7 +15,7 @@ export default async function Page() {
 
     return (
         <EffectorNext values={values}>
-            <CategoriesAdminCreatePage />
+            <CategoryCreateAdminPage />
         </EffectorNext>
     );
 }

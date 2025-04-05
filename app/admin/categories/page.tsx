@@ -1,7 +1,7 @@
 import { allSettled, fork, serialize } from 'effector';
 import { EffectorNext } from '@effector/next';
-import { CategoriesAdminPage } from '@/page-content/categories';
-import { categoriesModel, getCategories } from '@/entities/categories';
+import { CategoryListAdminPage } from '@/page-content/categories';
+import { categoryListAdminModel, getCategories } from '@/entities/categories';
 
 async function preload() {
     'use server';
@@ -16,13 +16,15 @@ export default async function Page() {
 
     const categories = await preload();
 
-    await allSettled(categoriesModel.categoriesAdminPage.open, { scope });
+    await allSettled(categoryListAdminModel.categoriesAdminPage.open, {
+        scope,
+    });
 
     const values = serialize(scope);
 
     return (
         <EffectorNext values={values}>
-            <CategoriesAdminPage categories={categories} />
+            <CategoryListAdminPage categories={categories} />
         </EffectorNext>
     );
 }

@@ -9,7 +9,9 @@ type Props = {
     categories: Categories[];
 };
 
-export const CategoriesAdminPage: NextPage<Props> = async ({ categories }) => {
+export const CategoryListAdminPage: NextPage<Props> = async ({
+    categories,
+}) => {
     return (
         <>
             <Flex align={'center'} justify={'space-between'}>
