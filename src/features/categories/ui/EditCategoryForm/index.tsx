@@ -38,11 +38,12 @@ type FieldType = {
 export const EditCategoryForm: FC<Props> = ({ category }) => {
     const router = useRouter();
 
-    const [loading, submit, isSuccess, isError] = useUnit([
+    const [loading, submit, isSuccess, isError, reset] = useUnit([
         categoryEditAdminModel.$pending,
         categoryEditAdminModel.submitUpdate,
         categoryEditAdminModel.$isSuccess,
         categoryEditAdminModel.$isError,
+        categoryEditAdminModel.resetUpdateForm,
     ]);
 
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
@@ -66,10 +67,14 @@ export const EditCategoryForm: FC<Props> = ({ category }) => {
 
     useEffect(() => {
         if (isError) {
-            message.open({
-                type: 'error',
-                content: 'Ошибка обновления данных',
-            });
+            message
+                .open({
+                    type: 'error',
+                    content: 'Ошибка обновления данных',
+                })
+                .then(() => {
+                    reset();
+                });
         }
         if (isSuccess) {
             message
@@ -79,10 +84,11 @@ export const EditCategoryForm: FC<Props> = ({ category }) => {
                     duration: 1,
                 })
                 .then(() => {
+                    reset();
                     router.push(paths.categories);
                 });
         }
-    }, [isError, isSuccess, router]);
+    }, [isError, isSuccess, reset, router]);
 
     return (
         <>
