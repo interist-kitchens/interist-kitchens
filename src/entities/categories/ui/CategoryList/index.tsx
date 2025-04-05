@@ -84,6 +84,10 @@ export const CategoryList: FC<Props> = ({ categories }) => {
         }
     }, [messageApi, reset, isSuccess, router]);
 
+    useEffect(() => {
+        router.refresh();
+    }, [router]);
+
     const data: DataType[] = categories.map((category) => ({
         key: category.id,
         name: category.name,
