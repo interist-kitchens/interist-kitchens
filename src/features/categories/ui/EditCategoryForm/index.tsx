@@ -21,8 +21,6 @@ import { useUnit } from 'effector-react/compat';
 import { paths } from '@/shared/routing';
 import { WysiwygEditor } from '@/shared/ui/WysiwygEditor';
 
-const { TextArea } = Input;
-
 type Props = {
     category: Categories | null;
 };
