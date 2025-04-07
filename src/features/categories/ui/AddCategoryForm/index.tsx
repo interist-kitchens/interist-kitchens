@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import {
     Button,
     Flex,
@@ -21,6 +21,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { normFile, uploadProps } from '@/features/categories/lib';
 import { paths } from '@/shared/routing';
+import { WysiwygEditor } from '@/shared/ui/WysiwygEditor';
 
 type FieldType = {
     name: string;
@@ -30,8 +31,6 @@ type FieldType = {
     image?: UploadFile;
     alias: string;
 };
-
-const { TextArea } = Input;
 
 const gerErrorType = (errorCode: string) => {
     switch (errorCode) {
@@ -44,6 +43,7 @@ const gerErrorType = (errorCode: string) => {
 
 export const AddCategoryForm: FC = () => {
     const router = useRouter();
+    const [textDescription, setTextDescription] = useState<string>('');
 
     const [loading, submit, isSuccess, isError, errorCode, reset] = useUnit([
         categoryCreateAdminModel.$pending,
@@ -62,7 +62,7 @@ export const AddCategoryForm: FC = () => {
         formData.append('name', values.name);
         formData.append('metaTitle', values.metaTitle ?? '');
         formData.append('metaDescription', values.metaDescription ?? '');
-        formData.append('text', values.text ?? '');
+        formData.append('text', textDescription);
         formData.append('image', values.image?.originFileObj ?? '');
         formData.append('imageName', values.image?.name ?? '');
         formData.append(
@@ -168,7 +168,7 @@ export const AddCategoryForm: FC = () => {
                 </Flex>
 
                 <Form.Item<FieldType> label="Описание" name="text">
-                    <TextArea />
+                    <WysiwygEditor setContent={setTextDescription} />
                 </Form.Item>
 
                 <Form.Item label={null}>

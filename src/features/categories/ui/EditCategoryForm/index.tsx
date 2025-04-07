@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Categories, categoryEditAdminModel } from '@/entities/categories';
 import {
     Button,
@@ -19,6 +19,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useUnit } from 'effector-react/compat';
 import { paths } from '@/shared/routing';
+import { WysiwygEditor } from '@/shared/ui/WysiwygEditor';
 
 const { TextArea } = Input;
 
@@ -37,6 +38,7 @@ type FieldType = {
 
 export const EditCategoryForm: FC<Props> = ({ category }) => {
     const router = useRouter();
+    const [textDescription, setTextDescription] = useState<string>('');
 
     const [loading, submit, isSuccess, isError, reset] = useUnit([
         categoryEditAdminModel.$pending,
@@ -52,7 +54,7 @@ export const EditCategoryForm: FC<Props> = ({ category }) => {
         formData.append('name', values.name);
         formData.append('metaTitle', values.metaTitle ?? '');
         formData.append('metaDescription', values.metaDescription ?? '');
-        formData.append('text', values.text ?? '');
+        formData.append('text', textDescription);
         formData.append('image', values.image?.originFileObj ?? '');
         formData.append('imageName', values.image?.name ?? '');
         formData.append(
@@ -186,12 +188,11 @@ export const EditCategoryForm: FC<Props> = ({ category }) => {
                     </Form.Item>
                 </Flex>
 
-                <Form.Item<FieldType>
-                    label="Описание"
-                    name="text"
-                    initialValue={category?.text}
-                >
-                    <TextArea />
+                <Form.Item<FieldType> label="Описание" name="text">
+                    <WysiwygEditor
+                        initialValue={category?.text}
+                        setContent={setTextDescription}
+                    />
                 </Form.Item>
 
                 <Form.Item label={null}>
