@@ -30,17 +30,17 @@ export default async function Page({ params }: { params: { id: string } }) {
 
     const values = serialize(scope);
 
-    if (!scope.getState(categoryDetailAdminModel.$currentCategory)) {
+    const categoryData = scope.getState(
+        categoryDetailAdminModel.$currentCategory
+    );
+
+    if (!categoryData) {
         notFound();
     }
 
     return (
         <EffectorNext values={values}>
-            <CategoryDetailAdminPage
-                category={scope.getState(
-                    categoryDetailAdminModel.$currentCategory
-                )}
-            />
+            <CategoryDetailAdminPage category={categoryData} />
         </EffectorNext>
     );
 }

@@ -3,7 +3,6 @@
 import { FC, useEffect } from 'react';
 import { Categories, categoryDeleteModel } from '@/entities/categories';
 import { message, Table, TableProps } from 'antd';
-import dayjs from 'dayjs';
 import { DeleteCategory } from '@/features/categories';
 import { useRouter } from 'next/navigation';
 import { useUnit } from 'effector-react';
@@ -51,11 +50,7 @@ const columns: TableProps<DataType>['columns'] = [
         title: '',
         dataIndex: 'deleteAction',
         key: 'deleteAction',
-        render: (_, record) => (
-            <>
-                <DeleteCategory id={record.key} />
-            </>
-        ),
+        render: (_, record) => <DeleteCategory id={record.key} />,
     },
 ];
 
@@ -67,11 +62,9 @@ export const CategoryList: FC<Props> = ({ categories }) => {
         categoryDeleteModel.reset,
     ]);
 
-    const [messageApi, contextHolder] = message.useMessage();
-
     useEffect(() => {
         if (isSuccess) {
-            messageApi
+            message
                 .open({
                     type: 'success',
                     content: 'Категория удалена успешно',
@@ -82,7 +75,7 @@ export const CategoryList: FC<Props> = ({ categories }) => {
                     router.refresh();
                 });
         }
-    }, [messageApi, reset, isSuccess, router]);
+    }, [reset, isSuccess, router]);
 
     useEffect(() => {
         router.refresh();
@@ -92,8 +85,8 @@ export const CategoryList: FC<Props> = ({ categories }) => {
         key: category.id,
         name: category.name,
         alias: category.alias,
-        createdAt: dayjs(category.createdAt).format('DD.MM.YYYY'),
-        updatedAt: dayjs(category.updatedAt).format('DD.MM.YYYY'),
+        createdAt: category.createdAt,
+        updatedAt: category.updatedAt,
     }));
 
     const handleClickRow = (id: string) => {
@@ -101,17 +94,14 @@ export const CategoryList: FC<Props> = ({ categories }) => {
     };
 
     return (
-        <>
-            {contextHolder}
-            <Table<DataType>
-                columns={columns}
-                dataSource={data}
-                onRow={(record) => {
-                    return {
-                        onClick: () => handleClickRow(record.key),
-                    };
-                }}
-            />
-        </>
+        <Table<DataType>
+            columns={columns}
+            dataSource={data}
+            onRow={(record) => {
+                return {
+                    onClick: () => handleClickRow(record.key),
+                };
+            }}
+        />
     );
 };

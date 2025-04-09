@@ -1,7 +1,6 @@
 import { FC } from 'react';
 import { Categories } from '@/entities/categories';
 import { Flex, Typography } from 'antd';
-import dayjs from 'dayjs';
 import Image from 'next/image';
 
 type Props = {
@@ -14,14 +13,8 @@ export const CategoryDetail: FC<Props> = ({ category }) => {
             <div className={'flex justify-between bg-white p-2 rounded-md'}>
                 <Typography>Алиас: {category?.alias}</Typography>
                 <Flex align={'end'} vertical>
-                    <Typography>
-                        Создан:{' '}
-                        {dayjs(category?.createdAt).format('DD.MM.YYYY')}
-                    </Typography>
-                    <Typography>
-                        Обновлен:{' '}
-                        {dayjs(category?.updatedAt).format('DD.MM.YYYY')}
-                    </Typography>
+                    <Typography>Создан: {category?.createdAt}</Typography>
+                    <Typography>Обновлен: {category?.updatedAt}</Typography>
                 </Flex>
             </div>
             <div className={'w-fit p-4 bg-white ml-auto rounded-md'}>

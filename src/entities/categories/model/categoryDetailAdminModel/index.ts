@@ -5,7 +5,6 @@ import {
     createStore,
     sample,
     split,
-    StoreValue,
 } from 'effector';
 import { Categories, getCategories, getCategory } from '@/entities/categories';
 import { declarePage } from '@/shared/app';
@@ -47,8 +46,7 @@ export const categoryDetailAdminModel = atom(() => {
     sample({
         clock: categoryNotFound,
         source: $currentCategoryId,
-        filter: (id: StoreValue<typeof $currentCategoryId>): id is string =>
-            id !== null,
+        filter: Boolean,
         fn: (id: string) => id,
         target: getCategoryFx,
     });

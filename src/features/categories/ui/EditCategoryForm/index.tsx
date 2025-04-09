@@ -14,7 +14,7 @@ import {
 } from 'antd';
 import { normFile, uploadProps } from '@/features/categories/lib';
 import { UploadOutlined } from '@ant-design/icons';
-import { transliterateToSlug } from '@/shared/lib';
+import { appendFieldsToFormData, transliterateToSlug } from '@/shared/lib';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useUnit } from 'effector-react/compat';
@@ -49,16 +49,17 @@ export const EditCategoryForm: FC<Props> = ({ category }) => {
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
         const formData = new FormData();
 
-        formData.append('name', values.name);
-        formData.append('metaTitle', values.metaTitle ?? '');
-        formData.append('metaDescription', values.metaDescription ?? '');
-        formData.append('text', textDescription);
-        formData.append('image', values.image?.originFileObj ?? '');
-        formData.append('imageName', values.image?.name ?? '');
-        formData.append(
-            'alias',
-            values.alias ?? transliterateToSlug(values.name)
-        );
+        const appendedValues = {
+            name: values.name,
+            metaTitle: values.metaTitle ?? '',
+            metaDescription: values.metaDescription ?? '',
+            text: textDescription,
+            image: values.image?.originFileObj ?? '',
+            imageName: values.image?.name ?? '',
+            alias: values.alias ?? transliterateToSlug(values.name),
+        };
+
+        appendFieldsToFormData(formData, appendedValues);
 
         if (category?.id) {
             submit({ id: category?.id, formData });

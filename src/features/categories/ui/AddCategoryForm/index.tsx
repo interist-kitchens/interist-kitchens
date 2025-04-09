@@ -12,7 +12,7 @@ import {
     UploadFile,
 } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { transliterateToSlug } from '@/shared/lib';
+import { appendFieldsToFormData, transliterateToSlug } from '@/shared/lib';
 import { useUnit } from 'effector-react/compat';
 import {
     categoryCreateAdminModel,
@@ -20,8 +20,8 @@ import {
 } from '@/entities/categories';
 import { useRouter } from 'next/navigation';
 import { normFile, uploadProps } from '@/features/categories/lib';
-import { paths } from '@/shared/routing';
 import { WysiwygEditor } from '@/shared/ui/WysiwygEditor';
+import { paths } from '@/shared/routing';
 
 type FieldType = {
     name: string;
@@ -32,58 +32,38 @@ type FieldType = {
     alias: string;
 };
 
-const gerErrorType = (errorCode: string) => {
-    switch (errorCode) {
-        case 'P2002':
-            return 'Алиас уже занят. Введите другой';
-        default:
-            return 'Ошибка запроса на добавление категории. Попробуйте позже.';
-    }
-};
-
 export const AddCategoryForm: FC = () => {
     const router = useRouter();
     const [textDescription, setTextDescription] = useState<string>('');
 
-    const [loading, submit, isSuccess, isError, errorCode, reset] = useUnit([
+    const [loading, submit, isSuccess, reset] = useUnit([
         categoryCreateAdminModel.$pending,
         categoryCreateAdminModel.submitCreate,
         categoryCreateAdminModel.$isSuccess,
-        categoryCreateAdminModel.$isError,
-        categoryCreateAdminModel.$error,
         createCategory.reset,
     ]);
-
-    const [messageApi, contextHolder] = message.useMessage();
 
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
         const formData = new FormData();
 
-        formData.append('name', values.name);
-        formData.append('metaTitle', values.metaTitle ?? '');
-        formData.append('metaDescription', values.metaDescription ?? '');
-        formData.append('text', textDescription);
-        formData.append('image', values.image?.originFileObj ?? '');
-        formData.append('imageName', values.image?.name ?? '');
-        formData.append(
-            'alias',
-            values.alias ?? transliterateToSlug(values.name)
-        );
+        const appendedValues = {
+            name: values.name,
+            metaTitle: values.metaTitle ?? '',
+            metaDescription: values.metaDescription ?? '',
+            text: textDescription,
+            image: values.image?.originFileObj ?? '',
+            imageName: values.image?.name ?? '',
+            alias: values.alias ?? transliterateToSlug(values.name),
+        };
+
+        appendFieldsToFormData(formData, appendedValues);
 
         submit(formData);
     };
 
     useEffect(() => {
-        if (isError) {
-            messageApi
-                .open({
-                    type: 'error',
-                    content: gerErrorType(errorCode),
-                })
-                .then(() => reset());
-        }
         if (isSuccess) {
-            messageApi
+            message
                 .open({
                     type: 'success',
                     content: 'Категория создана успешно',
@@ -94,89 +74,83 @@ export const AddCategoryForm: FC = () => {
                     router.push(paths.categories);
                 });
         }
-    }, [errorCode, isError, messageApi, reset, isSuccess, router]);
+    }, [reset, isSuccess, router]);
 
     return (
-        <>
-            {contextHolder}
-            <Form
-                name={'addCategory'}
-                layout={'vertical'}
-                onFinish={onFinish}
-                autoComplete="off"
-            >
-                <Flex align={'center'} gap={10} justify={'space-between'}>
-                    <Form.Item<FieldType>
-                        label="Название категории"
-                        name="name"
-                        rules={[
-                            { required: true, message: 'Введите название' },
-                        ]}
-                        className={'w-full'}
-                    >
-                        <Input />
-                    </Form.Item>
+        <Form
+            name={'addCategory'}
+            layout={'vertical'}
+            onFinish={onFinish}
+            autoComplete="off"
+        >
+            <Flex align={'center'} gap={10} justify={'space-between'}>
+                <Form.Item<FieldType>
+                    label="Название категории"
+                    name="name"
+                    rules={[{ required: true, message: 'Введите название' }]}
+                    className={'w-full'}
+                >
+                    <Input />
+                </Form.Item>
 
-                    <Form.Item<FieldType>
-                        label="URL алиас"
-                        name="alias"
-                        rules={[
-                            {
-                                pattern: /^[a-zA-Z0-9-]+$/,
-                                message:
-                                    'Допустима только латиница и символы -',
-                            },
-                        ]}
-                        className={'w-full'}
-                    >
-                        <Input />
-                    </Form.Item>
+                <Form.Item<FieldType>
+                    label="URL алиас"
+                    name="alias"
+                    rules={[
+                        {
+                            pattern: /^[a-zA-Z0-9-]+$/,
+                            message: 'Допустима только латиница и символы -',
+                        },
+                    ]}
+                    className={'w-full'}
+                >
+                    <Input />
+                </Form.Item>
 
-                    <Form.Item
+                <Form.Item
+                    name="image"
+                    label="Картинка"
+                    valuePropName="image"
+                    getValueFromEvent={normFile}
+                >
+                    <Upload
                         name="image"
-                        label="Картинка"
-                        valuePropName="image"
-                        getValueFromEvent={normFile}
+                        listType="picture"
+                        multiple={false}
+                        {...uploadProps}
                     >
-                        <Upload
-                            name="image"
-                            listType="picture"
-                            multiple={false}
-                            {...uploadProps}
-                        >
-                            <Button icon={<UploadOutlined />}>Загрузить</Button>
-                        </Upload>
-                    </Form.Item>
-                </Flex>
+                        <Button icon={<UploadOutlined />}>Загрузить</Button>
+                    </Upload>
+                </Form.Item>
+            </Flex>
 
-                <Flex justify={'space-between'} gap={10}>
-                    <Form.Item<FieldType>
-                        label="Meta Title"
-                        name="metaTitle"
-                        className={'w-full'}
-                    >
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item<FieldType>
-                        label="Meta Description"
-                        name="metaDescription"
-                        className={'w-full'}
-                    >
-                        <Input />
-                    </Form.Item>
-                </Flex>
-
-                <Form.Item<FieldType> label="Описание" name="text">
-                    <WysiwygEditor setContent={setTextDescription} />
+            <Flex justify={'space-between'} gap={10}>
+                <Form.Item<FieldType>
+                    label="Meta Title"
+                    name="metaTitle"
+                    className={'w-full'}
+                >
+                    <Input />
                 </Form.Item>
 
-                <Form.Item label={null}>
-                    <Button type="primary" htmlType="submit" loading={loading}>
-                        Отправить
-                    </Button>
+                <Form.Item<FieldType>
+                    label="Meta Description"
+                    name="metaDescription"
+                    className={'w-full'}
+                >
+                    <Input />
                 </Form.Item>
-            </Form>
-        </>
+            </Flex>
+
+            <Form.Item<FieldType> label="Описание" name="text">
+                <WysiwygEditor setContent={setTextDescription} />
+            </Form.Item>
+
+            <Form.Item label={null}>
+                <Button type="primary" htmlType="submit" loading={loading}>
+                    Отправить
+                </Button>
+            </Form.Item>
+        </Form>
     );
 };
