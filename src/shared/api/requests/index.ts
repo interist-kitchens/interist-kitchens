@@ -1,7 +1,7 @@
 import { createRequestFx } from '@/shared/api/requests/createRequestFx';
 
 export const createInternalRequestFx = createRequestFx({
-    baseURL: process.env.NEXT_PUBLIC_INTERNAL_API_URL,
+    baseURL: `/${process.env.NEXT_PUBLIC_INTERNAL_API_URL}`,
     withTokenInHeaders: true,
 });
 

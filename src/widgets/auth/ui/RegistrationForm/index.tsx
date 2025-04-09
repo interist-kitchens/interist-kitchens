@@ -5,6 +5,9 @@ import { FormLayout, sessionModel } from '@/entities/session';
 import { useUnit } from 'effector-react';
 import Link from 'next/link';
 import { paths } from '@/shared/routing';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 type FieldType = {
     name: string;
@@ -13,6 +16,9 @@ type FieldType = {
 };
 
 export const RegistrationForm = () => {
+    const { status } = useSession();
+    const router = useRouter();
+
     const [pending, start, error, clearErrors] = useUnit([
         sessionModel.$pending,
         sessionModel.submitRegistration,
@@ -25,6 +31,12 @@ export const RegistrationForm = () => {
     ) => {
         start(values);
     };
+
+    useEffect(() => {
+        if (status === 'authenticated') {
+            router.push(paths.home);
+        }
+    }, [router, status]);
 
     return (
         <>

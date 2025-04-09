@@ -1,5 +1,10 @@
 import { createEffect } from 'effector';
-import axios, { AxiosHeaders, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, {
+    AxiosError,
+    AxiosHeaders,
+    AxiosRequestConfig,
+    AxiosResponse,
+} from 'axios';
 
 type CreateRequestParams = AxiosRequestConfig & {
     url: string;
@@ -23,13 +28,13 @@ function getConfig<P>(payload: Payload<P>, params: P): CreateRequestParams {
     return typeof payload === 'function' ? payload(params) : payload;
 }
 
-const createRequestInstance = <P = CreateRequestParams, R = void>({
+const createRequestInstance = <P = CreateRequestParams, R = void, E = Error>({
     baseURL,
     headers,
     payload,
     withTokenInHeaders,
 }: CreateRequestInstanceParams<P>) =>
-    createEffect<P, AxiosResponse<R>, Error>(async (params) => {
+    createEffect<P, AxiosResponse<R>, AxiosError<E>>(async (params) => {
         const { url, ...fetchOptions } = getConfig(payload, params);
 
         const newHeaders = { ...headers } as AxiosHeaders;
@@ -49,8 +54,8 @@ const createRequestInstance = <P = CreateRequestParams, R = void>({
 
 export const createRequestFx =
     (params: CreateRequestFxParams) =>
-    <P = CreateRequestParams, R = void>(payload: Payload<P>) =>
-        createRequestInstance<P, R>({
+    <P = CreateRequestParams, R = void, E = Error>(payload: Payload<P>) =>
+        createRequestInstance<P, R, E>({
             ...(params as CreateRequestParams),
             payload,
         });

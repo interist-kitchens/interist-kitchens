@@ -1,0 +1,1 @@
+export { mapCategories } from './mapCategories';

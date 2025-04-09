@@ -23,3 +23,16 @@ enum UserRole {
   USER
   ADMIN
 }
+
+model Category {
+  id               Int     @id @default(autoincrement())
+  name             String
+  meta_title       String?
+  meta_description String?
+  text             String?
+  image            String?
+  alias            String  @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
