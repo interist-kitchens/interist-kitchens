@@ -55,8 +55,8 @@ export const getCategory = async (id: string): Promise<Categories | null> => {
             id: String(id),
             createdAt: dayjs(category.createdAt).format('DD.MM.YYYY'),
             updatedAt: dayjs(category.updatedAt).format('DD.MM.YYYY'),
-            metaTitle: category.meta_title,
-            metaDescription: category.meta_description,
+            metaTitle: category.metaTitle,
+            metaDescription: category.metaDescription,
         };
     }
 

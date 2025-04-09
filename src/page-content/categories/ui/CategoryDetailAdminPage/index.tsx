@@ -16,7 +16,9 @@ export const CategoryDetailAdminPage: NextPage<Props> = ({ category }) => {
             titleSlot={
                 <Flex align={'center'} justify={'space-between'}>
                     <Title>{category?.name}</Title>
-                    <Link href={`${paths.categories}/${category?.id}/edit`}>
+                    <Link
+                        href={`${paths.categoriesAdmin}/${category?.id}/edit`}
+                    >
                         Редактировать
                     </Link>
                 </Flex>

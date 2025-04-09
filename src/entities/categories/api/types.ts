@@ -6,8 +6,8 @@ export type CategoriesResponse = {
     alias: string;
     createdAt: Date;
     updatedAt: Date;
-    meta_title?: string | null;
-    meta_description?: string | null;
+    metaTitle?: string | null;
+    metaDescription?: string | null;
 };
 
 export type Categories = {

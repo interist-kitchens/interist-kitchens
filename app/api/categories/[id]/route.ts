@@ -61,8 +61,8 @@ export async function PUT(
             data: {
                 name,
                 alias,
-                meta_title: metaTitle,
-                meta_description: metaDescription,
+                metaTitle,
+                metaDescription,
                 text,
                 image: blob ? blob.url : '',
             },

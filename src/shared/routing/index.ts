@@ -3,6 +3,7 @@ export const paths = {
     login: '/login',
     register: '/registration',
     admin: '/admin',
-    categories: '/admin/categories',
-    categoriesCreate: '/admin/categories/create',
+    categoriesAdmin: '/admin/categories',
+    categoriesAdminCreate: '/admin/categories/create',
+    productsAdmin: '/admin/products',
 };
