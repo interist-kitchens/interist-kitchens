@@ -12,7 +12,7 @@ export const CategoryAdminLayout: FC<PropsWithChildren<Props>> = ({
 }) => {
     return (
         <>
-            <Link href={paths.categories}>Назад</Link>
+            <Link href={paths.categoriesAdmin}>Назад</Link>
             {titleSlot}
             {children}
         </>

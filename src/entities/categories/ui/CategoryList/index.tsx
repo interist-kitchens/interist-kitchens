@@ -90,7 +90,7 @@ export const CategoryList: FC<Props> = ({ categories }) => {
     }));
 
     const handleClickRow = (id: string) => {
-        router.push(`${paths.categories}/${id}`);
+        router.push(`${paths.categoriesAdmin}/${id}`);
     };
 
     return (

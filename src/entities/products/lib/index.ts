@@ -1,0 +1,1 @@
+export { mapProduct } from './mapProduct';

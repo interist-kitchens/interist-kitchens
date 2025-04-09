@@ -71,7 +71,7 @@ export const AddCategoryForm: FC = () => {
                 })
                 .then(() => {
                     reset();
-                    router.push(paths.categories);
+                    router.push(paths.categoriesAdmin);
                 });
         }
     }, [reset, isSuccess, router]);

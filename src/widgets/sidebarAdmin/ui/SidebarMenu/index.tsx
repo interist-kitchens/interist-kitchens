@@ -15,12 +15,12 @@ const { Sider } = Layout;
 
 const menuItems: MenuItemType[] = [
     {
-        key: paths.categories,
+        key: paths.categoriesAdmin,
         icon: <FolderOpenOutlined />,
         label: 'Категории',
     },
     {
-        key: '2',
+        key: paths.productsAdmin,
         icon: <ProductOutlined />,
         label: 'Товары',
     },

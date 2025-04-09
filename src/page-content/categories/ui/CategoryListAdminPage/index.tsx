@@ -16,7 +16,7 @@ export const CategoryListAdminPage: NextPage<Props> = async ({
         <>
             <Flex align={'center'} justify={'space-between'}>
                 <Title>Категории</Title>
-                <Link href={paths.categoriesCreate}>Добавить</Link>
+                <Link href={paths.categoriesAdminCreate}>Добавить</Link>
             </Flex>
             <CategoryList categories={categories} />
         </>

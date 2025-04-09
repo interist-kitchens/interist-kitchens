@@ -35,8 +35,8 @@ export async function POST(request: Request) {
             data: {
                 name,
                 alias,
-                meta_title: metaTitle,
-                meta_description: metaDescription,
+                metaTitle,
+                metaDescription,
                 text,
                 image: blob ? blob.url : '',
             },

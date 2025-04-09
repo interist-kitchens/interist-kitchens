@@ -86,7 +86,7 @@ export const EditCategoryForm: FC<Props> = ({ category }) => {
                 })
                 .then(() => {
                     reset();
-                    router.push(paths.categories);
+                    router.push(paths.categoriesAdmin);
                 });
         }
     }, [isError, isSuccess, reset, router]);
