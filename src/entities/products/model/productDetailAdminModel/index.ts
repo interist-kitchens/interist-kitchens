@@ -23,7 +23,7 @@ export const productDetailAdminModel = atom(() => {
     const $currentProductId = createStore<string | null>(null);
     const $currentProduct = createStore<Product | null>(null);
 
-    $products.on(getProductsFx.doneData, (_, result) => [...result]);
+    $products.on(getProductsFx.doneData, (_, result) => result);
 
     $currentProductId.on(singleRequested, (_, id) => id);
 

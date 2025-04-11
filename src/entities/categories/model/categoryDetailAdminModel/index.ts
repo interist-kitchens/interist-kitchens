@@ -23,7 +23,7 @@ export const categoryDetailAdminModel = atom(() => {
     const $currentCategoryId = createStore<string | null>(null);
     const $currentCategory = createStore<Categories | null>(null);
 
-    $categories.on(getCategoriesFx.doneData, (_, result) => [...result]);
+    $categories.on(getCategoriesFx.doneData, (_, result) => result);
 
     $currentCategoryId.on(singleRequested, (_, id) => id);
 
