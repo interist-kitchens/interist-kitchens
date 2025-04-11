@@ -26,7 +26,7 @@
     "dayjs": "^1.11.13",
     "effector": "^23.3.0",
     "effector-react": "^23.3.0",
-    "next": "14.2.24",
+    "next": "14.2.26",
     "next-auth": "^4.24.11",
     "patronum": "^2.3.0",
     "react": "^18",
