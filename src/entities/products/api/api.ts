@@ -57,3 +57,10 @@ export const createProduct = createMutation({
         },
     })),
 });
+
+export const deleteProduct = createMutation({
+    effect: createInternalRequestFx((id: string) => ({
+        url: `/products/${id}`,
+        method: 'DELETE',
+    })),
+});
