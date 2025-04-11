@@ -2,8 +2,8 @@ import { createMutation } from '@farfetched/core';
 import { createInternalRequestFx } from '@/shared/api/requests';
 import { Categories, Error } from '@/entities/categories/api';
 import { mapCategories } from '@/entities/categories/lib';
-import dayjs from 'dayjs';
 import { prisma } from '@/shared/prisma/prisma-client';
+import { dateFormat } from '@/shared/lib';
 
 export const getCategories = async (): Promise<Categories[]> => {
     const categories = await prisma.category.findMany();
@@ -53,8 +53,8 @@ export const getCategory = async (id: string): Promise<Categories | null> => {
         return {
             ...category,
             id: String(id),
-            createdAt: dayjs(category.createdAt).format('DD.MM.YYYY'),
-            updatedAt: dayjs(category.updatedAt).format('DD.MM.YYYY'),
+            createdAt: dateFormat(category.createdAt),
+            updatedAt: dateFormat(category.updatedAt),
             metaTitle: category.metaTitle,
             metaDescription: category.metaDescription,
         };
