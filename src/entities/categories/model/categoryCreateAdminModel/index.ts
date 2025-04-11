@@ -3,15 +3,7 @@ import { createCategory } from '@/entities/categories';
 import { createStore, sample } from 'effector';
 import { declarePage } from '@/shared/app';
 import { message } from 'antd';
-
-const gerErrorType = (errorCode: string) => {
-    switch (errorCode) {
-        case 'P2002':
-            return 'Алиас уже занят. Введите другой';
-        default:
-            return 'Ошибка запроса на добавление категории. Попробуйте позже.';
-    }
-};
+import { getPrismaTypeError } from '@/shared/lib';
 
 export const categoryCreateAdminModel = atom(() => {
     const submitCreate = createCategory.start;
@@ -30,7 +22,7 @@ export const categoryCreateAdminModel = atom(() => {
 
             await message.open({
                 type: 'error',
-                content: gerErrorType(error),
+                content: getPrismaTypeError(error),
             });
         },
     });
