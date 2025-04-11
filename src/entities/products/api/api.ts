@@ -2,6 +2,9 @@ import { prisma } from '@/shared/prisma/prisma-client';
 import { Product, ProductResponse } from '@/entities/products/api/types';
 import { mapProduct } from '@/entities/products/lib';
 import { dateFormat } from '@/shared/lib';
+import { createMutation } from '@farfetched/core';
+import { createInternalRequestFx } from '@/shared/api/requests';
+import { Error } from '@/entities/categories';
 
 export const getProducts = async (): Promise<Product[]> => {
     const products: ProductResponse[] = await prisma.product.findMany({
@@ -43,3 +46,18 @@ export const getProduct = async (id: string): Promise<Product | null> => {
 
     return null;
 };
+
+export const updateProduct = createMutation({
+    effect: createInternalRequestFx<
+        { id: string; formData: FormData },
+        void,
+        Error
+    >((data) => ({
+        url: `/products/${data.id}`,
+        method: 'PUT',
+        data: data.formData,
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    })),
+});

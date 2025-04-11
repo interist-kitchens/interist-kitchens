@@ -20,8 +20,8 @@ export const ProductDetail: FC<Props> = ({ product }) => {
                     <Typography>Обновлен: {product?.updatedAt}</Typography>
                 </Flex>
             </div>
-            <div className={'w-fit p-4 bg-white ml-auto rounded-md'}>
-                {product?.image && (
+            {product?.image && (
+                <div className={'w-fit p-4 bg-white ml-auto rounded-md'}>
                     <Image
                         src={product.image}
                         alt={product.name}
@@ -29,8 +29,8 @@ export const ProductDetail: FC<Props> = ({ product }) => {
                         height={200}
                         priority
                     />
-                )}
-            </div>
+                </div>
+            )}
             <div className={'bg-white p-2 flex flex-col rounded-md'}>
                 <Typography>Meta-Title: {product?.metaTitle}</Typography>
                 <Typography>
