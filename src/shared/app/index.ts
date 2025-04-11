@@ -12,6 +12,7 @@ const pageTypes = [
     'productListAdminPage',
     'productDetailAdminPage',
     'productCreateAdminPage',
+    'productEditAdminPage',
 ] as const;
 
 export const pageStarted = createEvent<{

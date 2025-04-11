@@ -64,3 +64,18 @@ export const deleteProduct = createMutation({
         method: 'DELETE',
     })),
 });
+
+export const updateProduct = createMutation({
+    effect: createInternalRequestFx<
+        { id: string; formData: FormData },
+        void,
+        Error
+    >((data) => ({
+        url: `/products/${data.id}`,
+        method: 'PUT',
+        data: data.formData,
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    })),
+});
