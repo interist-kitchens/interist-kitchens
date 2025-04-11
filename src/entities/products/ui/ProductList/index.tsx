@@ -1,6 +1,10 @@
+'use client';
+
 import { FC } from 'react';
 import { Product } from '@/entities/products';
 import { Table, TableProps } from 'antd';
+import { paths } from '@/shared/routing';
+import { useRouter } from 'next/navigation';
 
 type Props = {
     products: Product[];
@@ -48,6 +52,8 @@ const columns: TableProps<DataType>['columns'] = [
 ];
 
 export const ProductList: FC<Props> = ({ products }) => {
+    const router = useRouter();
+
     const data: DataType[] = products.map((product) => ({
         key: product.id,
         category: product.categoryName,
@@ -57,5 +63,19 @@ export const ProductList: FC<Props> = ({ products }) => {
         updatedAt: product.updatedAt,
     }));
 
-    return <Table<DataType> columns={columns} dataSource={data} />;
+    const handleClickRow = (id: string) => {
+        router.push(`${paths.productsAdmin}/${id}`);
+    };
+
+    return (
+        <Table<DataType>
+            columns={columns}
+            dataSource={data}
+            onRow={(record) => {
+                return {
+                    onClick: () => handleClickRow(record.key),
+                };
+            }}
+        />
+    );
 };
