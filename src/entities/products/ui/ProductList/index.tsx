@@ -1,10 +1,13 @@
 'use client';
 
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { Product } from '@/entities/products';
-import { Table, TableProps } from 'antd';
+import { message, Table, TableProps } from 'antd';
 import { paths } from '@/shared/routing';
 import { useRouter } from 'next/navigation';
+import { DeleteProduct } from '@/features/products';
+import { useUnit } from 'effector-react';
+import { productDeleteAdminModel } from '@/entities/products/model';
 
 type Props = {
     products: Product[];
@@ -49,10 +52,40 @@ const columns: TableProps<DataType>['columns'] = [
         dataIndex: 'updatedAt',
         key: 'updatedAt',
     },
+    {
+        title: '',
+        dataIndex: 'deleteAction',
+        key: 'deleteAction',
+        render: (_, record) => <DeleteProduct id={record.key} />,
+    },
 ];
 
 export const ProductList: FC<Props> = ({ products }) => {
     const router = useRouter();
+
+    const [isSuccess, reset] = useUnit([
+        productDeleteAdminModel.$isSuccess,
+        productDeleteAdminModel.reset,
+    ]);
+
+    useEffect(() => {
+        if (isSuccess) {
+            message
+                .open({
+                    type: 'success',
+                    content: 'Товар удален успешно',
+                    duration: 1,
+                })
+                .then(() => {
+                    reset();
+                    router.refresh();
+                });
+        }
+    }, [reset, isSuccess, router]);
+
+    useEffect(() => {
+        router.refresh();
+    }, [router]);
 
     const data: DataType[] = products.map((product) => ({
         key: product.id,

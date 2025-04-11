@@ -6,4 +6,5 @@ export const paths = {
     categoriesAdmin: '/admin/categories',
     categoriesAdminCreate: '/admin/categories/create',
     productsAdmin: '/admin/products',
+    productsAdminCreate: '/admin/products/create',
 };

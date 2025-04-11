@@ -1,6 +1,7 @@
 import { atom } from '@/shared/factory/atom';
 import { updateCategory } from '@/entities/categories';
-import { createEvent, createStore } from 'effector';
+import { createEvent, createStore, sample } from 'effector';
+import { message } from 'antd';
 
 export const categoryEditAdminModel = atom(() => {
     const submitUpdate = updateCategory.start;
@@ -10,9 +11,16 @@ export const categoryEditAdminModel = atom(() => {
     const $isSuccess = createStore(false)
         .on(updateCategory.$succeeded, (_, payload) => payload)
         .reset(resetUpdateForm);
-    const $isError = createStore(false)
-        .on(updateCategory.$failed, (_, payload) => payload)
-        .reset(resetUpdateForm);
 
-    return { submitUpdate, $pending, $isSuccess, $isError, resetUpdateForm };
+    sample({
+        source: updateCategory.finished.failure,
+        fn: async () => {
+            await message.open({
+                type: 'error',
+                content: 'Ошибка обновления данных',
+            });
+        },
+    });
+
+    return { submitUpdate, $pending, $isSuccess, resetUpdateForm };
 });

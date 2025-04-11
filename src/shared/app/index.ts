@@ -11,6 +11,7 @@ const pageTypes = [
     'categoryEditAdminPage',
     'productListAdminPage',
     'productDetailAdminPage',
+    'productCreateAdminPage',
     'productEditAdminPage',
 ] as const;
 

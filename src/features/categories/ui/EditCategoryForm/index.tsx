@@ -38,11 +38,10 @@ export const EditCategoryForm: FC<Props> = ({ category }) => {
     const router = useRouter();
     const [textDescription, setTextDescription] = useState<string>('');
 
-    const [loading, submit, isSuccess, isError, reset] = useUnit([
+    const [loading, submit, isSuccess, reset] = useUnit([
         categoryEditAdminModel.$pending,
         categoryEditAdminModel.submitUpdate,
         categoryEditAdminModel.$isSuccess,
-        categoryEditAdminModel.$isError,
         categoryEditAdminModel.resetUpdateForm,
     ]);
 
@@ -67,16 +66,6 @@ export const EditCategoryForm: FC<Props> = ({ category }) => {
     };
 
     useEffect(() => {
-        if (isError) {
-            message
-                .open({
-                    type: 'error',
-                    content: 'Ошибка обновления данных',
-                })
-                .then(() => {
-                    reset();
-                });
-        }
         if (isSuccess) {
             message
                 .open({
@@ -89,7 +78,7 @@ export const EditCategoryForm: FC<Props> = ({ category }) => {
                     router.push(paths.categoriesAdmin);
                 });
         }
-    }, [isError, isSuccess, reset, router]);
+    }, [isSuccess, reset, router]);
 
     return (
         <>

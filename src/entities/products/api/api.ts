@@ -47,6 +47,24 @@ export const getProduct = async (id: string): Promise<Product | null> => {
     return null;
 };
 
+export const createProduct = createMutation({
+    effect: createInternalRequestFx<FormData, void, Error>((data) => ({
+        url: '/products',
+        method: 'POST',
+        data,
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    })),
+});
+
+export const deleteProduct = createMutation({
+    effect: createInternalRequestFx((id: string) => ({
+        url: `/products/${id}`,
+        method: 'DELETE',
+    })),
+});
+
 export const updateProduct = createMutation({
     effect: createInternalRequestFx<
         { id: string; formData: FormData },
