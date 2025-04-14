@@ -21,10 +21,7 @@ export const Providers: FC<PropsWithChildren> = ({ children }) => {
                         },
                     }}
                 >
-                    <SessionProvider
-                        refetchInterval={5 * 60}
-                        refetchOnWindowFocus
-                    >
+                    <SessionProvider>
                         {children}
                         <ModalManager />
                     </SessionProvider>

@@ -10,7 +10,10 @@ export const normFile = (e: UploadFiles) => {
 
 export const uploadProps: UploadProps = {
     beforeUpload: (file) => {
-        const isImage = file.type === 'image/png' || file.type === 'image/jpeg';
+        const isImage =
+            file.type === 'image/png' ||
+            file.type === 'image/jpeg' ||
+            file.type === 'image/webp';
         if (!isImage) {
             message.error(`${file.name} не картинка`);
         }
