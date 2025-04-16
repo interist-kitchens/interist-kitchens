@@ -40,14 +40,14 @@ model Category {
 }
 
 model Product {
-  id              Int     @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
   name            String
   metaTitle       String?
   metaDescription String?
   text            String?
   image           String
-  images          String?
-  alias           String  @unique
+  images          String[]
+  alias           String   @unique
   price           String
 
   createdAt DateTime @default(now())

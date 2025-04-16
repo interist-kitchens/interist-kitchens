@@ -14,15 +14,25 @@ export async function POST(request: Request) {
     try {
         const formData = await request.formData();
 
-        const image = formData.get('image') as Blob;
-        const imageName = formData.get('imageName') ?? getUUID();
-        let blob = null;
+        const image = formData.get('image') as File;
+        const imageName = image.name ?? getUUID();
+        const blob = await put(`public/${imageName}`, image, {
+            token: process.env.NEXT_PUBLIC_READ_WRITE_TOKEN,
+            access: 'public',
+        });
 
-        if (image) {
-            blob = await put(`public/${imageName}`, image, {
-                token: process.env.NEXT_PUBLIC_READ_WRITE_TOKEN,
-                access: 'public',
-            });
+        const files = formData.getAll('images[]') as File[];
+        let blobs = null;
+
+        if (Array.isArray(files)) {
+            blobs = await Promise.all(
+                files.map((file) =>
+                    put(`public/${file.name}`, file, {
+                        token: process.env.NEXT_PUBLIC_READ_WRITE_TOKEN,
+                        access: 'public',
+                    })
+                )
+            );
         }
 
         const name = formData.get('name') as string;
@@ -31,6 +41,7 @@ export async function POST(request: Request) {
         const text = formData.get('text') as string;
         const alias = formData.get('alias') as string;
         const categoryId = formData.get('categoryId') as string;
+        const price = formData.get('price') as string;
 
         const product = await prisma.product.create({
             data: {
@@ -41,6 +52,8 @@ export async function POST(request: Request) {
                 text,
                 image: blob ? blob.url : '',
                 categoryId: parseInt(categoryId),
+                price,
+                images: blobs ? blobs.map((blob) => blob.url) : [],
             },
         });
 

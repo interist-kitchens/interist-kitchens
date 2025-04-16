@@ -42,7 +42,12 @@ export default async function Page({ params }: { params: { id: string } }) {
 
     return (
         <EffectorNext values={values}>
-            <ProductEditAdminPage product={product} categories={categories} />
+            {product && (
+                <ProductEditAdminPage
+                    product={product}
+                    categories={categories}
+                />
+            )}
         </EffectorNext>
     );
 }

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getUUID } from 'rc-select/lib/hooks/useId';
-import { put } from '@vercel/blob';
+import { put, PutBlobResult } from '@vercel/blob';
 import { prisma } from '@/shared/prisma/prisma-client';
 
 export async function DELETE(
@@ -39,15 +39,35 @@ export async function PUT(
     try {
         const formData = await request.formData();
 
-        const image = formData.get('image') as Blob;
-        const imageName = formData.get('imageName') ?? getUUID();
-        let blob = null;
+        const image = formData.get('image') as File | string;
 
-        if (image) {
+        let blob: PutBlobResult | string | null = null;
+
+        if (typeof image !== 'string') {
+            const imageName = image.name ?? getUUID();
+
             blob = await put(`public/${imageName}`, image, {
                 token: process.env.NEXT_PUBLIC_READ_WRITE_TOKEN,
                 access: 'public',
             });
+        } else {
+            blob = image;
+        }
+
+        const files = formData.getAll('images[]') as (File | string)[];
+        const uploadedFiles = files.filter((item) => typeof item === 'string');
+        const newFiles = files.filter((item) => typeof item !== 'string');
+        let blobs: PutBlobResult[] | null = null;
+
+        if (Array.isArray(newFiles)) {
+            blobs = await Promise.all(
+                newFiles.map((file) =>
+                    put(`public/${file.name}`, file, {
+                        token: process.env.NEXT_PUBLIC_READ_WRITE_TOKEN,
+                        access: 'public',
+                    })
+                )
+            );
         }
 
         const name = formData.get('name') as string;
@@ -56,6 +76,7 @@ export async function PUT(
         const text = formData.get('text') as string;
         const alias = formData.get('alias') as string;
         const categoryId = formData.get('categoryId') as string;
+        const price = formData.get('price') as string;
 
         const product = await prisma.product.update({
             where: { id: Number.parseInt(params.id) },
@@ -65,8 +86,12 @@ export async function PUT(
                 metaTitle,
                 metaDescription,
                 text,
-                image: blob ? blob.url : '',
+                image: typeof blob !== 'string' ? blob.url : blob,
                 categoryId: parseInt(categoryId),
+                price,
+                images: blobs
+                    ? [...uploadedFiles, ...blobs.map((blob) => blob.url)]
+                    : [...uploadedFiles],
             },
         });
 

@@ -5,7 +5,7 @@ export const normFile = (e: UploadFiles) => {
     if (Array.isArray(e)) {
         return e;
     }
-    return e?.file;
+    return e?.fileList;
 };
 
 export const uploadProps: UploadProps = {

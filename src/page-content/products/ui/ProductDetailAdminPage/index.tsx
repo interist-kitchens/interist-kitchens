@@ -7,7 +7,7 @@ import { ProductAdminLayout } from '@/widgets/layouts/productAdminLayout';
 import { paths } from '@/shared/routing';
 
 type Props = {
-    product: Product | null;
+    product: Product;
 };
 
 export const ProductDetailAdminPage: NextPage<Props> = ({ product }) => {
