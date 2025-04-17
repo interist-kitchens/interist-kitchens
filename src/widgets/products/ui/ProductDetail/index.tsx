@@ -1,5 +1,6 @@
 import { Product, ProductCard, ProductSlider } from '@/entities/products';
 import { FC } from 'react';
+import { SendOrderBtn } from '@/features/leads/sendOrder';
 
 type Props = {
     product: Product;
@@ -14,6 +15,7 @@ export const ProductDetail: FC<Props> = async ({ product }) => {
                     name={product.name}
                     price={product.price}
                     text={product.text}
+                    buttonsSlot={<SendOrderBtn />}
                 />
             </div>
         </div>
