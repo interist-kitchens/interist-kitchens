@@ -9,7 +9,7 @@ type Props = {
 
 export const ProductSlider: FC<Props> = ({ name, images }) => {
     return (
-        <div className={'w-full lg:w-2/3 h-[640px]'}>
+        <div className={'w-full lg:w-2/3'}>
             <ConfigProvider
                 theme={{
                     token: {

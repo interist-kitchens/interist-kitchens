@@ -11,7 +11,7 @@ type Props = {
 
 export const ProductCard: FC<Props> = async ({ name, text, price }) => {
     return (
-        <div className={'flex flex-col bg-white px-5 py-4 w-1/3'}>
+        <div className={'flex flex-col bg-white px-5 py-4 w-full lg:w-1/3'}>
             <Title>{name}</Title>
             <Text>{parse(text)}</Text>
             <div className={'text-4xl font-bold'}>{`от ${Intl.NumberFormat(
