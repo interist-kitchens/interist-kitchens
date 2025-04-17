@@ -3,7 +3,7 @@ import { UploadFile } from 'antd';
 export type ProductResponse = {
     name: string;
     id: number;
-    image: string | null;
+    image: string;
     createdAt: Date;
     updatedAt: Date;
     metaTitle: string | null;
@@ -11,7 +11,7 @@ export type ProductResponse = {
     text: string | null;
     alias: string;
     categoryId: number;
-    categories: { name: string };
+    categories: { name: string; alias: string };
     price: string;
     images: string[];
 };
@@ -30,6 +30,7 @@ export type Product = {
     categoryName: string;
     price: string;
     images: string[];
+    categories: { name: string; alias: string };
 };
 
 export type FormFieldType = {

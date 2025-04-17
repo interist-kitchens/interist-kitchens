@@ -2,7 +2,7 @@ import { NextPage } from 'next';
 import { Flex } from 'antd';
 import { Title } from '@/shared/ui/Typography';
 import Link from 'next/link';
-import { Product, ProductList } from '@/entities/products';
+import { Product, ProductAdminList } from '@/entities/products';
 import { paths } from '@/shared/routing';
 
 type Props = {
@@ -16,7 +16,7 @@ export const ProductListAdminPage: NextPage<Props> = async ({ products }) => {
                 <Title>Товары</Title>
                 <Link href={paths.productsAdminCreate}>Добавить</Link>
             </Flex>
-            <ProductList products={products} />
+            <ProductAdminList products={products} />
         </>
     );
 };

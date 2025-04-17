@@ -9,7 +9,7 @@ type Props = {
     product: Product;
 };
 
-export const ProductDetail: FC<Props> = ({ product }) => {
+export const ProductAdminDetail: FC<Props> = ({ product }) => {
     return (
         <Flex vertical gap={24}>
             <div className={'flex justify-between bg-white p-2 rounded-md'}>
