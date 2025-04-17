@@ -43,6 +43,7 @@ export const getProduct = async (id: string): Promise<Product | null> => {
             metaTitle: product.metaTitle,
             metaDescription: product.metaDescription,
             categoryName: product.categories.name,
+            text: product.text ?? '',
         };
     }
 
@@ -73,6 +74,7 @@ export const getProductByAlias = async (
             metaTitle: product.metaTitle,
             metaDescription: product.metaDescription,
             categoryName: product.categories.name,
+            text: product.text ?? '',
             images: [product.image, ...product.images],
         };
     }

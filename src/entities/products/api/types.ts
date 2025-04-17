@@ -24,7 +24,7 @@ export type Product = {
     updatedAt: string;
     metaTitle: string | null;
     metaDescription: string | null;
-    text: string | null;
+    text: string;
     alias: string;
     categoryId: number;
     categoryName: string;

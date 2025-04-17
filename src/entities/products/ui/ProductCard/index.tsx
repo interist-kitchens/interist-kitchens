@@ -1,19 +1,28 @@
 import { FC } from 'react';
-import { Flex } from 'antd';
-import { Title } from '@/shared/ui/Typography';
+import { Text, Title } from '@/shared/ui/Typography';
+
+import parse from 'html-react-parser';
 
 type Props = {
     name: string;
-    text: string | null;
+    text: string;
     price: string;
 };
 
-export const ProductCard: FC<Props> = ({ name, text, price }) => {
+export const ProductCard: FC<Props> = async ({ name, text, price }) => {
     return (
-        <Flex vertical className={'bg-gray-500 px-10 py-8 w-1/3'} gap={24}>
+        <div className={'flex flex-col bg-white px-5 py-4 w-1/3'}>
             <Title>{name}</Title>
-            <div dangerouslySetInnerHTML={{ __html: text ?? '' }} />
-            <div>{`от ${Intl.NumberFormat('ru-RU').format(parseInt(price))} `}</div>
-        </Flex>
+            <Text>{parse(text)}</Text>
+            <div className={'text-4xl font-bold'}>{`от ${Intl.NumberFormat(
+                'ru-RU',
+                {
+                    style: 'currency',
+                    currency: 'RUB',
+                    maximumFractionDigits: 0,
+                }
+            ).format(parseInt(price))} `}</div>
+            <div className={'text-gray-400'}>за погонный метр</div>
+        </div>
     );
 };
