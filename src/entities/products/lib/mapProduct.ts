@@ -8,5 +8,6 @@ export const mapProduct = (res: ProductResponse[]): Product[] => {
         createdAt: dateFormat(product.createdAt),
         updatedAt: dateFormat(product.updatedAt),
         categoryName: product.categories.name,
+        text: product.text ?? '',
     }));
 };

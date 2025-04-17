@@ -11,7 +11,10 @@ export async function generateStaticParams() {
 
     const products = scope.getState(productModel.$products);
 
-    return products.map((product) => ({ alias: `${product.alias}` }));
+    return products.map((product) => ({
+        category: product.categories.alias,
+        product: product.alias,
+    }));
 }
 
 export default async function Page({
