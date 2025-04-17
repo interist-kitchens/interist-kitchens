@@ -22,7 +22,7 @@ export const Header: React.FC<React.PropsWithChildren> = ({ children }) => {
 
     return (
         <DefaultHeader
-            className="flex justify-between items-center !p-6 sticky top-0 z-[var(--sticky-layer) shadow-sm"
+            className="flex justify-between items-center !p-6 sticky top-0 z-[var(--sticky-layer) shadow-sm z-50"
             style={{ background: colorBgContainer }}
         >
             {children}
