@@ -8,6 +8,8 @@ import { UserInfo } from '@/widgets/userInfo/ui/Userinfo';
 import { Header as HeaderLayout } from '@/shared/ui/Layout';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/shared/constants/authOptions';
+import Link from 'next/link';
+import { paths } from '@/shared/routing';
 
 const MAIN_COMPANY_INFO = {
     homeUrl: 'https://interest-kitchen.ru',
@@ -20,12 +22,13 @@ export const Header: FC = async () => {
     return (
         <HeaderLayout>
             <Flex align={'center'} gap={32}>
-                <Image
-                    src={mainLogo}
-                    alt="interest-kitchen-logo"
-                    className="w-[120px] h-[48px]"
-                    priority
-                />
+                <Link href={paths.home} className="w-[120px] h-[48px]">
+                    <Image
+                        src={mainLogo}
+                        alt="interest-kitchen-logo"
+                        priority
+                    />
+                </Link>
                 <HeaderMenu />
             </Flex>
             <Flex justify={'end'} align={'center'} gap={24}>
