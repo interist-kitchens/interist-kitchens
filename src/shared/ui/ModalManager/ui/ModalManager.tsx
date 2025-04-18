@@ -35,6 +35,8 @@ export const ModalManager: FC = () => {
             open={modalState.isOpen}
             onOk={handleSubmit}
             onCancel={handleCancel}
+            okText={modalState.okText}
+            cancelText={modalState.cancelText}
         >
             {modalState?.content}
         </Modal>

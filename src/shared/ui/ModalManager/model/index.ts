@@ -9,6 +9,8 @@ type ModalState = {
     content?: ReactNode;
     onSubmit?(): void;
     onCancel?(): void;
+    okText?: string;
+    cancelText?: string;
 };
 
 export const modalModel = atom(() => {

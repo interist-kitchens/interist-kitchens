@@ -15,7 +15,7 @@ export const ProductDetail: FC<Props> = async ({ product }) => {
                     name={product.name}
                     price={product.price}
                     text={product.text}
-                    buttonsSlot={<SendOrderBtn />}
+                    buttonsSlot={<SendOrderBtn product={product} />}
                 />
             </div>
         </div>

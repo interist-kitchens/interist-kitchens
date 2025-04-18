@@ -4,8 +4,14 @@ import { FC } from 'react';
 import { Button } from 'antd';
 import { useUnit } from 'effector-react';
 import { modalModel } from '@/shared/ui/ModalManager';
+import { ProductOrderForm } from '@/entities/leads';
+import { Product } from '@/entities/products';
 
-export const SendOrderBtn: FC = () => {
+type Props = {
+    product: Product;
+};
+
+export const SendOrderBtn: FC<Props> = ({ product }) => {
     const [openModal] = useUnit([modalModel.openModal]);
 
     const handleOpenModal = () => {
@@ -14,7 +20,9 @@ export const SendOrderBtn: FC = () => {
             onSubmit: () => {
                 console.log('Submit form');
             },
-            content: <div>Callback modal content here...</div>,
+            okText: 'Отправить',
+            cancelText: 'Отменить',
+            content: <ProductOrderForm product={product} />,
         });
     };
 
