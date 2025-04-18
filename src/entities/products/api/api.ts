@@ -12,6 +12,7 @@ export const getProducts = async (): Promise<Product[]> => {
             categories: {
                 select: {
                     name: true,
+                    alias: true,
                 },
             },
         },
@@ -27,6 +28,7 @@ export const getProduct = async (id: string): Promise<Product | null> => {
             categories: {
                 select: {
                     name: true,
+                    alias: true,
                 },
             },
         },
@@ -35,12 +37,45 @@ export const getProduct = async (id: string): Promise<Product | null> => {
     if (product) {
         return {
             ...product,
-            id: String(id),
+            id: String(product.id),
             createdAt: dateFormat(product.createdAt),
             updatedAt: dateFormat(product.updatedAt),
             metaTitle: product.metaTitle,
             metaDescription: product.metaDescription,
             categoryName: product.categories.name,
+            text: product.text ?? '',
+        };
+    }
+
+    return null;
+};
+
+export const getProductByAlias = async (
+    alias: string
+): Promise<Product | null> => {
+    const product = await prisma.product.findUnique({
+        where: { alias: alias },
+        include: {
+            categories: {
+                select: {
+                    name: true,
+                    alias: true,
+                },
+            },
+        },
+    });
+
+    if (product) {
+        return {
+            ...product,
+            id: String(product.id),
+            createdAt: dateFormat(product.createdAt),
+            updatedAt: dateFormat(product.updatedAt),
+            metaTitle: product.metaTitle,
+            metaDescription: product.metaDescription,
+            categoryName: product.categories.name,
+            text: product.text ?? '',
+            images: [product.image, ...product.images],
         };
     }
 

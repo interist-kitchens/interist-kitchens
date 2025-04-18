@@ -4,7 +4,6 @@ import { FC, PropsWithChildren } from 'react';
 import { EffectorNext } from '@effector/next';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { ConfigProvider } from 'antd';
-import { SessionProvider } from 'next-auth/react';
 import { ModalManager } from '@/shared/ui/ModalManager/ui/ModalManager';
 
 export const Providers: FC<PropsWithChildren> = ({ children }) => {
@@ -21,13 +20,8 @@ export const Providers: FC<PropsWithChildren> = ({ children }) => {
                         },
                     }}
                 >
-                    <SessionProvider
-                        refetchInterval={5 * 60}
-                        refetchOnWindowFocus
-                    >
-                        {children}
-                        <ModalManager />
-                    </SessionProvider>
+                    {children}
+                    <ModalManager />
                 </ConfigProvider>
             </AntdRegistry>
         </EffectorNext>

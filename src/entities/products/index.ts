@@ -1,3 +1,5 @@
 export * from './api';
-export { ProductList } from './ui/ProductList';
-export { ProductDetail } from './ui/ProductDetail';
+export { ProductAdminList } from './ui/ProductAdminList';
+export { ProductAdminDetail } from './ui/ProductAdminDetail';
+export { ProductSlider } from './ui/ProductSlider';
+export { ProductCard } from './ui/ProductCard';

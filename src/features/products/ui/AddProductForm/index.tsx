@@ -3,17 +3,22 @@
 import { FC, useEffect, useState } from 'react';
 import {
     Button,
+    Col,
     Flex,
     Form,
     FormProps,
     Input,
     message,
+    Row,
     Select,
     Upload,
-    UploadFile,
 } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { appendFieldsToFormData, transliterateToSlug } from '@/shared/lib';
+import {
+    appendFieldsToFormData,
+    mockUploadFunc,
+    transliterateToSlug,
+} from '@/shared/lib';
 import { useUnit } from 'effector-react/compat';
 import { Categories } from '@/entities/categories';
 import { useRouter } from 'next/navigation';
@@ -21,16 +26,9 @@ import { normFile, uploadProps } from '@/features/categories/lib';
 import { WysiwygEditor } from '@/shared/ui/WysiwygEditor';
 import { paths } from '@/shared/routing';
 import { productCreateAdminModel } from '@/entities/products/model';
+import { FormFieldType } from '@/entities/products';
 
-type FieldType = {
-    name: string;
-    metaTitle?: string;
-    metaDescription?: string;
-    text?: string;
-    image?: UploadFile;
-    alias: string;
-    categoryId: string;
-};
+const { Item: FormItem } = Form;
 
 type Props = {
     categories: Categories[];
@@ -47,7 +45,7 @@ export const AddProductForm: FC<Props> = ({ categories }) => {
         productCreateAdminModel.reset,
     ]);
 
-    const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+    const onFinish: FormProps<FormFieldType>['onFinish'] = async (values) => {
         const formData = new FormData();
 
         const appendedValues = {
@@ -55,10 +53,14 @@ export const AddProductForm: FC<Props> = ({ categories }) => {
             metaTitle: values.metaTitle ?? '',
             metaDescription: values.metaDescription ?? '',
             text: textDescription,
-            image: values.image?.originFileObj ?? '',
-            imageName: values.image?.name ?? '',
+            image: values.image?.[0]?.originFileObj ?? '',
             alias: values.alias ?? transliterateToSlug(values.name),
             categoryId: values.categoryId,
+            images:
+                values?.images
+                    ?.map((file) => file.originFileObj)
+                    .filter((file) => typeof file !== 'undefined') ?? [],
+            price: values.price,
         };
 
         appendFieldsToFormData(formData, appendedValues);
@@ -88,49 +90,88 @@ export const AddProductForm: FC<Props> = ({ categories }) => {
             onFinish={onFinish}
             autoComplete="off"
         >
-            <Flex align={'center'} gap={10} justify={'space-between'}>
-                <Form.Item<FieldType>
-                    label="Название товара"
-                    name="name"
-                    rules={[{ required: true, message: 'Введите название' }]}
-                    className={'w-full'}
-                >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item<FieldType>
-                    label="URL алиас"
-                    name="alias"
-                    rules={[
-                        {
-                            pattern: /^[a-zA-Z0-9-]+$/,
-                            message: 'Допустима только латиница и символы -',
-                        },
-                    ]}
-                    className={'w-full'}
-                >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item
-                    name="image"
-                    label="Картинка"
-                    valuePropName="image"
-                    getValueFromEvent={normFile}
-                >
-                    <Upload
-                        name="image"
-                        listType="picture"
-                        multiple={false}
-                        {...uploadProps}
+            <Row gutter={16}>
+                <Col span={12}>
+                    <FormItem<FormFieldType>
+                        label="Название товара"
+                        name="name"
+                        rules={[
+                            { required: true, message: 'Введите название' },
+                        ]}
+                        className={'w-full'}
                     >
-                        <Button icon={<UploadOutlined />}>Загрузить</Button>
-                    </Upload>
-                </Form.Item>
-            </Flex>
+                        <Input />
+                    </FormItem>
+
+                    <FormItem<FormFieldType>
+                        label="URL алиас"
+                        name="alias"
+                        rules={[
+                            {
+                                pattern: /^[a-zA-Z0-9-]+$/,
+                                message:
+                                    'Допустима только латиница и символы -',
+                            },
+                        ]}
+                        className={'w-full'}
+                    >
+                        <Input />
+                    </FormItem>
+
+                    <FormItem<FormFieldType>
+                        label="Цена"
+                        name="price"
+                        rules={[{ required: true, message: 'Введите цену' }]}
+                        className={'w-full'}
+                    >
+                        <Input />
+                    </FormItem>
+                </Col>
+
+                <Col span={12}>
+                    <FormItem<FormFieldType>
+                        name="image"
+                        label="Главная картинка"
+                        valuePropName="image"
+                        getValueFromEvent={normFile}
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Выберите основную картинку',
+                            },
+                        ]}
+                    >
+                        <Upload
+                            name="image"
+                            listType="picture"
+                            maxCount={1}
+                            customRequest={mockUploadFunc}
+                            {...uploadProps}
+                        >
+                            <Button icon={<UploadOutlined />}>Загрузить</Button>
+                        </Upload>
+                    </FormItem>
+
+                    <FormItem<FormFieldType>
+                        name="images"
+                        label="Доп. картинки"
+                        valuePropName="images"
+                        getValueFromEvent={normFile}
+                    >
+                        <Upload
+                            name="images[]"
+                            listType="picture"
+                            customRequest={mockUploadFunc}
+                            {...uploadProps}
+                        >
+                            <Button icon={<UploadOutlined />}>Загрузить</Button>
+                        </Upload>
+                    </FormItem>
+                </Col>
+            </Row>
 
             <Flex justify={'space-between'} gap={10}>
-                <Form.Item<FieldType>
+                <FormItem<FormFieldType>
                     label="Выберите категорию"
                     name="categoryId"
                     className={'w-full'}
@@ -147,34 +188,34 @@ export const AddProductForm: FC<Props> = ({ categories }) => {
                             label: category.name,
                         }))}
                     />
-                </Form.Item>
+                </FormItem>
 
-                <Form.Item<FieldType>
+                <FormItem<FormFieldType>
                     label="Meta Title"
                     name="metaTitle"
                     className={'w-full'}
                 >
                     <Input />
-                </Form.Item>
+                </FormItem>
 
-                <Form.Item<FieldType>
+                <FormItem<FormFieldType>
                     label="Meta Description"
                     name="metaDescription"
                     className={'w-full'}
                 >
                     <Input />
-                </Form.Item>
+                </FormItem>
             </Flex>
 
-            <Form.Item<FieldType> label="Описание" name="text">
+            <FormItem<FormFieldType> label="Описание" name="text">
                 <WysiwygEditor setContent={setTextDescription} />
-            </Form.Item>
+            </FormItem>
 
-            <Form.Item label={null}>
+            <FormItem label={null}>
                 <Button type="primary" htmlType="submit" loading={loading}>
                     Отправить
                 </Button>
-            </Form.Item>
+            </FormItem>
         </Form>
     );
 };

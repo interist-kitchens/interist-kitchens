@@ -6,7 +6,7 @@ import { EditProductForm } from '@/features/products';
 import { Categories } from '@/entities/categories';
 
 type Props = {
-    product: Product | null;
+    product: Product;
     categories: Categories[];
 };
 
