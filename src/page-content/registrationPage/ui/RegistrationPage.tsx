@@ -1,8 +1,11 @@
+'use client';
+
 import { RegistrationForm } from '@/widgets/auth/ui/RegistrationForm';
 import { NextPage } from 'next';
 import { Flex } from 'antd';
+import { withSessionProvider } from '@/shared/HOC';
 
-export const RegistrationPage: NextPage = () => {
+export const RegistrationPage: NextPage = withSessionProvider(() => {
     return (
         <Flex
             justify={'center'}
@@ -13,4 +16,4 @@ export const RegistrationPage: NextPage = () => {
             <RegistrationForm />
         </Flex>
     );
-};
+});

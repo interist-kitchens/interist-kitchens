@@ -40,17 +40,40 @@ model Category {
 }
 
 model Product {
-  id              Int     @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
   name            String
   metaTitle       String?
   metaDescription String?
   text            String?
-  image           String?
-  alias           String  @unique
+  image           String
+  images          String[]
+  alias           String   @unique
+  price           String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   categories Category @relation(fields: [categoryId], references: [id])
   categoryId Int
+
+  colors ColorsOnProducts[]
+}
+
+model Color {
+  id    Int    @id @default(autoincrement())
+  name  String
+  image String
+
+  products ColorsOnProducts[]
+}
+
+model ColorsOnProducts {
+  color      Color    @relation(fields: [colorId], references: [id])
+  colorId    Int
+  product    Product  @relation(fields: [productId], references: [id])
+  productId  Int
+  assignedAt DateTime @default(now())
+  assignedBy String
+
+  @@id([colorId, productId])
 }

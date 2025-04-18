@@ -2,12 +2,12 @@ import { NextPage } from 'next';
 import { Flex } from 'antd';
 import { Title } from '@/shared/ui/Typography';
 import Link from 'next/link';
-import { Product, ProductDetail } from '@/entities/products';
+import { Product, ProductAdminDetail } from '@/entities/products';
 import { ProductAdminLayout } from '@/widgets/layouts/productAdminLayout';
 import { paths } from '@/shared/routing';
 
 type Props = {
-    product: Product | null;
+    product: Product;
 };
 
 export const ProductDetailAdminPage: NextPage<Props> = ({ product }) => {
@@ -22,7 +22,7 @@ export const ProductDetailAdminPage: NextPage<Props> = ({ product }) => {
                 </Flex>
             }
         >
-            <ProductDetail product={product} />
+            <ProductAdminDetail product={product} />
         </ProductAdminLayout>
     );
 };

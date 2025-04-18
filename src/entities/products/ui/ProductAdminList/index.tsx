@@ -60,7 +60,7 @@ const columns: TableProps<DataType>['columns'] = [
     },
 ];
 
-export const ProductList: FC<Props> = ({ products }) => {
+export const ProductAdminList: FC<Props> = ({ products }) => {
     const router = useRouter();
 
     const [isSuccess, reset] = useUnit([

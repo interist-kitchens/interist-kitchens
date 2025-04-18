@@ -4,6 +4,6 @@ export const getPrismaTypeError = (errorCode: string) => {
         case 'P2002':
             return 'Алиас уже занят. Введите другой';
         default:
-            return 'Ошибка запроса на добавление категории. Попробуйте позже.';
+            return 'Ошибка запроса на добавление. Попробуйте позже.';
     }
 };

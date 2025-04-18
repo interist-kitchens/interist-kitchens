@@ -1,8 +1,11 @@
+'use client';
+
 import { NextPage } from 'next';
 import { LoginForm } from '@/widgets/auth/ui/LoginForm';
 import { Flex } from 'antd';
+import { withSessionProvider } from '@/shared/HOC';
 
-export const LoginPage: NextPage = () => {
+export const LoginPage: NextPage = withSessionProvider(() => {
     return (
         <Flex
             justify={'center'}
@@ -13,4 +16,4 @@ export const LoginPage: NextPage = () => {
             <LoginForm />
         </Flex>
     );
-};
+});
