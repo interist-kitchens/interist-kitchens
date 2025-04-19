@@ -17,7 +17,7 @@ export const SendOrderBtn: FC<Props> = ({ product }) => {
     const handleOpenModal = () => {
         openModal({
             type: 'productOrder',
-            onSubmit: () => {
+            onOk: () => {
                 console.log('Submit form');
             },
             okText: 'Отправить',
