@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { FormType } from '@/entities/leads/api';
 import nodemailer from 'nodemailer';
+import { prisma } from '@/shared/prisma/prisma-client';
 
 export async function POST(request: Request) {
     if (!process.env.DATABASE_URL) {
@@ -12,6 +13,13 @@ export async function POST(request: Request) {
 
     try {
         const formData = (await request.json()) as FormType;
+
+        const order = await prisma.order.create({
+            data: {
+                productId: parseInt(formData.product.id),
+                userId: formData.user ? formData.user.id : null,
+            },
+        });
 
         const transporter = nodemailer.createTransport({
             host: process.env.NEXT_PUBLIC_YANDEX_SMTP_HOST,
@@ -43,7 +51,10 @@ export async function POST(request: Request) {
             await transporter.sendMail(messageForUser);
         }
 
-        return NextResponse.json({ status: 'success send' }, { status: 200 });
+        return NextResponse.json(
+            { status: 'success send', order },
+            { status: 200 }
+        );
     } catch (error) {
         return NextResponse.json(error, { status: 500 });
     }

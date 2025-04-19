@@ -6,21 +6,23 @@ import { Product } from '@/entities/products';
 import Image from 'next/image';
 import { Text } from '@/shared/ui/Typography';
 import { FormType } from '@/entities/leads/api';
+import { User } from 'next-auth';
 
 const { Item: FormItem } = Form;
 
 type Props = {
     product: Product;
+    user?: User;
 };
 
-export const ProductOrderForm: FC<Props> = ({ product }) => {
+export const ProductOrderForm: FC<Props> = ({ product, user }) => {
     const [submitForm, loading] = useUnit([
         productOrderFormModel.submitForm,
         productOrderFormModel.$pending,
     ]);
 
     const onFinish: FormProps<FormType>['onFinish'] = (values) => {
-        submitForm(values);
+        submitForm({ ...values, product, user });
     };
 
     return (
@@ -35,13 +37,6 @@ export const ProductOrderForm: FC<Props> = ({ product }) => {
                 <Text>{product.name}</Text>
             </Flex>
             <Form onFinish={onFinish}>
-                <FormItem<FormType>
-                    name={'product'}
-                    initialValue={product}
-                    className={'hidden'}
-                >
-                    <Input />
-                </FormItem>
                 <Row>
                     <Col span={24}>
                         <FormItem<FormType>
@@ -49,6 +44,7 @@ export const ProductOrderForm: FC<Props> = ({ product }) => {
                             rules={[
                                 { required: true, message: 'Заполните имя' },
                             ]}
+                            initialValue={user ? user.name : ''}
                         >
                             <Input placeholder={'Ваше имя'} />
                         </FormItem>
@@ -64,6 +60,7 @@ export const ProductOrderForm: FC<Props> = ({ product }) => {
                                 },
                             ]}
                             name={'mail'}
+                            initialValue={user ? user.email : ''}
                         >
                             <Input placeholder={'Ваш e-mail'} />
                         </FormItem>
