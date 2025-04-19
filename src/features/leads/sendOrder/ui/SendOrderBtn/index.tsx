@@ -4,17 +4,23 @@ import { FC } from 'react';
 import { Button } from 'antd';
 import { useUnit } from 'effector-react';
 import { modalModel } from '@/shared/ui/ModalManager';
+import { ProductOrderForm } from '@/entities/leads';
+import { Product } from '@/entities/products';
+import { User } from 'next-auth';
 
-export const SendOrderBtn: FC = () => {
+type Props = {
+    product: Product;
+    user?: User;
+};
+
+export const SendOrderBtn: FC<Props> = ({ product, user }) => {
     const [openModal] = useUnit([modalModel.openModal]);
 
     const handleOpenModal = () => {
         openModal({
             type: 'productOrder',
-            onOk: () => {
-                console.log('Submit form');
-            },
-            content: <div>Callback modal content here...</div>,
+            content: <ProductOrderForm product={product} user={user} />,
+            footer: null,
         });
     };
 

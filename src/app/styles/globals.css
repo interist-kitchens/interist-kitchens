@@ -5,6 +5,7 @@
 :root {
     --background: #ffffff;
     --foreground: #171717;
+    --primary-color: #5e94b9;
     --hover-default: rgb(133, 175, 199);
     --background-layer: -1;
     --default-layer: 0;

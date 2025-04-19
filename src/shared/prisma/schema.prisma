@@ -15,6 +15,8 @@ model User {
   image    String?
   role     UserRole @default(USER)
 
+  order Order?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -57,6 +59,7 @@ model Product {
   categoryId Int
 
   colors ColorsOnProducts[]
+  order  Order[]
 }
 
 model Color {
@@ -76,4 +79,24 @@ model ColorsOnProducts {
   assignedBy String
 
   @@id([colorId, productId])
+}
+
+model Order {
+  id     Int         @id @default(autoincrement())
+  status OrderStatus @default(PENDING)
+
+  products  Product @relation(fields: [productId], references: [id])
+  productId Int
+
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String? @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum OrderStatus {
+  PENDING
+  FINISHED
+  CANCELED
 }
