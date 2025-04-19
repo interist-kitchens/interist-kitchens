@@ -32,8 +32,8 @@ export async function POST(request: Request) {
         });
 
         const messageForShop = {
-            from: 'interist-kitchens@yandex.ru',
-            to: 'interist-kitchens@yandex.ru',
+            from: process.env.NEXT_PUBLIC_SITE_EMAIL,
+            to: process.env.NEXT_PUBLIC_SITE_EMAIL,
             subject: 'Заказ',
             html: `Заказ товара: <a href="${formData.product?.alias}" target="_blank">${formData.product?.name}</a>. Имя: ${formData.name}. Номер телефона: ${formData.phone}`,
         };
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
 
         if (formData.mail) {
             const messageForUser = {
-                from: 'interist-kitchens@yandex.ru',
+                from: process.env.NEXT_PUBLIC_SITE_EMAIL,
                 to: formData.mail,
                 subject: 'Заказ c сайта Interist Kitchens',
                 html: `Спасибо за заказ! С Вами свяжутся в ближайшее время. Заказанный товар: <a href="${formData.product?.alias}" target="_blank">${formData.product?.name}</a>`,
