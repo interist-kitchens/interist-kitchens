@@ -37,6 +37,7 @@ export const ModalManager: FC = () => {
             onCancel={handleCancel}
             okText={modalState.okText}
             cancelText={modalState.cancelText}
+            destroyOnClose
         >
             {modalState?.content}
         </Modal>

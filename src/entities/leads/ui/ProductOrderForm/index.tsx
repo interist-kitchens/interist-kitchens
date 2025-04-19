@@ -1,29 +1,25 @@
 import { FC } from 'react';
-import { Col, Flex, Form, FormProps, Input, Row } from 'antd';
+import { Button, Col, Flex, Form, FormProps, Input, Row } from 'antd';
 import { useUnit } from 'effector-react';
 import { productOrderFormModel } from '@/entities/leads/model';
 import { Product } from '@/entities/products';
 import Image from 'next/image';
 import { Text } from '@/shared/ui/Typography';
+import { FormType } from '@/entities/leads/api';
 
 const { Item: FormItem } = Form;
-
-export type FormType = {
-    productId: string;
-    name: string;
-    mail: string;
-    phone: string;
-};
 
 type Props = {
     product: Product;
 };
 
 export const ProductOrderForm: FC<Props> = ({ product }) => {
-    const [submitForm] = useUnit([productOrderFormModel.submitForm]);
+    const [submitForm, loading] = useUnit([
+        productOrderFormModel.submitForm,
+        productOrderFormModel.$pending,
+    ]);
 
     const onFinish: FormProps<FormType>['onFinish'] = (values) => {
-        console.log(values);
         submitForm(values);
     };
 
@@ -40,15 +36,20 @@ export const ProductOrderForm: FC<Props> = ({ product }) => {
             </Flex>
             <Form onFinish={onFinish}>
                 <FormItem<FormType>
-                    name={'productId'}
-                    initialValue={product.id}
+                    name={'product'}
+                    initialValue={product}
                     className={'hidden'}
                 >
                     <Input />
                 </FormItem>
                 <Row>
                     <Col span={24}>
-                        <FormItem<FormType> name={'name'}>
+                        <FormItem<FormType>
+                            name={'name'}
+                            rules={[
+                                { required: true, message: 'Заполните имя' },
+                            ]}
+                        >
                             <Input placeholder={'Ваше имя'} />
                         </FormItem>
                     </Col>
@@ -56,18 +57,54 @@ export const ProductOrderForm: FC<Props> = ({ product }) => {
                 <Row gutter={16}>
                     <Col span={12}>
                         <FormItem<FormType>
-                            rules={[{ type: 'email' }]}
+                            rules={[
+                                {
+                                    type: 'email',
+                                    message: 'E-mail введен не верно',
+                                },
+                            ]}
                             name={'mail'}
                         >
                             <Input placeholder={'Ваш e-mail'} />
                         </FormItem>
                     </Col>
                     <Col span={12}>
-                        <FormItem<FormType> name={'phone'}>
-                            <Input addonBefore={'+7'} placeholder={'Телефон'} />
+                        <FormItem<FormType>
+                            name={'phone'}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Заполните телефон',
+                                },
+                                {
+                                    min: 10,
+                                    message: 'Телефон введен не верно',
+                                },
+                                {
+                                    max: 10,
+                                    message: 'Телефон введен не верно',
+                                },
+                            ]}
+                        >
+                            <Input
+                                addonBefore={'+7'}
+                                placeholder={'Телефон'}
+                                count={{ max: 10 }}
+                            />
                         </FormItem>
                     </Col>
                 </Row>
+                <FormItem>
+                    <Button
+                        type={'primary'}
+                        htmlType={'submit'}
+                        className={'w-full'}
+                        size={'large'}
+                        loading={loading}
+                    >
+                        Отправить
+                    </Button>
+                </FormItem>
             </Form>
         </Flex>
     );

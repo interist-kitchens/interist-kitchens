@@ -12,10 +12,12 @@ const config: Config = {
             colors: {
                 background: 'var(--background)',
                 foreground: 'var(--foreground)',
+                primaryColor: 'var(--primaryColor)',
             },
         },
         token: {
             headerBg: 'var(--background)',
+            primaryColor: 'var(--primaryColor)',
         },
     },
     plugins: [],
