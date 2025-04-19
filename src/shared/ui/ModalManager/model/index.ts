@@ -2,20 +2,18 @@ import type { ReactNode } from 'react';
 import { createEvent, createStore, sample } from 'effector';
 import type { ModalType } from '@/shared/constants/modals';
 import { atom } from '@/shared/factory/atom';
+import type { ModalProps } from "antd/es/modal/interface";
 
-type ModalState = {
-    isOpen: boolean;
+type ModalState = ModalProps & {
     type?: ModalType;
     content?: ReactNode;
-    onSubmit?(): void;
-    onCancel?(): void;
 };
 
 export const modalModel = atom(() => {
     const openModal = createEvent<Omit<ModalState, 'isOpen'>>();
     const closeModal = createEvent();
 
-    const $modalState = createStore<ModalState>({ isOpen: false }).reset(
+    const $modalState = createStore<ModalState>({ open: false }).reset(
         closeModal
     );
 
@@ -23,7 +21,7 @@ export const modalModel = atom(() => {
         clock: openModal,
         filter: (payload) => !!payload?.type,
         fn: (payload) => ({
-            isOpen: true,
+            open: true,
             ...payload,
         }),
         target: $modalState,

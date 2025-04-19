@@ -11,7 +11,7 @@ export const SendOrderBtn: FC = () => {
     const handleOpenModal = () => {
         openModal({
             type: 'productOrder',
-            onSubmit: () => {
+            onOk: () => {
                 console.log('Submit form');
             },
             content: <div>Callback modal content here...</div>,

@@ -16,23 +16,23 @@ export const ModalManager: FC = () => {
         ? MODAL_TITLES[modalState?.type]
         : undefined;
 
-    const handleSubmit = () => {
-        if (modalState?.onSubmit) {
-            modalState.onSubmit();
+    const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+        if (modalState?.onOk) {
+            modalState.onOk(e);
         }
         closeModal();
     };
-    const handleCancel = () => {
+    const handleCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
         if (modalState?.onCancel) {
-            modalState.onCancel();
+            modalState.onCancel(e);
         }
         closeModal();
     };
 
     return (
         <Modal
+            {...modalState}
             title={modalTitle}
-            open={modalState.isOpen}
             onOk={handleSubmit}
             onCancel={handleCancel}
         >
