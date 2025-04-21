@@ -1,3 +1,5 @@
+import { Product } from '@/entities/products';
+
 export type CategoriesResponse = {
     id: number;
     name: string;
@@ -20,6 +22,7 @@ export type Categories = {
     updatedAt: string;
     metaTitle?: string | null;
     metaDescription?: string | null;
+    products?: Product[];
 };
 
 export type UploadFile = {

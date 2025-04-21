@@ -6,7 +6,11 @@ import { prisma } from '@/shared/prisma/prisma-client';
 import { dateFormat } from '@/shared/lib';
 
 export const getCategories = async (): Promise<Categories[]> => {
-    const categories = await prisma.category.findMany();
+    const categories = await prisma.category.findMany({
+        include: {
+            products: true,
+        },
+    });
 
     return mapCategories(categories);
 };
