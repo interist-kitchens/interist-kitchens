@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { FormType } from '@/entities/leads/api';
+import { OrderProjectFormType } from '@/entities/leads/api';
 import nodemailer from 'nodemailer';
 import { prisma } from '@/shared/prisma/prisma-client';
 
@@ -12,12 +12,10 @@ export async function POST(request: Request) {
     }
 
     try {
-        const formData = (await request.json()) as FormType;
+        const formData = (await request.json()) as OrderProjectFormType;
 
-        const order = await prisma.order.create({
+        const order = await prisma.callback.create({
             data: {
-                productId: parseInt(formData.product.id),
-                userId: formData.user ? formData.user.id : null,
                 name: formData.name,
                 phone: formData.phone,
                 mail: formData?.mail,
@@ -37,8 +35,8 @@ export async function POST(request: Request) {
         const messageForShop = {
             from: process.env.NEXT_PUBLIC_SITE_EMAIL,
             to: process.env.NEXT_PUBLIC_SITE_EMAIL,
-            subject: 'Заказ',
-            html: `Заказ товара: <a href="${formData.product?.alias}" target="_blank">${formData.product?.name}</a>. Имя: ${formData.name}. Номер телефона: ${formData.phone}`,
+            subject: 'Заказ проекта',
+            text: `Имя: ${formData.name}. Номер телефона: ${formData.phone}`,
         };
 
         await transporter.sendMail(messageForShop);
@@ -47,8 +45,8 @@ export async function POST(request: Request) {
             const messageForUser = {
                 from: process.env.NEXT_PUBLIC_SITE_EMAIL,
                 to: formData.mail,
-                subject: 'Заказ c сайта Interist Kitchens',
-                html: `Спасибо за заказ! С Вами свяжутся в ближайшее время. Заказанный товар: <a href="${formData.product?.alias}" target="_blank">${formData.product?.name}</a>`,
+                subject: 'Заказ звонка c сайта Interist Kitchens',
+                text: `С Вами свяжутся в ближайшее время.`,
             };
 
             await transporter.sendMail(messageForUser);

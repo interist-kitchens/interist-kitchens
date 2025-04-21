@@ -2,16 +2,11 @@ import { FC } from 'react';
 import Image from 'next/image';
 import banner from '@/app/assets/1-d-1x.webp';
 import { Title } from '@/shared/ui/Typography';
-import { Button, Divider, Typography } from 'antd';
+import { Divider, Typography } from 'antd';
 import { PROCESS_CONFIG } from '@/widgets/mainPageProcessBlock/config/constants';
+import { SendOrderProjectBtn } from '@/features/leads/orderProject';
 
 export const ProcessBlock: FC = () => {
-    //TODO Заменить на фичу заказать проект в модальном окне
-    const handleClick = async () => {
-        'use server';
-        console.log('open modal');
-    };
-
     return (
         <div className={'container mx-auto flex flex-col gap-y-10 sm:gap-y-20'}>
             <div className={'w-full'}>
@@ -33,13 +28,7 @@ export const ProcessBlock: FC = () => {
                         Пять простых этапов в сопровождении персонального
                         дизайнера
                     </Typography>
-                    <Button
-                        type={'primary'}
-                        onClick={handleClick}
-                        size={'large'}
-                    >
-                        Заказать проект
-                    </Button>
+                    <SendOrderProjectBtn />
                 </div>
                 <div className={'flex flex-col sm:col-span-2'}>
                     {PROCESS_CONFIG.map((item, index) => (
