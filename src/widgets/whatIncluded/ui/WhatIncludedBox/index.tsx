@@ -5,7 +5,7 @@ import { IncludedItem } from '@/widgets/whatIncluded/ui/IncludedItem';
 
 export const WhatIncludedBox: FC = () => {
     return (
-        <div className={'container mx-auto p-14 bg-gray-200'}>
+        <div className={'container mx-auto p-14 bg-white'}>
             <Title level={2} className={'text-2xl'}>
                 Что входит в стоимость кухни
             </Title>
