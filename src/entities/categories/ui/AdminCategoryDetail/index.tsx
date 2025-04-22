@@ -7,7 +7,7 @@ type Props = {
     category: Categories | null;
 };
 
-export const CategoryDetail: FC<Props> = ({ category }) => {
+export const AdminCategoryDetail: FC<Props> = ({ category }) => {
     return (
         <Flex vertical gap={24}>
             <div className={'flex justify-between bg-white p-2 rounded-md'}>

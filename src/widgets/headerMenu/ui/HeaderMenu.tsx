@@ -2,12 +2,14 @@
 
 import React, { useState } from 'react';
 import { Menu, type MenuProps } from 'antd';
+import Link from 'next/link';
+import { paths } from '@/shared/routing';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
 const items: MenuItem[] = [
     {
-        label: 'Каталог',
+        label: <Link href={paths.catalog}>Каталог</Link>,
         key: 'catalog',
         className: 'font-bold',
     },

@@ -3,7 +3,7 @@ import { Flex } from 'antd';
 import { Title } from '@/shared/ui/Typography';
 import Link from 'next/link';
 import { paths } from '@/shared/routing';
-import { Categories, CategoryDetail } from '@/entities/categories';
+import { AdminCategoryDetail, Categories } from '@/entities/categories';
 import { CategoryAdminLayout } from '@/widgets/layouts';
 
 type Props = {
@@ -24,7 +24,7 @@ export const CategoryDetailAdminPage: NextPage<Props> = ({ category }) => {
                 </Flex>
             }
         >
-            <CategoryDetail category={category} />
+            <AdminCategoryDetail category={category} />
         </CategoryAdminLayout>
     );
 };

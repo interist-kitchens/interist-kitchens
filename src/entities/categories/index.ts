@@ -1,4 +1,5 @@
 export * from './api';
-export { CategoryList } from './ui/CategoryList';
-export { CategoryDetail } from './ui/CategoryDetail';
+export { AdminCategoryList } from './ui/AdminCategoryList';
+export { AdminCategoryDetail } from './ui/AdminCategoryDetail';
+export { CatalogItem } from './ui/CatalogItem';
 export * from './model';

@@ -54,7 +54,7 @@ const columns: TableProps<DataType>['columns'] = [
     },
 ];
 
-export const CategoryList: FC<Props> = ({ categories }) => {
+export const AdminCategoryList: FC<Props> = ({ categories }) => {
     const router = useRouter();
 
     const [isSuccess, reset] = useUnit([
