@@ -40,7 +40,7 @@ export const Footer: React.FC<React.PropsWithChildren> = ({ children }) => {
     } = theme.useToken();
     return (
         <DefaultFooter
-            className="flex justify-between items-center p-6 mt-10"
+            className="sm:mt-10"
             style={{ background: colorBgContainer }}
         >
             {children}
