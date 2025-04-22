@@ -5,8 +5,10 @@ import videoMp4 from '@/app/assets/video/promo.mp4';
 
 export const VideoBlock: FC = () => {
     return (
-        <div className={'container mx-auto'}>
-            <Title level={2}>Премиальное качество</Title>
+        <div className={'mx-auto'}>
+            <Title level={2} className={'container mx-auto'}>
+                Премиальное качество
+            </Title>
             <video loop autoPlay playsInline muted preload="auto">
                 <source src={video} type="video/webm" />
                 <source src={videoMp4} type="video/mp4" />
