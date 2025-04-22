@@ -1,12 +1,13 @@
 import { FC } from 'react';
 import { Title } from '@/shared/ui/Typography';
-import { Button, Divider, Typography } from 'antd';
+import { Divider, Typography } from 'antd';
 import { ADVANTAGE_CONFIG } from '@/widgets/mainPageAdvantages/config/constants';
 import Image from 'next/image';
+import { SendOrderProjectBtn } from '@/features/leads/orderProject';
 
 export const Advantages: FC = () => {
     return (
-        <div className={'bg-gray-200'}>
+        <div className={'bg-white'}>
             <div
                 className={
                     'container mx-auto px-10 sm:px-0 py-8 sm:py-16 grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-10'
@@ -14,14 +15,12 @@ export const Advantages: FC = () => {
             >
                 <div>
                     <Title level={2}>Почему нас выбирают</Title>
-                    <Typography>
+                    <Typography className={'mb-4'}>
                         С нами вы сможете с легкостью подобрать идеальную кухню
                         для своего дома, а профессиональные дизайнеры создадут
                         индивидуальный проект, учитывая все пожелания
                     </Typography>
-                    <Button type={'primary'} size={'large'} className={'mt-8'}>
-                        Заказать проект
-                    </Button>
+                    <SendOrderProjectBtn />
                 </div>
                 <div className={'flex flex-col'}>
                     {ADVANTAGE_CONFIG.map((item, index) => (

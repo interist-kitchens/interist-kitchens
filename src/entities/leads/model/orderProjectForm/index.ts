@@ -6,9 +6,9 @@ import { modalModel } from '@/shared/ui/ModalManager';
 
 export const orderProjectFormModel = atom(() => {
     const submitForm = sendOrderProject.start;
-    const rest = sendOrderProject.reset;
 
     const $pending = sendOrderProject.$pending;
+    const $isSuccess = sendOrderProject.$succeeded;
 
     sample({
         clock: sendOrderProject.$failed,
@@ -22,10 +22,10 @@ export const orderProjectFormModel = atom(() => {
         filter: Boolean,
         fn: passMessageArgs({
             type: 'success',
-            content: 'Заказ успешно отправлен',
+            content: 'Заказ звонка успешно отправлен',
         }),
         target: [messageModel.open, modalModel.closeModal],
     });
 
-    return { submitForm, $pending, rest };
+    return { submitForm, $pending, $isSuccess };
 });

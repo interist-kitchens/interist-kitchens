@@ -19,10 +19,10 @@ export default async function Home() {
                     <MainProductCarousel />
                 </Suspense>
                 <WhatIncludedBox />
-                <Advantages />
                 <ProcessBlock />
-                <PayDeliveryBlock />
                 <VideoBlock />
+                <Advantages />
+                <PayDeliveryBlock />
                 <CallbackForm />
             </Flex>
         </MainLayout>
