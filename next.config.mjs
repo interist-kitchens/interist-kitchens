@@ -6,9 +6,9 @@ const nextConfig = {
     },
     transpilePackages: [
         'rc-util',
-        "rc-picker",
-        "rc-pagination",
-        "@ant-design/icons-svg"
+        'rc-picker',
+        'rc-pagination',
+        '@ant-design/icons-svg',
     ],
     images: {
         remotePatterns: [

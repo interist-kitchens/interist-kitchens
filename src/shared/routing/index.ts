@@ -7,5 +7,6 @@ export const paths = {
     categoriesAdminCreate: '/admin/categories/create',
     productsAdmin: '/admin/products',
     productsAdminCreate: '/admin/products/create',
-    catalog: '/catalog'
+    catalog: '/catalog',
+    sliderAdmin: '/admin/slider',
 };
