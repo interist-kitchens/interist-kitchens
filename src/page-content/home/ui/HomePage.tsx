@@ -6,6 +6,7 @@ import { WhatIncludedBox } from '@/widgets/whatIncluded';
 import { Advantages } from '@/widgets/mainPageAdvantages';
 import { ProcessBlock } from '@/widgets/mainPageProcessBlock';
 import { Flex, Spin } from 'antd';
+import { PayDeliveryBlock } from '@/widgets/mainPayDelivery';
 
 export default async function Home() {
     return (
@@ -18,6 +19,7 @@ export default async function Home() {
                 <WhatIncludedBox />
                 <Advantages />
                 <ProcessBlock />
+                <PayDeliveryBlock />
             </Flex>
         </MainLayout>
     );
