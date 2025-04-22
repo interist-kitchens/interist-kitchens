@@ -5,7 +5,7 @@ import { Title } from '@/shared/ui/Typography';
 import { Categories } from '@/entities/categories';
 
 type Props = {
-    category: Categories | null;
+    category: Categories;
 };
 
 export const CategoryEditAdminPage: NextPage<Props> = ({ category }) => {

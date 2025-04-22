@@ -18,6 +18,9 @@ export async function POST(request: Request) {
             data: {
                 productId: parseInt(formData.product.id),
                 userId: formData.user ? formData.user.id : null,
+                name: formData.name,
+                phone: formData.phone,
+                mail: formData?.mail,
             },
         });
 

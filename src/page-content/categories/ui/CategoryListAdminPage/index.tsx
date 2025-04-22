@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import { Title } from '@/shared/ui/Typography';
-import { Categories, CategoryList } from '@/entities/categories';
+import { AdminCategoryList, Categories } from '@/entities/categories';
 import { Flex } from 'antd';
 import Link from 'next/link';
 import { paths } from '@/shared/routing';
@@ -18,7 +18,7 @@ export const CategoryListAdminPage: NextPage<Props> = async ({
                 <Title>Категории</Title>
                 <Link href={paths.categoriesAdminCreate}>Добавить</Link>
             </Flex>
-            <CategoryList categories={categories} />
+            <AdminCategoryList categories={categories} />
         </>
     );
 };

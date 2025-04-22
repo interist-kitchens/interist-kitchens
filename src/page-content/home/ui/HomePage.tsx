@@ -3,8 +3,11 @@ import { MainLayout } from '@/widgets/layouts';
 import { Suspense } from 'react';
 import { MainProductCarousel } from '@/widgets/mainProductCarousel';
 import { WhatIncludedBox } from '@/widgets/whatIncluded';
-import { Flex, Spin } from 'antd';
+import { Advantages } from '@/widgets/mainPageAdvantages';
+import { ProcessBlock } from '@/widgets/mainPageProcessBlock';
+import { PayDeliveryBlock } from '@/widgets/mainPayDelivery';
 import { VideoBlock } from '@/widgets/mainVideoBlock';
+import { Flex, Spin } from 'antd';
 
 export default async function Home() {
     return (
@@ -15,6 +18,9 @@ export default async function Home() {
                     <MainProductCarousel />
                 </Suspense>
                 <WhatIncludedBox />
+                <Advantages />
+                <ProcessBlock />
+                <PayDeliveryBlock />
                 <VideoBlock />
             </Flex>
         </MainLayout>
