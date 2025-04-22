@@ -1,6 +1,7 @@
-export type ModalType = 'callback' | 'productOrder';
+export type ModalType = 'callback' | 'productOrder' | 'orderProject';
 
 export const MODAL_TITLES: Record<ModalType, string> = {
     callback: 'Форма обратной связи',
-    productOrder: 'Получите бесплатный дизайн-проект кухни',
+    productOrder: 'Заказать кухню',
+    orderProject: 'Получите бесплатный дизайн-проект кухни',
 };
