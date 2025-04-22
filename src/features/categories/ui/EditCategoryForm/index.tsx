@@ -11,18 +11,25 @@ import {
     message,
     Upload,
     UploadFile,
+    UploadProps,
 } from 'antd';
 import { normFile, uploadProps } from '@/features/categories/lib';
 import { UploadOutlined } from '@ant-design/icons';
-import { appendFieldsToFormData, transliterateToSlug } from '@/shared/lib';
+import {
+    appendFieldsToFormData,
+    mockUploadFunc,
+    transliterateToSlug,
+} from '@/shared/lib';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import { useUnit } from 'effector-react/compat';
 import { paths } from '@/shared/routing';
 import { WysiwygEditor } from '@/shared/ui/WysiwygEditor';
+import { FormFieldType } from '@/entities/products';
+
+const { Item: FormItem } = Form;
 
 type Props = {
-    category: Categories | null;
+    category: Categories;
 };
 
 type FieldType = {
@@ -30,13 +37,12 @@ type FieldType = {
     metaTitle?: string;
     metaDescription?: string;
     text?: string;
-    image?: UploadFile;
+    image?: UploadFile[];
     alias: string;
 };
 
 export const EditCategoryForm: FC<Props> = ({ category }) => {
     const router = useRouter();
-    const [textDescription, setTextDescription] = useState<string>('');
 
     const [loading, submit, isSuccess, reset] = useUnit([
         categoryEditAdminModel.$pending,
@@ -44,6 +50,22 @@ export const EditCategoryForm: FC<Props> = ({ category }) => {
         categoryEditAdminModel.$isSuccess,
         categoryEditAdminModel.resetUpdateForm,
     ]);
+
+    const [textDescription, setTextDescription] = useState<string>(
+        category?.text ?? ''
+    );
+    const [mainImage, setMainImage] = useState<UploadFile[]>(
+        category.image
+            ? [
+                  {
+                      uid: category.image,
+                      name: category.image,
+                      status: 'done',
+                      url: category.image,
+                  },
+              ]
+            : []
+    );
 
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
         const formData = new FormData();
@@ -53,8 +75,10 @@ export const EditCategoryForm: FC<Props> = ({ category }) => {
             metaTitle: values.metaTitle ?? '',
             metaDescription: values.metaDescription ?? '',
             text: textDescription,
-            image: values.image?.originFileObj ?? '',
-            imageName: values.image?.name ?? '',
+            image:
+                (values.image?.[0]?.originFileObj
+                    ? values.image?.[0]?.originFileObj
+                    : values.image?.[0]?.url) ?? '',
             alias: values.alias ?? transliterateToSlug(values.name),
         };
 
@@ -63,6 +87,12 @@ export const EditCategoryForm: FC<Props> = ({ category }) => {
         if (category?.id) {
             submit({ id: category?.id, formData });
         }
+    };
+
+    const onChangeMainImage: UploadProps['onChange'] = ({
+        fileList: newFileList,
+    }) => {
+        setMainImage(newFileList);
     };
 
     useEffect(() => {
@@ -95,7 +125,7 @@ export const EditCategoryForm: FC<Props> = ({ category }) => {
                         vertical
                         className={'w-1/2'}
                     >
-                        <Form.Item<FieldType>
+                        <FormItem<FieldType>
                             label="Название категории"
                             name="name"
                             rules={[
@@ -105,9 +135,9 @@ export const EditCategoryForm: FC<Props> = ({ category }) => {
                             initialValue={category?.name}
                         >
                             <Input />
-                        </Form.Item>
+                        </FormItem>
 
-                        <Form.Item<FieldType>
+                        <FormItem<FieldType>
                             label="URL алиас"
                             name="alias"
                             rules={[
@@ -121,73 +151,73 @@ export const EditCategoryForm: FC<Props> = ({ category }) => {
                             initialValue={category?.alias}
                         >
                             <Input />
-                        </Form.Item>
+                        </FormItem>
                     </Flex>
 
                     <Flex vertical>
-                        <div className={'w-fit p-4 bg-white rounded-md'}>
-                            {category?.image && (
-                                <Image
-                                    src={category.image}
-                                    alt={category.name}
-                                    width={200}
-                                    height={200}
-                                    priority
-                                />
-                            )}
-                        </div>
-                        <Form.Item
+                        <FormItem<FormFieldType>
                             name="image"
                             label="Картинка"
                             valuePropName="image"
                             getValueFromEvent={normFile}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Выберите основную картинку',
+                                },
+                            ]}
+                            initialValue={mainImage}
                         >
                             <Upload
                                 name="image"
                                 listType="picture"
                                 multiple={false}
+                                maxCount={1}
+                                customRequest={mockUploadFunc}
+                                onChange={onChangeMainImage}
+                                fileList={mainImage}
                                 {...uploadProps}
                             >
                                 <Button icon={<UploadOutlined />}>
                                     Загрузить
                                 </Button>
                             </Upload>
-                        </Form.Item>
+                        </FormItem>
                     </Flex>
                 </Flex>
 
                 <Flex justify={'space-between'} gap={10}>
-                    <Form.Item<FieldType>
+                    <FormItem<FieldType>
                         label="Meta Title"
                         name="metaTitle"
                         className={'w-full'}
                         initialValue={category?.metaTitle}
                     >
                         <Input />
-                    </Form.Item>
+                    </FormItem>
 
-                    <Form.Item<FieldType>
+                    <FormItem<FieldType>
                         label="Meta Description"
                         name="metaDescription"
                         className={'w-full'}
                         initialValue={category?.metaDescription}
                     >
                         <Input />
-                    </Form.Item>
+                    </FormItem>
                 </Flex>
 
-                <Form.Item<FieldType> label="Описание" name="text">
+                <FormItem<FieldType> label="Описание" name="text">
                     <WysiwygEditor
                         initialValue={category?.text}
                         setContent={setTextDescription}
                     />
-                </Form.Item>
+                </FormItem>
 
-                <Form.Item label={null}>
+                <FormItem label={null}>
                     <Button type="primary" htmlType="submit" loading={loading}>
                         Отправить
                     </Button>
-                </Form.Item>
+                </FormItem>
             </Form>
         </>
     );
