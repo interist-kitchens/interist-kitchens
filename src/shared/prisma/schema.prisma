@@ -84,6 +84,9 @@ model ColorsOnProducts {
 model Order {
   id     Int         @id @default(autoincrement())
   status OrderStatus @default(PENDING)
+  name   String
+  phone  String
+  mail   String?
 
   products  Product @relation(fields: [productId], references: [id])
   productId Int
@@ -99,4 +102,14 @@ enum OrderStatus {
   PENDING
   FINISHED
   CANCELED
+}
+
+model Callback {
+  id    Int     @id @default(autoincrement())
+  name  String
+  mail  String?
+  phone String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
