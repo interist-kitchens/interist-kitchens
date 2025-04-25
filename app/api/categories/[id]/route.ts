@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/shared/prisma/prisma-client';
 import { getUUID } from 'rc-select/lib/hooks/useId';
-import { put } from '@vercel/blob';
+import { put, PutBlobResult } from '@vercel/blob';
 
 export async function DELETE(
     _: Request,
@@ -39,15 +39,19 @@ export async function PUT(
     try {
         const formData = await request.formData();
 
-        const image = formData.get('image') as Blob;
-        const imageName = formData.get('imageName') ?? getUUID();
-        let blob = null;
+        const image = formData.get('image') as File | string;
 
-        if (image) {
+        let blob: PutBlobResult | string | null = null;
+
+        if (typeof image !== 'string') {
+            const imageName = image.name ?? getUUID();
+
             blob = await put(`public/${imageName}`, image, {
                 token: process.env.NEXT_PUBLIC_READ_WRITE_TOKEN,
                 access: 'public',
             });
+        } else {
+            blob = image;
         }
 
         const name = formData.get('name') as string;
@@ -64,7 +68,7 @@ export async function PUT(
                 metaTitle,
                 metaDescription,
                 text,
-                image: blob ? blob.url : '',
+                image: typeof blob !== 'string' ? blob.url : blob,
             },
         });
 
