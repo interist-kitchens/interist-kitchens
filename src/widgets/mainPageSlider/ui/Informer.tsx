@@ -4,17 +4,20 @@ import { MainText } from './MainText';
 
 type Props = {
     text: string;
-    description?: string;
+    description?: string | null;
+    previewMode?: boolean;
 };
-export const Informer = ({ text, description }: Props) => (
+export const Informer = ({ text, description, previewMode }: Props) => (
     <Flex
         vertical
-        gap={10}
-        className="bg-[var(--info-color)] !p-[24px] max-w-fit"
+        gap={previewMode ? 4 : 10}
+        className={`bg-[var(--info-color)] ${previewMode ? '!p-[8px]' : '!p-[24px]'} max-w-fit`}
     >
-        <MainText>{text}</MainText>
+        <MainText previewMode={previewMode}>{text}</MainText>
         {description && (
-            <Text className="!text-[20px] !text-white !font-[400]">
+            <Text
+                className={`${previewMode ? '!text-[4px] !font-[200]' : '!text-[20px] !font-[400]'} !text-white `}
+            >
                 {description}
             </Text>
         )}

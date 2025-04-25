@@ -113,3 +113,14 @@ model Callback {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Slide {
+  id    Int     @id @default(autoincrement())
+  title String?
+  subTitle String?
+  informerTitle String?
+  informerDescription String?
+  buttonText String?
+  href String?
+  imageSrc String?
+}

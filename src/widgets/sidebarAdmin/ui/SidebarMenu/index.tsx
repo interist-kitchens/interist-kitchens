@@ -5,6 +5,7 @@ import {
     FileOutlined,
     FolderOpenOutlined,
     ProductOutlined,
+    SlidersOutlined,
 } from '@ant-design/icons';
 import { MenuItemType } from 'antd/es/menu/interface';
 import { paths } from '@/shared/routing';
@@ -28,6 +29,11 @@ const menuItems: MenuItemType[] = [
         key: '3',
         icon: <FileOutlined />,
         label: 'Страницы',
+    },
+    {
+        key: paths.sliderAdmin,
+        icon: <SlidersOutlined />,
+        label: 'Слайдер (основной)',
     },
 ];
 

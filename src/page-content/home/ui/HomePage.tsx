@@ -13,7 +13,9 @@ export default async function Home() {
     return (
         <MainLayout>
             <Flex vertical gap={48}>
-                <MainPageSlider />
+                <Suspense fallback={<Spin />}>
+                    <MainPageSlider />
+                </Suspense>
                 <Suspense fallback={<Spin />}>
                     <MainProductCarousel />
                 </Suspense>
