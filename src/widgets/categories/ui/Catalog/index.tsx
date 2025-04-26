@@ -5,7 +5,7 @@ import { Breadcrumbs } from '@/shared/ui/Breadcrumbs';
 import { paths } from '@/shared/routing';
 
 type Props = {
-    categories: Categories[];
+    categories?: Categories[];
 };
 
 export const Catalog: FC<Props> = ({ categories }) => {
@@ -21,7 +21,7 @@ export const Catalog: FC<Props> = ({ categories }) => {
                 Каталог кухонь
             </Title>
             <div className={'flex flex-col gap-y-16'}>
-                {categories.map((category, index) => (
+                {categories?.map((category, index) => (
                     <CatalogItem
                         key={category.id}
                         category={category}

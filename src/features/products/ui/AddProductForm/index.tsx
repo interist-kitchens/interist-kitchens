@@ -31,7 +31,7 @@ import { FormFieldType } from '@/entities/products';
 const { Item: FormItem } = Form;
 
 type Props = {
-    categories: Categories[];
+    categories?: Categories[];
 };
 
 export const AddProductForm: FC<Props> = ({ categories }) => {
@@ -183,7 +183,7 @@ export const AddProductForm: FC<Props> = ({ categories }) => {
                     ]}
                 >
                     <Select
-                        options={categories.map((category) => ({
+                        options={categories?.map((category) => ({
                             value: category.id,
                             label: category.name,
                         }))}

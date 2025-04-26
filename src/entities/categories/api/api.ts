@@ -5,14 +5,18 @@ import { mapCategories } from '@/entities/categories/lib';
 import { prisma } from '@/shared/prisma/prisma-client';
 import { dateFormat } from '@/shared/lib';
 
-export const getCategories = async (): Promise<Categories[]> => {
-    const categories = await prisma.category.findMany({
-        include: {
-            products: true,
-        },
-    });
+export const getCategories = async (): Promise<Categories[] | undefined> => {
+    try {
+        const categories = await prisma.category.findMany({
+            include: {
+                products: true,
+            },
+        });
 
-    return mapCategories(categories);
+        return mapCategories(categories);
+    } catch (e) {
+        console.error(e);
+    }
 };
 
 export const createCategory = createMutation({
@@ -49,19 +53,23 @@ export const updateCategory = createMutation({
 });
 
 export const getCategory = async (id: string): Promise<Categories | null> => {
-    const category = await prisma.category.findUnique({
-        where: { id: Number.parseInt(id) },
-    });
+    try {
+        const category = await prisma.category.findUnique({
+            where: { id: Number.parseInt(id) },
+        });
 
-    if (category) {
-        return {
-            ...category,
-            id: String(id),
-            createdAt: dateFormat(category.createdAt),
-            updatedAt: dateFormat(category.updatedAt),
-            metaTitle: category.metaTitle,
-            metaDescription: category.metaDescription,
-        };
+        if (category) {
+            return {
+                ...category,
+                id: String(id),
+                createdAt: dateFormat(category.createdAt),
+                updatedAt: dateFormat(category.updatedAt),
+                metaTitle: category.metaTitle,
+                metaDescription: category.metaDescription,
+            };
+        }
+    } catch (e) {
+        console.error(e);
     }
 
     return null;

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { paths } from '@/shared/routing';
 
 type Props = {
-    categories: Categories[];
+    categories?: Categories[];
 };
 
 export const CategoryListAdminPage: NextPage<Props> = async ({

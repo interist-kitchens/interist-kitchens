@@ -34,7 +34,7 @@ const { Item: FormItem } = Form;
 
 type Props = {
     product: Product;
-    categories: Categories[];
+    categories?: Categories[];
 };
 
 export const EditProductForm: FC<Props> = ({ product, categories }) => {
@@ -242,7 +242,7 @@ export const EditProductForm: FC<Props> = ({ product, categories }) => {
                         initialValue={String(product.categoryId)}
                     >
                         <Select
-                            options={categories.map((category) => ({
+                            options={categories?.map((category) => ({
                                 value: category.id,
                                 label: category.name,
                             }))}
