@@ -10,7 +10,7 @@ import { useUnit } from 'effector-react';
 import { productDeleteAdminModel } from '@/entities/products/model';
 
 type Props = {
-    products: Product[];
+    products?: Product[];
 };
 
 interface DataType {
@@ -87,14 +87,15 @@ export const ProductAdminList: FC<Props> = ({ products }) => {
         router.refresh();
     }, [router]);
 
-    const data: DataType[] = products.map((product) => ({
-        key: product.id,
-        category: product.categoryName,
-        name: product.name,
-        alias: product.alias,
-        createdAt: product.createdAt,
-        updatedAt: product.updatedAt,
-    }));
+    const data: DataType[] =
+        products?.map((product) => ({
+            key: product.id,
+            category: product.categoryName,
+            name: product.name,
+            alias: product.alias,
+            createdAt: product.createdAt,
+            updatedAt: product.updatedAt,
+        })) ?? [];
 
     const handleClickRow = (id: string) => {
         router.push(`${paths.productsAdmin}/${id}`);

@@ -40,11 +40,17 @@ export const authOptions: NextAuthOptions = {
                     throw new Error('Введите почту и пароль');
                 }
 
-                const user = await prisma.user.findUnique({
-                    where: {
-                        email: credentials?.email,
-                    },
-                });
+                let user = null;
+
+                try {
+                    user = await prisma.user.findUnique({
+                        where: {
+                            email: credentials?.email,
+                        },
+                    });
+                } catch (e) {
+                    console.error(e);
+                }
 
                 if (!user || !user?.password) {
                     throw new Error('Пользователь не найден');
@@ -74,11 +80,17 @@ export const authOptions: NextAuthOptions = {
                 return token;
             }
 
-            const user = await prisma.user.findFirst({
-                where: {
-                    email: token.email,
-                },
-            });
+            let user = null;
+
+            try {
+                user = await prisma.user.findFirst({
+                    where: {
+                        email: token.email,
+                    },
+                });
+            } catch (e) {
+                console.error(e);
+            }
 
             if (user) {
                 token.id = user.id;

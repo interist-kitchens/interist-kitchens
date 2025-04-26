@@ -7,7 +7,7 @@ import { ProductAdminLayout } from '@/widgets/layouts/productAdminLayout';
 
 type Props = {
     product: Product;
-    categories: Categories[];
+    categories?: Categories[];
 };
 
 export const ProductEditAdminPage: NextPage<Props> = ({

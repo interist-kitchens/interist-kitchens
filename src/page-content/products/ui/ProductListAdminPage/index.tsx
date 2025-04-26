@@ -6,7 +6,7 @@ import { Product, ProductAdminList } from '@/entities/products';
 import { paths } from '@/shared/routing';
 
 type Props = {
-    products: Product[];
+    products?: Product[];
 };
 
 export const ProductListAdminPage: NextPage<Props> = async ({ products }) => {

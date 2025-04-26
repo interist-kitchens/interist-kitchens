@@ -4,7 +4,7 @@ import { MainLayout } from '@/widgets/layouts';
 import { Catalog } from '@/widgets/categories';
 
 type Props = {
-    categories: Categories[];
+    categories?: Categories[];
 };
 
 export const CatalogPage: FC<Props> = ({ categories }) => {

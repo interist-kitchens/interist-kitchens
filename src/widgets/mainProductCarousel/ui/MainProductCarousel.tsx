@@ -10,7 +10,7 @@ import { LinkButton } from '@/widgets/mainPageSlider/ui/LinkButton';
 export const MainProductCarousel: FC = async () => {
     const categories = await getCategories();
 
-    const items: TabsProps['items'] = categories.map((category) => ({
+    const items: TabsProps['items'] = categories?.map((category) => ({
         key: category.id,
         label: category.name,
         children: (

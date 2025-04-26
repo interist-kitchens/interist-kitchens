@@ -6,19 +6,23 @@ import { createMutation } from '@farfetched/core';
 import { createInternalRequestFx } from '@/shared/api/requests';
 import { Error } from '@/entities/categories';
 
-export const getProducts = async (): Promise<Product[]> => {
-    const products: ProductResponse[] = await prisma.product.findMany({
-        include: {
-            categories: {
-                select: {
-                    name: true,
-                    alias: true,
+export const getProducts = async (): Promise<Product[] | undefined> => {
+    try {
+        const products: ProductResponse[] = await prisma.product.findMany({
+            include: {
+                categories: {
+                    select: {
+                        name: true,
+                        alias: true,
+                    },
                 },
             },
-        },
-    });
+        });
 
-    return mapProduct(products);
+        return mapProduct(products);
+    } catch (e) {
+        console.error(e);
+    }
 };
 
 export const getProduct = async (id: string): Promise<Product | null> => {
@@ -53,30 +57,34 @@ export const getProduct = async (id: string): Promise<Product | null> => {
 export const getProductByAlias = async (
     alias: string
 ): Promise<Product | null> => {
-    const product = await prisma.product.findUnique({
-        where: { alias: alias },
-        include: {
-            categories: {
-                select: {
-                    name: true,
-                    alias: true,
+    try {
+        const product = await prisma.product.findUnique({
+            where: { alias: alias },
+            include: {
+                categories: {
+                    select: {
+                        name: true,
+                        alias: true,
+                    },
                 },
             },
-        },
-    });
+        });
 
-    if (product) {
-        return {
-            ...product,
-            id: String(product.id),
-            createdAt: dateFormat(product.createdAt),
-            updatedAt: dateFormat(product.updatedAt),
-            metaTitle: product.metaTitle,
-            metaDescription: product.metaDescription,
-            categoryName: product.categories.name,
-            text: product.text ?? '',
-            images: [product.image, ...product.images],
-        };
+        if (product) {
+            return {
+                ...product,
+                id: String(product.id),
+                createdAt: dateFormat(product.createdAt),
+                updatedAt: dateFormat(product.updatedAt),
+                metaTitle: product.metaTitle,
+                metaDescription: product.metaDescription,
+                categoryName: product.categories.name,
+                text: product.text ?? '',
+                images: [product.image, ...product.images],
+            };
+        }
+    } catch (e) {
+        console.error(e);
     }
 
     return null;

@@ -9,7 +9,7 @@ import { useUnit } from 'effector-react';
 import { paths } from '@/shared/routing';
 
 type Props = {
-    categories: Categories[];
+    categories?: Categories[];
 };
 
 interface DataType {
@@ -81,13 +81,14 @@ export const AdminCategoryList: FC<Props> = ({ categories }) => {
         router.refresh();
     }, [router]);
 
-    const data: DataType[] = categories.map((category) => ({
-        key: category.id,
-        name: category.name,
-        alias: category.alias,
-        createdAt: category.createdAt,
-        updatedAt: category.updatedAt,
-    }));
+    const data: DataType[] =
+        categories?.map((category) => ({
+            key: category.id,
+            name: category.name,
+            alias: category.alias,
+            createdAt: category.createdAt,
+            updatedAt: category.updatedAt,
+        })) ?? [];
 
     const handleClickRow = (id: string) => {
         router.push(`${paths.categoriesAdmin}/${id}`);
