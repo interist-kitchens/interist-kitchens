@@ -7,18 +7,24 @@ import { Advantages } from '@/widgets/mainPageAdvantages';
 import { ProcessBlock } from '@/widgets/mainPageProcessBlock';
 import { PayDeliveryBlock } from '@/widgets/mainPayDelivery';
 import { VideoBlock } from '@/widgets/mainVideoBlock';
-import { Flex, Spin } from 'antd';
+import { Flex } from 'antd';
+import SkeletonNode from 'antd/es/skeleton/Node';
 
 export default async function Home() {
     return (
         <MainLayout>
             <Flex vertical gap={48}>
-                <Suspense fallback={<Spin />}>
+                <Suspense
+                    fallback={
+                        <SkeletonNode
+                            style={{ height: '540px', width: '100%' }}
+                            active
+                        />
+                    }
+                >
                     <MainPageSlider />
                 </Suspense>
-                <Suspense fallback={<Spin />}>
-                    <MainProductCarousel />
-                </Suspense>
+                <MainProductCarousel />
                 <WhatIncludedBox />
                 <Advantages />
                 <ProcessBlock />
