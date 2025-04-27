@@ -5,6 +5,7 @@ import { dateFormat } from '@/shared/lib';
 import { createMutation } from '@farfetched/core';
 import { createInternalRequestFx } from '@/shared/api/requests';
 import { Error } from '@/entities/categories';
+import { generateBlurImg } from '@/shared/lib/generateBlurImg';
 
 export const getProducts = async (): Promise<Product[] | undefined> => {
     try {
@@ -19,7 +20,7 @@ export const getProducts = async (): Promise<Product[] | undefined> => {
             },
         });
 
-        return mapProduct(products);
+        return await mapProduct(products);
     } catch (e) {
         console.error(e);
     }
@@ -48,6 +49,12 @@ export const getProduct = async (id: string): Promise<Product | null> => {
             metaDescription: product.metaDescription,
             categoryName: product.categories.name,
             text: product.text ?? '',
+            images: await Promise.all(
+                [product.image, ...product.images].map(async (image) => ({
+                    image,
+                    blurImage: await generateBlurImg(image),
+                }))
+            ),
         };
     }
 
@@ -80,7 +87,12 @@ export const getProductByAlias = async (
                 metaDescription: product.metaDescription,
                 categoryName: product.categories.name,
                 text: product.text ?? '',
-                images: [product.image, ...product.images],
+                images: await Promise.all(
+                    [product.image, ...product.images].map(async (image) => ({
+                        image,
+                        blurImage: await generateBlurImg(image),
+                    }))
+                ),
             };
         }
     } catch (e) {

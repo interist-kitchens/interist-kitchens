@@ -15,13 +15,15 @@ type Props = {
 export const CatalogItem: FC<Props> = ({ category, variant = 'normal' }) => {
     return (
         <div className={'grid grid-cols-1 lg:grid-cols-6 items-center gap-8'}>
-            {category.image && (
+            {category.image && category.imageBlur && (
                 <Image
                     src={category.image}
                     alt={category.name}
                     width={1200}
                     height={563}
                     className={'lg:col-span-4'}
+                    placeholder={'blur'}
+                    blurDataURL={category.imageBlur}
                 />
             )}
             <div

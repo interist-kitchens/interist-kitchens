@@ -60,10 +60,10 @@ export const EditProductForm: FC<Props> = ({ product, categories }) => {
     ]);
     const [additionalImage, setAdditionalImage] = useState<UploadFile[]>(
         product.images.map((image) => ({
-            uid: image,
-            name: image,
+            uid: image.image,
+            name: image.image,
             status: 'done',
-            url: image,
+            url: image.image,
         }))
     );
 
