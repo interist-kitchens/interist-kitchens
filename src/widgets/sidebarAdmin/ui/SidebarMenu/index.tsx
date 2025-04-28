@@ -1,41 +1,12 @@
 'use client';
 
 import { Layout, Menu } from 'antd';
-import {
-    FileOutlined,
-    FolderOpenOutlined,
-    ProductOutlined,
-    SlidersOutlined,
-} from '@ant-design/icons';
 import { MenuItemType } from 'antd/es/menu/interface';
-import { paths } from '@/shared/routing';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { menuItems } from '@/widgets/sidebarAdmin/config/constants';
 
 const { Sider } = Layout;
-
-const menuItems: MenuItemType[] = [
-    {
-        key: paths.categoriesAdmin,
-        icon: <FolderOpenOutlined />,
-        label: 'Категории',
-    },
-    {
-        key: paths.productsAdmin,
-        icon: <ProductOutlined />,
-        label: 'Товары',
-    },
-    {
-        key: '3',
-        icon: <FileOutlined />,
-        label: 'Страницы',
-    },
-    {
-        key: paths.sliderAdmin,
-        icon: <SlidersOutlined />,
-        label: 'Слайдер (основной)',
-    },
-];
 
 export const SidebarMenu = () => {
     const router = useRouter();

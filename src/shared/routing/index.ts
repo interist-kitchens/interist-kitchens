@@ -9,4 +9,5 @@ export const paths = {
     productsAdminCreate: '/admin/products/create',
     catalog: '/catalog',
     sliderAdmin: '/admin/slider',
+    callbackAdmin: '/admin/callback',
 };

@@ -16,6 +16,7 @@ const pageTypes = [
     'productPage',
     'sliderAdminPage',
     'catalogPage',
+    'callbackListAdminPage',
 ] as const;
 
 export const pageStarted = createEvent<{
