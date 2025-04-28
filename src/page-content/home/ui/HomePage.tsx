@@ -6,7 +6,7 @@ import { Advantages } from '@/widgets/mainPageAdvantages';
 import { ProcessBlock } from '@/widgets/mainPageProcessBlock';
 import { PayDeliveryBlock } from '@/widgets/mainPayDelivery';
 import { VideoBlock } from '@/widgets/mainVideoBlock';
-import { Flex, Spin } from 'antd';
+import { Flex } from 'antd';
 import { CallbackForm } from '@/widgets/callbackForm';
 
 export default async function Home() {
