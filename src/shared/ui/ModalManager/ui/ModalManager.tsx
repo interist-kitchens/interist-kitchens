@@ -37,6 +37,7 @@ export const ModalManager: FC = () => {
             onCancel={handleCancel}
             okText={modalState.okText}
             cancelText={modalState.cancelText}
+            wrapClassName={'w-screen'}
             destroyOnClose
         >
             {modalState?.content}
