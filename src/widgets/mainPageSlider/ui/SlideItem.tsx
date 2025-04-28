@@ -18,8 +18,14 @@ export const SlideItem: FC<Props> = ({
     informerDescription,
     id,
     previewMode,
+    imageBlur,
 }) => (
-    <ImageWithContent src={imageSrc} previewMode={previewMode} key={id}>
+    <ImageWithContent
+        src={imageSrc}
+        previewMode={previewMode}
+        imageBlur={imageBlur}
+        key={id}
+    >
         <MainText previewMode={previewMode}>{title}</MainText>
         {informerTitle && (
             <Informer

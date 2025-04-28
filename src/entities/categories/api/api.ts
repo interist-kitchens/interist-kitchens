@@ -13,7 +13,7 @@ export const getCategories = async (): Promise<Categories[] | undefined> => {
             },
         });
 
-        return mapCategories(categories);
+        return await mapCategories(categories);
     } catch (e) {
         console.error(e);
     }

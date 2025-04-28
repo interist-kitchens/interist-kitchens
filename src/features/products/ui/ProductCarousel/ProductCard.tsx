@@ -1,11 +1,17 @@
 import { FC } from 'react';
 import { Flex } from 'antd';
 import Image from 'next/image';
-import { Product } from '@/entities/products';
 import Link from 'next/link';
 
 type Props = {
-    product: Product;
+    product: {
+        name: string;
+        id: number;
+        image: string;
+        imageBlur?: string;
+        alias: string;
+        price: string;
+    };
     href: string;
 };
 
@@ -19,6 +25,8 @@ export const ProductCard: FC<Props> = ({ product, href }) => {
                         alt={product.name}
                         width={420}
                         height={290}
+                        placeholder={'blur'}
+                        blurDataURL={product.imageBlur}
                     />
                 </div>
                 <Link href={href}>

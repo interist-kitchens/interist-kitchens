@@ -115,12 +115,12 @@ model Callback {
 }
 
 model Slide {
-  id    Int     @id @default(autoincrement())
-  title String?
-  subTitle String?
-  informerTitle String?
+  id                  Int     @id @default(autoincrement())
+  title               String?
+  subTitle            String?
+  informerTitle       String?
   informerDescription String?
-  buttonText String?
-  href String?
-  imageSrc String?
+  buttonText          String?
+  href                String?
+  imageSrc            String
 }

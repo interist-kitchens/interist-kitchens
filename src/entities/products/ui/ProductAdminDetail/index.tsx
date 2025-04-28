@@ -66,12 +66,14 @@ export const ProductAdminDetail: FC<Props> = ({ product }) => {
                     <Flex gap={8}>
                         {product?.images &&
                             product?.images.map((image) => (
-                                <div className={'w-fit'} key={image}>
+                                <div className={'w-fit'} key={image.image}>
                                     <Image
-                                        src={image}
-                                        alt={image}
+                                        src={image.image}
+                                        alt={''}
                                         width={200}
                                         height={200}
+                                        placeholder={'blur'}
+                                        blurDataURL={image.blurImage}
                                         priority
                                     />
                                 </div>

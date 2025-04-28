@@ -20,6 +20,7 @@ export type Product = {
     name: string;
     id: string;
     image: string;
+    imageBlur?: string;
     createdAt: string;
     updatedAt: string;
     metaTitle: string | null;
@@ -27,9 +28,12 @@ export type Product = {
     text: string;
     alias: string;
     categoryId: number;
-    categoryName: string;
+    categoryName?: string;
     price: string;
-    images: string[];
+    images: {
+        image: string;
+        blurImage?: string;
+    }[];
     categories: { name: string; alias: string };
 };
 

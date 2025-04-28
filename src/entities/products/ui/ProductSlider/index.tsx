@@ -4,7 +4,10 @@ import { Carousel, ConfigProvider } from 'antd';
 
 type Props = {
     name: string;
-    images: string[];
+    images: {
+        image: string;
+        blurImage?: string;
+    }[];
 };
 
 export const ProductSlider: FC<Props> = ({ name, images }) => {
@@ -20,11 +23,13 @@ export const ProductSlider: FC<Props> = ({ name, images }) => {
                 <Carousel arrows dotPosition="left" infinite={false} draggable>
                     {images.map((image) => (
                         <Image
-                            key={image}
-                            src={image}
+                            key={image.image}
+                            src={image.image}
                             alt={name}
                             width={450}
                             height={295}
+                            placeholder={'blur'}
+                            blurDataURL={image.blurImage}
                         />
                     ))}
                 </Carousel>

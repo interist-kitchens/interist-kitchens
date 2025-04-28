@@ -6,5 +6,6 @@ export type Slide = {
     informerDescription: string | null;
     buttonText: string | null;
     href: string | null;
-    imageSrc: string | null;
+    imageSrc: string;
+    imageBlur?: string;
 };
