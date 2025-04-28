@@ -8,6 +8,7 @@ import { ProcessBlock } from '@/widgets/mainPageProcessBlock';
 import { PayDeliveryBlock } from '@/widgets/mainPayDelivery';
 import { VideoBlock } from '@/widgets/mainVideoBlock';
 import { Flex, Spin } from 'antd';
+import { CallbackForm } from '@/widgets/callbackForm';
 
 export default async function Home() {
     return (
@@ -20,10 +21,11 @@ export default async function Home() {
                     <MainProductCarousel />
                 </Suspense>
                 <WhatIncludedBox />
-                <Advantages />
                 <ProcessBlock />
-                <PayDeliveryBlock />
                 <VideoBlock />
+                <Advantages />
+                <PayDeliveryBlock />
+                <CallbackForm />
             </Flex>
         </MainLayout>
     );

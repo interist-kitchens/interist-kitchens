@@ -10,17 +10,17 @@ export const Footer: FC = () => {
     return (
         <FooterLayout>
             <Flex vertical className={'w-full'}>
-                <Flex justify={'space-between'}>
+                <div className={'grid md:grid-cols-2 justify-center gap-y-10'}>
                     <AboutCompany />
-                    <Flex>
+                    <div className={'flex -order-1 md:order-2 justify-end'}>
                         <Suspense fallback={<Spin />}>
                             <FooterCatalogMenu />
                         </Suspense>
                         <FooterMenu />
-                    </Flex>
-                </Flex>
+                    </div>
+                </div>
                 <Typography
-                    className={'mt-4'}
+                    className={'mt-4 text-center sm:text-left'}
                 >{`© ${dayjs().year()} Все права защищены. ООО «Кухнику от Кукухни».`}</Typography>
             </Flex>
         </FooterLayout>
