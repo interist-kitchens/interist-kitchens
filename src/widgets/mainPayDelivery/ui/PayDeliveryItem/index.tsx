@@ -27,9 +27,9 @@ export const PayDeliveryItem: FC<Props> = ({
                 </Link>
             )}
             <div className={'flex flex-wrap-reverse mt-auto gap-2'}>
-                {images?.map((image) => (
+                {images?.map((image, index) => (
                     <div
-                        key={image}
+                        key={index}
                         className={
                             'rounded border border-gray-300 w-[110px] h-[54px] flex items-center justify-center'
                         }

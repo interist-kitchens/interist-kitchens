@@ -1,26 +1,35 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { Button, Col, Form, FormProps, Input, Row } from 'antd';
-import { FormType } from '@/entities/leads/api';
+import { OrderProjectFormType } from '@/entities/leads/api';
 import { useUnit } from 'effector-react';
 import { orderProjectFormModel } from '@/entities/leads/model';
 
 const { Item: FormItem } = Form;
 
 export const OrderProjectForm: FC = () => {
-    const [submitForm, loading] = useUnit([
+    const [submitForm, loading, isSuccess] = useUnit([
         orderProjectFormModel.submitForm,
         orderProjectFormModel.$pending,
+        orderProjectFormModel.$isSuccess,
     ]);
 
-    const onFinish: FormProps<FormType>['onFinish'] = (values) => {
+    const [form] = Form.useForm();
+
+    const onFinish: FormProps<OrderProjectFormType>['onFinish'] = (values) => {
         submitForm(values);
     };
 
+    useEffect(() => {
+        if (isSuccess) {
+            form.resetFields();
+        }
+    }, [isSuccess, form]);
+
     return (
-        <Form onFinish={onFinish}>
+        <Form form={form} onFinish={onFinish}>
             <Row>
                 <Col span={24}>
-                    <FormItem<FormType>
+                    <FormItem<OrderProjectFormType>
                         name={'name'}
                         rules={[{ required: true, message: 'Заполните имя' }]}
                     >
@@ -30,7 +39,7 @@ export const OrderProjectForm: FC = () => {
             </Row>
             <Row gutter={16}>
                 <Col span={12}>
-                    <FormItem<FormType>
+                    <FormItem<OrderProjectFormType>
                         rules={[
                             {
                                 type: 'email',
@@ -43,7 +52,7 @@ export const OrderProjectForm: FC = () => {
                     </FormItem>
                 </Col>
                 <Col span={12}>
-                    <FormItem<FormType>
+                    <FormItem<OrderProjectFormType>
                         name={'phone'}
                         rules={[
                             {
