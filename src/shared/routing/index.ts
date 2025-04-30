@@ -10,4 +10,5 @@ export const paths = {
     catalog: '/catalog',
     sliderAdmin: '/admin/slider',
     callbackAdmin: '/admin/callback',
+    pageAdmin: '/admin/pages',
 };

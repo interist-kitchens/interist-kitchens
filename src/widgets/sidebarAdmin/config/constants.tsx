@@ -20,7 +20,7 @@ export const menuItems: MenuItemType[] = [
         label: 'Товары',
     },
     {
-        key: '3',
+        key: paths.pageAdmin,
         icon: <FileOutlined />,
         label: 'Страницы',
     },

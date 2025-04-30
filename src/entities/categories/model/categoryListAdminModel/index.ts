@@ -3,7 +3,7 @@ import { declarePage } from '@/shared/app';
 
 export const categoryListAdminModel = atom(() => {
     const categoriesAdminPage = declarePage({
-        pageType: 'categoryListAdminModel',
+        pageType: 'categoriesAdminPage',
     });
     return { categoriesAdminPage };
 });
