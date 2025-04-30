@@ -5,6 +5,7 @@ import {
     FolderOpenOutlined,
     PhoneOutlined,
     ProductOutlined,
+    ShoppingCartOutlined,
     SlidersOutlined,
 } from '@ant-design/icons';
 
@@ -33,5 +34,10 @@ export const menuItems: MenuItemType[] = [
         key: paths.callbackAdmin,
         icon: <PhoneOutlined />,
         label: 'Обратные звонки',
+    },
+    {
+        key: paths.orderAdmin,
+        icon: <ShoppingCartOutlined />,
+        label: 'Заказы',
     },
 ];
