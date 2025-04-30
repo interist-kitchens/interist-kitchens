@@ -5,7 +5,7 @@ import { Button, Flex, Form, FormProps, Input, message } from 'antd';
 import { transliterateToSlug } from '@/shared/lib';
 import { useRouter } from 'next/navigation';
 import { useUnit } from 'effector-react/compat';
-import { paths } from '@/shared/routing';
+import { paths, protectedRoutes } from '@/shared/routing';
 import { WysiwygEditor } from '@/shared/ui/WysiwygEditor';
 import { Page } from '@prisma/client';
 import { pageEditAdminModel } from '@/entities/pages';
@@ -104,7 +104,9 @@ export const EditPageForm: FC<Props> = ({ page }) => {
                             className={'w-full'}
                             initialValue={page?.alias}
                         >
-                            <Input />
+                            <Input
+                                disabled={protectedRoutes.includes(page.alias)}
+                            />
                         </FormItem>
                     </Flex>
                     <Flex

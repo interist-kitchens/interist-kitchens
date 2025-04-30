@@ -8,7 +8,7 @@ import { DeletePage } from '@/features/pages';
 import { useRouter } from 'next/navigation';
 import { useUnit } from 'effector-react';
 import { pageDeleteModel } from '@/entities/pages';
-import { paths } from '@/shared/routing';
+import { paths, protectedRoutes } from '@/shared/routing';
 
 type Props = {
     pages?: Page[];
@@ -54,7 +54,10 @@ const columns: TableProps<DataType>['columns'] = [
         title: '',
         dataIndex: 'deleteAction',
         key: 'deleteAction',
-        render: (_, record) => <DeletePage id={record.key} />,
+        render: (_, record) =>
+            protectedRoutes.includes(record.alias) ? null : (
+                <DeletePage id={record.key} />
+            ),
     },
 ];
 

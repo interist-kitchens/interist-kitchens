@@ -3,7 +3,7 @@ import { Content, Layout } from '@/shared/ui/Layout';
 import { Header } from '@/widgets/header';
 import { Footer } from '@/widgets/footer';
 
-export const MainLayout: FC<PropsWithChildren> = async ({ children }) => {
+export const MainLayout: FC<PropsWithChildren> = ({ children }) => {
     return (
         <Layout>
             <Header />

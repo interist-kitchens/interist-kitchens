@@ -13,4 +13,16 @@ export const paths = {
     orderAdmin: '/admin/order',
     pageAdmin: '/admin/pages',
     pageAdminCreate: '/admin/pages/create',
+    montage: 'sborka-i-montazh',
+    delivery: 'dostavka-i-oplata',
+    conditionsMontage: 'usloviya-montazha',
+    warranty: 'garantiya',
+    contacts: 'kontakty',
 };
+
+export const protectedRoutes = [
+    paths.montage,
+    paths.delivery,
+    paths.conditionsMontage,
+    paths.warranty,
+];
