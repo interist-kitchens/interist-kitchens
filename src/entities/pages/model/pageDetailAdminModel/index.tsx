@@ -71,13 +71,21 @@ export const pageDetailAdminModel = atom(() => {
         pageType: 'pageEditAdminPage',
     });
 
+    const staticPage = declarePage<{ alias: string }>({
+        pageType: 'staticPage',
+    });
+
     sample({
         clock: pageViewStarted,
         target: getPagesFx,
     });
 
     sample({
-        clock: [pageDetailAdminPage.open, pageEditAdminPage.open],
+        clock: [
+            pageDetailAdminPage.open,
+            pageEditAdminPage.open,
+            staticPage.open,
+        ],
         fn: ({ alias }) => alias,
         target: singleRequested,
     });
@@ -88,5 +96,6 @@ export const pageDetailAdminModel = atom(() => {
         $currentPage,
         pageDetailAdminPage,
         pageEditAdminPage,
+        staticPage,
     };
 });
