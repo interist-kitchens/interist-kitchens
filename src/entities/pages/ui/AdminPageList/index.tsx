@@ -4,6 +4,7 @@ import { FC } from 'react';
 import { Page } from '@prisma/client';
 import { Table, TableProps } from 'antd';
 import { dateFormat } from '@/shared/lib';
+import { DeletePage } from '@/features/pages';
 
 type Props = {
     pages?: Page[];
@@ -49,7 +50,7 @@ const columns: TableProps<DataType>['columns'] = [
         title: '',
         dataIndex: 'deleteAction',
         key: 'deleteAction',
-        render: (_, record) => <>{record.key}</>,
+        render: (_, record) => <DeletePage id={record.key} />,
     },
 ];
 

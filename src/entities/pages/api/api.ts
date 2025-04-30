@@ -35,3 +35,10 @@ export const createPage = createMutation({
         data,
     })),
 });
+
+export const deletePage = createMutation({
+    effect: createInternalRequestFx((id: number) => ({
+        url: `/pages/${id}`,
+        method: 'DELETE',
+    })),
+});
