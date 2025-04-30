@@ -1,10 +1,14 @@
 'use client';
 
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { Page } from '@prisma/client';
-import { Table, TableProps } from 'antd';
+import { message, Table, TableProps } from 'antd';
 import { dateFormat } from '@/shared/lib';
 import { DeletePage } from '@/features/pages';
+import { useRouter } from 'next/navigation';
+import { useUnit } from 'effector-react';
+import { pageDeleteModel } from '@/entities/pages';
+import { paths } from '@/shared/routing';
 
 type Props = {
     pages?: Page[];
@@ -55,6 +59,32 @@ const columns: TableProps<DataType>['columns'] = [
 ];
 
 export const AdminPageList: FC<Props> = ({ pages }) => {
+    const router = useRouter();
+
+    const [isSuccess, reset] = useUnit([
+        pageDeleteModel.$isSuccess,
+        pageDeleteModel.reset,
+    ]);
+
+    useEffect(() => {
+        if (isSuccess) {
+            message
+                .open({
+                    type: 'success',
+                    content: 'Страница удалена успешно',
+                    duration: 1,
+                })
+                .then(() => {
+                    reset();
+                    router.refresh();
+                });
+        }
+    }, [reset, isSuccess, router]);
+
+    useEffect(() => {
+        router.refresh();
+    }, [router]);
+
     const data: DataType[] =
         pages?.map((page) => ({
             key: page.id,
@@ -64,5 +94,19 @@ export const AdminPageList: FC<Props> = ({ pages }) => {
             updatedAt: page.updatedAt,
         })) ?? [];
 
-    return <Table<DataType> columns={columns} dataSource={data} />;
+    const handleClickRow = (alias: string) => {
+        router.push(`${paths.pageAdmin}/${alias}`);
+    };
+
+    return (
+        <Table<DataType>
+            columns={columns}
+            dataSource={data}
+            onRow={(record) => {
+                return {
+                    onClick: () => handleClickRow(record.alias),
+                };
+            }}
+        />
+    );
 };
