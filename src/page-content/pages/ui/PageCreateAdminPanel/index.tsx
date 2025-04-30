@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import { Title } from '@/shared/ui/Typography';
-import { PageAdminLayout } from '@/widgets/layouts/pageAdminLayout';
+import { PageAdminLayout } from '@/widgets/layouts';
 import { AddPageForm } from '@/features/pages';
 
 export const PageCreateAdminPanel: NextPage = async () => {

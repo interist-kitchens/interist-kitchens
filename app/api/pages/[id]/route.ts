@@ -22,3 +22,28 @@ export async function DELETE(
         return NextResponse.json(error, { status: 500 });
     }
 }
+
+export async function PUT(
+    request: Request,
+    { params }: { params: { id: string } }
+) {
+    if (!process.env.DATABASE_URL) {
+        return NextResponse.json(
+            { error: 'DATABASE_URL is not set' },
+            { status: 500 }
+        );
+    }
+
+    try {
+        const data = await request.json();
+
+        const pageUpdated = await prisma.page.update({
+            where: { id: Number.parseInt(params.id) },
+            data,
+        });
+
+        return NextResponse.json(pageUpdated);
+    } catch (error) {
+        return NextResponse.json(error, { status: 500 });
+    }
+}

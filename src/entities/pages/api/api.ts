@@ -42,3 +42,15 @@ export const deletePage = createMutation({
         method: 'DELETE',
     })),
 });
+
+export const updatePage = createMutation({
+    effect: createInternalRequestFx<
+        { id: number; data: PageCreateRequest },
+        void,
+        Error
+    >((data) => ({
+        url: `/pages/${data.id}`,
+        method: 'PUT',
+        data: data.data,
+    })),
+});
