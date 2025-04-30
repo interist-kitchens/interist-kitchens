@@ -21,7 +21,9 @@ const pageTypes = [
     'pageCreateAdminPage',
     'pageDetailAdminPage',
     'pageEditAdminPage',
-  'ordersAdminPage',
+    'ordersAdminPage',
+    'staticPage',
+    'contactsPage',
 ] as const;
 
 export const pageStarted = createEvent<{

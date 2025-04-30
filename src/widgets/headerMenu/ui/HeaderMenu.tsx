@@ -17,6 +17,36 @@ const items: MenuItem[] = [
         label: 'Покупателям',
         key: 'user-info',
         className: 'font-bold',
+        children: [
+            {
+                label: (
+                    <Link href={`/pages/${paths.montage}`}>
+                        Сборка и монтаж
+                    </Link>
+                ),
+                key: 'montage',
+            },
+            {
+                label: (
+                    <Link href={`/pages/${paths.delivery}`}>
+                        Доставка и оплата
+                    </Link>
+                ),
+                key: 'delivery',
+            },
+            {
+                label: (
+                    <Link href={`/pages/${paths.conditionsMontage}`}>
+                        Условия монтажа
+                    </Link>
+                ),
+                key: 'conditionsMontage',
+            },
+            {
+                label: <Link href={`/pages/${paths.warranty}`}>Гарантия</Link>,
+                key: 'warranty',
+            },
+        ],
     },
     {
         label: 'Акции',
@@ -24,8 +54,8 @@ const items: MenuItem[] = [
         className: 'font-bold',
     },
     {
-        label: 'Адреса студий',
-        key: 'adresses',
+        label: <Link href={`/pages/${paths.contacts}`}>Контакты</Link>,
+        key: 'contacts',
         className: 'font-bold',
     },
 ];
