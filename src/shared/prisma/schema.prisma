@@ -124,3 +124,16 @@ model Slide {
   href                String?
   imageSrc            String
 }
+
+model Page {
+  id Int @id @default(autoincrement())
+
+  name            String
+  metaTitle       String?
+  metaDescription String?
+  text            String
+  alias           String  @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

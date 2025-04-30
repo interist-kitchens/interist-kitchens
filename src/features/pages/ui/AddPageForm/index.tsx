@@ -1,27 +1,14 @@
 'use client';
 
 import { FC, useEffect, useState } from 'react';
-import {
-    Button,
-    Flex,
-    Form,
-    FormProps,
-    Input,
-    message,
-    Upload,
-    UploadFile,
-} from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
-import { appendFieldsToFormData, transliterateToSlug } from '@/shared/lib';
-import { useUnit } from 'effector-react/compat';
-import {
-    categoryCreateAdminModel,
-    createCategory,
-} from '@/entities/categories';
+import { Button, Flex, Form, FormProps, Input, message } from 'antd';
 import { useRouter } from 'next/navigation';
-import { normFile, uploadProps } from '@/features/categories/lib';
 import { WysiwygEditor } from '@/shared/ui/WysiwygEditor';
+import { useUnit } from 'effector-react/compat';
+import { pageCreateAdminModel } from '@/entities/pages/model/pageCreateAdminModel';
+import { createPage } from '@/entities/pages';
 import { paths } from '@/shared/routing';
+import { transliterateToSlug } from '@/shared/lib';
 
 const { Item: FormItem } = Form;
 
@@ -30,37 +17,26 @@ type FieldType = {
     metaTitle?: string;
     metaDescription?: string;
     text?: string;
-    image?: UploadFile;
     alias: string;
 };
 
-export const AddCategoryForm: FC = () => {
+export const AddPageForm: FC = () => {
     const router = useRouter();
     const [textDescription, setTextDescription] = useState<string>('');
 
     const [loading, submit, isSuccess, reset] = useUnit([
-        categoryCreateAdminModel.$pending,
-        categoryCreateAdminModel.submitCreate,
-        categoryCreateAdminModel.$isSuccess,
-        createCategory.reset,
+        pageCreateAdminModel.$pending,
+        pageCreateAdminModel.submitCreate,
+        pageCreateAdminModel.$isSuccess,
+        createPage.reset,
     ]);
 
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
-        const formData = new FormData();
-
-        const appendedValues = {
-            name: values.name,
-            metaTitle: values.metaTitle ?? '',
-            metaDescription: values.metaDescription ?? '',
+        submit({
+            ...values,
+            alias: values?.alias ?? transliterateToSlug(values.name),
             text: textDescription,
-            image: values.image?.originFileObj ?? '',
-            imageName: values.image?.name ?? '',
-            alias: values.alias ?? transliterateToSlug(values.name),
-        };
-
-        appendFieldsToFormData(formData, appendedValues);
-
-        submit(formData);
+        });
     };
 
     useEffect(() => {
@@ -68,26 +44,26 @@ export const AddCategoryForm: FC = () => {
             message
                 .open({
                     type: 'success',
-                    content: 'Категория создана успешно',
+                    content: 'Страница создана успешно',
                     duration: 1,
                 })
                 .then(() => {
                     reset();
-                    router.push(paths.categoriesAdmin);
+                    router.push(paths.pageAdmin);
                 });
         }
     }, [reset, isSuccess, router]);
 
     return (
         <Form
-            name={'addCategory'}
+            name={'addPage'}
             layout={'vertical'}
             onFinish={onFinish}
             autoComplete="off"
         >
             <Flex align={'center'} gap={10} justify={'space-between'}>
                 <FormItem<FieldType>
-                    label="Название категории"
+                    label="Название страницы"
                     name="name"
                     rules={[{ required: true, message: 'Введите название' }]}
                     className={'w-full'}
@@ -107,22 +83,6 @@ export const AddCategoryForm: FC = () => {
                     className={'w-full'}
                 >
                     <Input />
-                </FormItem>
-
-                <FormItem
-                    name="image"
-                    label="Картинка"
-                    valuePropName="image"
-                    getValueFromEvent={normFile}
-                >
-                    <Upload
-                        name="image"
-                        listType="picture"
-                        multiple={false}
-                        {...uploadProps}
-                    >
-                        <Button icon={<UploadOutlined />}>Загрузить</Button>
-                    </Upload>
                 </FormItem>
             </Flex>
 
