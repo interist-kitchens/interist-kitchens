@@ -11,4 +11,5 @@ export const paths = {
     sliderAdmin: '/admin/slider',
     callbackAdmin: '/admin/callback',
     pageAdmin: '/admin/pages',
+    pageAdminCreate: '/admin/pages/create',
 };

@@ -1,1 +1,2 @@
-export { PageListAdminPage } from './ui/PageListAdminPanel';
+export { PageListAdminPanel } from './ui/PageListAdminPanel';
+export { PageCreateAdminPanel } from './ui/PageCreateAdminPanel';

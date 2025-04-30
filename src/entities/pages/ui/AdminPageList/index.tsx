@@ -3,6 +3,7 @@
 import { FC } from 'react';
 import { Page } from '@prisma/client';
 import { Table, TableProps } from 'antd';
+import { dateFormat } from '@/shared/lib';
 
 type Props = {
     pages?: Page[];
@@ -36,11 +37,13 @@ const columns: TableProps<DataType>['columns'] = [
         title: 'Создано',
         dataIndex: 'createdAt',
         key: 'createdAt',
+        render: (value) => dateFormat(value),
     },
     {
         title: 'Обновлено',
         dataIndex: 'updatedAt',
         key: 'updatedAt',
+        render: (value) => dateFormat(value),
     },
     {
         title: '',

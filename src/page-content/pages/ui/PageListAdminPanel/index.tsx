@@ -4,17 +4,18 @@ import { Flex } from 'antd';
 import Link from 'next/link';
 import { Page } from '@prisma/client';
 import { AdminPageList } from '@/entities/pages';
+import { paths } from '@/shared/routing';
 
 type Props = {
     pages?: Page[];
 };
 
-export const PageListAdminPage: NextPage<Props> = async ({ pages }) => {
+export const PageListAdminPanel: NextPage<Props> = async ({ pages }) => {
     return (
         <>
             <Flex align={'center'} justify={'space-between'}>
                 <Title>Страницы</Title>
-                <Link href={'#'}>Добавить</Link>
+                <Link href={paths.pageAdminCreate}>Добавить</Link>
             </Flex>
             <AdminPageList pages={pages} />
         </>

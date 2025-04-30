@@ -1,7 +1,7 @@
 import { allSettled, fork, serialize } from 'effector';
 import { EffectorNext } from '@effector/next';
 import { getPages, pageListAdminModel } from '@/entities/pages';
-import { PageListAdminPage } from '@/page-content/pages';
+import { PageListAdminPanel } from '@/page-content/pages';
 
 async function preload() {
     'use server';
@@ -24,7 +24,7 @@ export default async function Page() {
 
     return (
         <EffectorNext values={values}>
-            <PageListAdminPage pages={pages} />
+            <PageListAdminPanel pages={pages} />
         </EffectorNext>
     );
 }
