@@ -4,6 +4,7 @@ import { Categories, Error } from '@/entities/categories/api';
 import { mapCategories } from '@/entities/categories/lib';
 import { prisma } from '@/shared/prisma/prisma-client';
 import { dateFormat } from '@/shared/lib';
+import { generateBlurImg } from '@/shared/lib/generateBlurImg';
 
 export const getCategories = async (): Promise<Categories[] | undefined> => {
     try {
@@ -66,6 +67,40 @@ export const getCategory = async (id: string): Promise<Categories | null> => {
                 updatedAt: dateFormat(category.updatedAt),
                 metaTitle: category.metaTitle,
                 metaDescription: category.metaDescription,
+            };
+        }
+    } catch (e) {
+        console.error(e);
+    }
+
+    return null;
+};
+
+export const getCategoryByAlias = async (
+    alias: string
+): Promise<Categories | null> => {
+    try {
+        const category = await prisma.category.findUnique({
+            where: { alias: alias },
+            include: {
+                products: true,
+            },
+        });
+
+        if (category) {
+            return {
+                ...category,
+                id: String(category?.id),
+                createdAt: dateFormat(category.createdAt),
+                updatedAt: dateFormat(category.updatedAt),
+                products: category?.products
+                    ? await Promise.all(
+                          category.products.map(async (product) => ({
+                              ...product,
+                              imageBlur: await generateBlurImg(product.image),
+                          }))
+                      )
+                    : [],
             };
         }
     } catch (e) {
