@@ -1,6 +1,12 @@
 import { allSettled, fork, serialize } from 'effector';
 import { EffectorNext } from '@effector/next';
 import { LoginPage, loginPage } from '@/page-content/loginPage';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Вход',
+    description: 'Компания QКухни авторизация.',
+};
 
 export default async function Page() {
     const scope = fork();
