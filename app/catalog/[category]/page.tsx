@@ -4,6 +4,30 @@ import { notFound } from 'next/navigation';
 import { categoryListModel } from '@/entities/categories';
 import { CategoryListPage } from '@/page-content/categories';
 
+export async function generateMetadata({
+    params,
+}: {
+    params: { category: string };
+}) {
+    const scope = fork();
+
+    await allSettled(categoryListModel.categoryListPage.open, {
+        scope,
+        params,
+    });
+
+    const category = scope.getState(categoryListModel.$currentCategory);
+
+    return {
+        title: category?.metaTitle?.length
+            ? category?.metaTitle
+            : `${category?.name} на заказ по низким ценам`,
+        description: category?.metaDescription?.length
+            ? category?.metaDescription
+            : `Компания QКухни предлагает купить кухню от производителя, на заказ. С каталогом выполненных работ вы можете ознакомиться на сайте`,
+    };
+}
+
 export async function generateStaticParams() {
     const scope = fork();
 

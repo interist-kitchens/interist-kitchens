@@ -4,6 +4,27 @@ import { ProductPage } from '@/page-content/products/ui/ProductPage';
 import { productModel } from '@/entities/products/model/productModel';
 import { notFound } from 'next/navigation';
 
+export async function generateMetadata({
+    params,
+}: {
+    params: { category: string; product: string };
+}) {
+    const scope = fork();
+
+    await allSettled(productModel.productPage.open, { scope, params });
+
+    const product = scope.getState(productModel.$currentProduct);
+
+    return {
+        title: product?.metaTitle?.length
+            ? product?.metaTitle
+            : `${product?.name} под заказ`,
+        description: product?.metaDescription?.length
+            ? product?.metaDescription
+            : `${product?.name} от производителя QКухни`,
+    };
+}
+
 export async function generateStaticParams() {
     const scope = fork();
 
