@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Menu, type MenuProps } from 'antd';
+import React, { CSSProperties, useState } from 'react';
+import { Button, Menu, type MenuProps } from 'antd';
 import Link from 'next/link';
 import { paths } from '@/shared/routing';
+import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
+import { CloseOutlined, MenuOutlined } from '@ant-design/icons';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -60,8 +62,23 @@ const items: MenuItem[] = [
     },
 ];
 
-export const HeaderMenu = () => {
+const burgerIconStyle: CSSProperties = {
+    fontSize: 24,
+};
+
+type Props = {
+    burgerMode?: boolean;
+};
+
+export const HeaderMenu = ({ burgerMode }: Props) => {
     const [current, setCurrent] = useState<string[] | undefined>(undefined);
+    const [collapsed, setCollapsed] = useState(true);
+    const breakpoints = useBreakpoint();
+    const isXlScreen = !!breakpoints?.xl;
+    const getClassNameForSmoothAppearance = (hidden: boolean): string => `
+          absolute transition-all duration-400
+          ${hidden ? 'opacity-0 scale-0' : 'opacity-100 scale-100'}
+        `;
 
     const onClick: MenuProps['onClick'] = (e) => {
         console.log('click ', e);
@@ -69,11 +86,51 @@ export const HeaderMenu = () => {
     };
 
     return (
-        <Menu
-            onClick={onClick}
-            selectedKeys={current}
-            mode="horizontal"
-            items={items}
-        />
+        <div className="flex items-center justify-center">
+            {isXlScreen && !burgerMode && (
+                <Menu
+                    onClick={onClick}
+                    selectedKeys={current}
+                    mode="horizontal"
+                    items={items}
+                />
+            )}
+            {!isXlScreen && burgerMode && (
+                <>
+                    <Button
+                        type="text"
+                        shape="circle"
+                        size="large"
+                        ghost
+                        onClick={() => {
+                            setCollapsed((prev) => !prev);
+                        }}
+                        className="hover:!bg-[var(--background)] active:!bg-[var(--background)]"
+                    >
+                        <MenuOutlined
+                            style={burgerIconStyle}
+                            className={getClassNameForSmoothAppearance(
+                                !collapsed
+                            )}
+                        />
+                        <CloseOutlined
+                            style={burgerIconStyle}
+                            className={getClassNameForSmoothAppearance(
+                                collapsed
+                            )}
+                        />
+                    </Button>
+                    {!collapsed && (
+                        <Menu
+                            onClick={onClick}
+                            selectedKeys={current}
+                            mode="inline"
+                            items={items}
+                            className="absolute top-[64px] left-0 w-full"
+                        />
+                    )}
+                </>
+            )}
+        </div>
     );
 };

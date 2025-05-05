@@ -37,6 +37,7 @@ export const Header: FC = async () => {
                     phone={MAIN_COMPANY_INFO.phone}
                 />
                 <UserInfo session={session} />
+                <HeaderMenu burgerMode />
             </Flex>
         </HeaderLayout>
     );
