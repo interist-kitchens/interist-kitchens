@@ -1,22 +1,29 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Menu, type MenuProps } from 'antd';
-import Link from 'next/link';
+import React, { CSSProperties, useState } from 'react';
+import { Button, Menu, type MenuProps } from 'antd';
+import { Link } from '@/shared/ui/Typography';
 import { paths } from '@/shared/routing';
+import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
+import { CloseOutlined, MenuOutlined } from '@ant-design/icons';
+import { CallBackButton } from '@/features/leads/callBack/ui/CallBackButton';
+import { PhoneLink } from '@/shared/ui/PhoneLink';
+import { useMenuKeyFromPath } from '@/widgets/headerMenu/hooks/useMenuKeyFromPath';
+import { MENU_KEYS } from '@/widgets/headerMenu/constants';
 
 type MenuItem = Required<MenuProps>['items'][number];
+const menuItemClassName = 'font-bold';
 
 const items: MenuItem[] = [
     {
         label: <Link href={paths.catalog}>Каталог</Link>,
-        key: 'catalog',
-        className: 'font-bold',
+        key: MENU_KEYS.catalog,
+        className: menuItemClassName,
     },
     {
         label: 'Покупателям',
         key: 'user-info',
-        className: 'font-bold',
+        className: menuItemClassName,
         children: [
             {
                 label: (
@@ -24,7 +31,7 @@ const items: MenuItem[] = [
                         Сборка и монтаж
                     </Link>
                 ),
-                key: 'montage',
+                key: MENU_KEYS.montage,
             },
             {
                 label: (
@@ -32,7 +39,7 @@ const items: MenuItem[] = [
                         Доставка и оплата
                     </Link>
                 ),
-                key: 'delivery',
+                key: MENU_KEYS.delivery,
             },
             {
                 label: (
@@ -40,40 +47,111 @@ const items: MenuItem[] = [
                         Условия монтажа
                     </Link>
                 ),
-                key: 'conditionsMontage',
+                key: MENU_KEYS.conditionsMontage,
             },
             {
                 label: <Link href={`/pages/${paths.warranty}`}>Гарантия</Link>,
-                key: 'warranty',
+                key: MENU_KEYS.warranty,
             },
         ],
     },
     {
-        label: 'Акции',
-        key: 'sales',
-        className: 'font-bold',
+        label: <Link href={`/pages/${paths.contacts}`}>Контакты</Link>,
+        key: MENU_KEYS.contacts,
+        className: menuItemClassName,
     },
     {
-        label: <Link href={`/pages/${paths.contacts}`}>Контакты</Link>,
-        key: 'contacts',
-        className: 'font-bold',
+        label: <CallBackButton />,
+        key: MENU_KEYS.callBackButton,
+        disabled: true,
+        className:
+            'flex justify-center items-center md:!hidden !py-[24px] !cursor-auto',
     },
 ];
 
-export const HeaderMenu = () => {
+const burgerIconStyle: CSSProperties = {
+    fontSize: 24,
+};
+
+type Props = {
+    burgerMode?: boolean;
+    phone?: string;
+};
+
+export const HeaderMenu = ({ burgerMode, phone }: Props) => {
     const [current, setCurrent] = useState<string[] | undefined>(undefined);
+    const [collapsed, setCollapsed] = useState(true);
+    const breakpoints = useBreakpoint(true);
+    const isXlScreen = !!breakpoints?.xl;
+    const getClassNameForSmoothAppearance = (hidden: boolean): string => `
+          absolute transition-all duration-400
+          ${hidden ? 'opacity-0 scale-0' : 'opacity-100 scale-100'}
+        `;
 
     const onClick: MenuProps['onClick'] = (e) => {
-        console.log('click ', e);
         setCurrent([e.key]);
     };
 
+    useMenuKeyFromPath(setCurrent);
+
+    const adaptiveItems = phone
+        ? [
+              ...items,
+              {
+                  label: <PhoneLink phone={phone} withBorder />,
+                  key: MENU_KEYS.phone,
+                  className:
+                      'flex justify-center items-center md:!hidden !py-[24px] hover:!bg-[var(--background)] active:!bg-[var(--background)]',
+              },
+          ]
+        : items;
+
     return (
-        <Menu
-            onClick={onClick}
-            selectedKeys={current}
-            mode="horizontal"
-            items={items}
-        />
+        <div className="flex items-center justify-center">
+            {isXlScreen && !burgerMode && (
+                <Menu
+                    onClick={onClick}
+                    selectedKeys={current}
+                    mode="horizontal"
+                    items={items}
+                />
+            )}
+            {!isXlScreen && burgerMode && (
+                <>
+                    <Button
+                        type="text"
+                        shape="circle"
+                        size="large"
+                        ghost
+                        onClick={() => {
+                            setCollapsed((prev) => !prev);
+                        }}
+                        className="hover:!bg-[var(--background)] active:!bg-[var(--background)]"
+                    >
+                        <MenuOutlined
+                            style={burgerIconStyle}
+                            className={getClassNameForSmoothAppearance(
+                                !collapsed
+                            )}
+                        />
+                        <CloseOutlined
+                            style={burgerIconStyle}
+                            className={getClassNameForSmoothAppearance(
+                                collapsed
+                            )}
+                        />
+                    </Button>
+                    {!collapsed && (
+                        <Menu
+                            onClick={onClick}
+                            selectedKeys={current}
+                            mode="inline"
+                            items={adaptiveItems}
+                            className="absolute top-[64px] left-0 w-full"
+                        />
+                    )}
+                </>
+            )}
+        </div>
     );
 };

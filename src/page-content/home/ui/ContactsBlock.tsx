@@ -1,27 +1,15 @@
 import { Flex } from 'antd';
-import { Link } from '../../../shared/ui/Typography';
 import { CallBackButton } from '@/features/leads/callBack/ui/CallBackButton';
+import { PhoneLink } from '@/shared/ui/PhoneLink';
 
 type Props = {
-    homeUrl: string;
     phone: string;
 };
 
-export const ContactsBlock = ({ homeUrl, phone }: Props) => {
-    const formattedPhone = phone.match(/\d+/g)?.join('');
-
+export const ContactsBlock = ({ phone }: Props) => {
     return (
-        <Flex gap={12} align={'center'}>
-            <Link href={homeUrl} target="_blank" className="!text-sm">
-                {homeUrl}
-            </Link>
-            <Link
-                href={`tel:${formattedPhone}`}
-                strong
-                className="!text-[var(--foreground)] hover:!text-[var(--hover-default)]"
-            >
-                {phone}
-            </Link>
+        <Flex gap={12} align={'center'} rootClassName="!hidden md:!flex">
+            <PhoneLink phone={phone} />
             <CallBackButton />
         </Flex>
     );
