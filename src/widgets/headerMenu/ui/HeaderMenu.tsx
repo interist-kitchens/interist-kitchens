@@ -8,6 +8,8 @@ import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
 import { CloseOutlined, MenuOutlined } from '@ant-design/icons';
 import { CallBackButton } from '@/features/leads/callBack/ui/CallBackButton';
 import { PhoneLink } from '@/shared/ui/PhoneLink';
+import { useMenuKeyFromPath } from '@/widgets/headerMenu/hooks/useMenuKeyFromPath';
+import { MENU_KEYS } from '@/widgets/headerMenu/constants';
 
 type MenuItem = Required<MenuProps>['items'][number];
 const menuItemClassName = 'font-bold';
@@ -15,7 +17,7 @@ const menuItemClassName = 'font-bold';
 const items: MenuItem[] = [
     {
         label: <Link href={paths.catalog}>Каталог</Link>,
-        key: 'catalog',
+        key: MENU_KEYS.catalog,
         className: menuItemClassName,
     },
     {
@@ -29,7 +31,7 @@ const items: MenuItem[] = [
                         Сборка и монтаж
                     </Link>
                 ),
-                key: 'montage',
+                key: MENU_KEYS.montage,
             },
             {
                 label: (
@@ -37,7 +39,7 @@ const items: MenuItem[] = [
                         Доставка и оплата
                     </Link>
                 ),
-                key: 'delivery',
+                key: MENU_KEYS.delivery,
             },
             {
                 label: (
@@ -45,27 +47,22 @@ const items: MenuItem[] = [
                         Условия монтажа
                     </Link>
                 ),
-                key: 'conditionsMontage',
+                key: MENU_KEYS.conditionsMontage,
             },
             {
                 label: <Link href={`/pages/${paths.warranty}`}>Гарантия</Link>,
-                key: 'warranty',
+                key: MENU_KEYS.warranty,
             },
         ],
     },
     {
-        label: 'Акции',
-        key: 'sales',
-        className: menuItemClassName,
-    },
-    {
         label: <Link href={`/pages/${paths.contacts}`}>Контакты</Link>,
-        key: 'contacts',
+        key: MENU_KEYS.contacts,
         className: menuItemClassName,
     },
     {
         label: <CallBackButton />,
-        key: 'call-back-button',
+        key: MENU_KEYS.callBackButton,
         disabled: true,
         className:
             'flex justify-center items-center md:!hidden !py-[24px] !cursor-auto',
@@ -92,16 +89,17 @@ export const HeaderMenu = ({ burgerMode, phone }: Props) => {
         `;
 
     const onClick: MenuProps['onClick'] = (e) => {
-        console.log('click ', e);
         setCurrent([e.key]);
     };
+
+    useMenuKeyFromPath(setCurrent);
 
     const adaptiveItems = phone
         ? [
               ...items,
               {
                   label: <PhoneLink phone={phone} withBorder />,
-                  key: 'phone',
+                  key: MENU_KEYS.phone,
                   className:
                       'flex justify-center items-center md:!hidden !py-[24px] hover:!bg-[var(--background)] active:!bg-[var(--background)]',
               },

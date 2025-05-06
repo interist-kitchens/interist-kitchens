@@ -9,7 +9,6 @@ import { authOptions } from '@/shared/constants/authOptions';
 import { HeaderLogo } from '@/widgets/headerLogo';
 
 const MAIN_COMPANY_INFO = {
-    homeUrl: 'https://interest-kitchen.ru',
     phone: '8 800 511-96-59',
 };
 
