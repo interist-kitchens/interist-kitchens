@@ -2,23 +2,26 @@
 
 import React, { CSSProperties, useState } from 'react';
 import { Button, Menu, type MenuProps } from 'antd';
-import Link from 'next/link';
+import { Link } from '@/shared/ui/Typography';
 import { paths } from '@/shared/routing';
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
 import { CloseOutlined, MenuOutlined } from '@ant-design/icons';
+import { CallBackButton } from '@/features/leads/callBack/ui/CallBackButton';
+import { PhoneLink } from '@/shared/ui/PhoneLink';
 
 type MenuItem = Required<MenuProps>['items'][number];
+const menuItemClassName = 'font-bold';
 
 const items: MenuItem[] = [
     {
         label: <Link href={paths.catalog}>Каталог</Link>,
         key: 'catalog',
-        className: 'font-bold',
+        className: menuItemClassName,
     },
     {
         label: 'Покупателям',
         key: 'user-info',
-        className: 'font-bold',
+        className: menuItemClassName,
         children: [
             {
                 label: (
@@ -53,12 +56,19 @@ const items: MenuItem[] = [
     {
         label: 'Акции',
         key: 'sales',
-        className: 'font-bold',
+        className: menuItemClassName,
     },
     {
         label: <Link href={`/pages/${paths.contacts}`}>Контакты</Link>,
         key: 'contacts',
-        className: 'font-bold',
+        className: menuItemClassName,
+    },
+    {
+        label: <CallBackButton />,
+        key: 'call-back-button',
+        disabled: true,
+        className:
+            'flex justify-center items-center md:!hidden !py-[24px] !cursor-auto',
     },
 ];
 
@@ -68,12 +78,13 @@ const burgerIconStyle: CSSProperties = {
 
 type Props = {
     burgerMode?: boolean;
+    phone?: string;
 };
 
-export const HeaderMenu = ({ burgerMode }: Props) => {
+export const HeaderMenu = ({ burgerMode, phone }: Props) => {
     const [current, setCurrent] = useState<string[] | undefined>(undefined);
     const [collapsed, setCollapsed] = useState(true);
-    const breakpoints = useBreakpoint();
+    const breakpoints = useBreakpoint(true);
     const isXlScreen = !!breakpoints?.xl;
     const getClassNameForSmoothAppearance = (hidden: boolean): string => `
           absolute transition-all duration-400
@@ -84,6 +95,18 @@ export const HeaderMenu = ({ burgerMode }: Props) => {
         console.log('click ', e);
         setCurrent([e.key]);
     };
+
+    const adaptiveItems = phone
+        ? [
+              ...items,
+              {
+                  label: <PhoneLink phone={phone} withBorder />,
+                  key: 'phone',
+                  className:
+                      'flex justify-center items-center md:!hidden !py-[24px] hover:!bg-[var(--background)] active:!bg-[var(--background)]',
+              },
+          ]
+        : items;
 
     return (
         <div className="flex items-center justify-center">
@@ -125,7 +148,7 @@ export const HeaderMenu = ({ burgerMode }: Props) => {
                             onClick={onClick}
                             selectedKeys={current}
                             mode="inline"
-                            items={items}
+                            items={adaptiveItems}
                             className="absolute top-[64px] left-0 w-full"
                         />
                     )}
