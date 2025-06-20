@@ -5,15 +5,16 @@ import { MainLayout } from '@/widgets/layouts';
 import { Title } from '@/shared/ui/Typography';
 import { Breadcrumbs } from '@/shared/ui/Breadcrumbs';
 import { paths } from '@/shared/routing';
+import Link from 'next/link';
 
 export const Contacts: NextPage = async () => {
     return (
         <MainLayout>
             <section className={'container mx-auto'}>
-                <div className={'pb-6'}>
+                <div className={'p-6'}>
                     <Breadcrumbs
                         breadcrumbs={[
-                            { title: <a href={paths.home}>Главная</a> },
+                            { title: <Link href={paths.home}>Главная</Link> },
                             { title: 'Контакты' },
                         ]}
                     />

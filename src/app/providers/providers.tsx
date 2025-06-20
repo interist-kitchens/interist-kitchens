@@ -5,10 +5,22 @@ import { EffectorNext } from '@effector/next';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { ConfigProvider } from 'antd';
 import { ModalManager } from '@/shared/ui/ModalManager/ui/ModalManager';
+import { cartModel } from '@/entities/leads/model';
+import { initializeMultiSsrPersist } from '@/shared/lib/ssrPersist';
 
 export const Providers: FC<PropsWithChildren> = ({ children }) => {
+    const { values } = initializeMultiSsrPersist({
+        stores: [
+            {
+                store: cartModel.$cart,
+                key: 'cart',
+                defaultValue: [],
+            },
+        ],
+    });
+
     return (
-        <EffectorNext>
+        <EffectorNext values={values}>
             <AntdRegistry>
                 <ConfigProvider
                     theme={{
