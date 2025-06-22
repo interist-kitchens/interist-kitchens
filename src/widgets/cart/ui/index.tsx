@@ -3,17 +3,45 @@
 import { useUnit } from 'effector-react';
 import { cartModel } from '@/entities/leads/model';
 import ClientOnly from '@/shared/ui/ClientOnly';
-import { ProductCart } from '@/entities/leads';
-import { Button } from 'antd';
+import { DeliveryForm, ProductCart } from '@/entities/leads';
+import { Button, Radio, Tabs } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
+import { Title } from '@/shared/ui/Typography';
+import { useState } from 'react';
+import { PaymentType } from '@/entities/leads/api';
+
+const { Group: RadioGroup } = Radio;
 
 export const CartBlock = () => {
-    const [cart, count, total, clearCart] = useUnit([
+    const [
+        cart,
+        count,
+        total,
+        clearCart,
+        isValid,
+        deliveryForm,
+        submit,
+        loading,
+    ] = useUnit([
         cartModel.$cart,
         cartModel.$cartCount,
         cartModel.$cartTotal,
         cartModel.clearCart,
+        cartModel.$deliveryFormValid,
+        cartModel.$deliveryForm,
+        cartModel.submitCartOrder,
+        cartModel.$pending,
     ]);
+
+    const [payment, setPayment] = useState<PaymentType>('cash');
+
+    const handleSubmit = () => {
+        submit({
+            products: cart,
+            delivery: deliveryForm,
+            payment,
+        });
+    };
 
     return (
         <ClientOnly>
@@ -23,7 +51,7 @@ export const CartBlock = () => {
                     <>
                         <div className="mb-3">
                             <span id="resumaCart">
-                                {`${count} ТОВАРЫ В КОРЗИНЕ ПОКУПОК, `}
+                                {`${count} ТОВАР(А) В КОРЗИНЕ ПОКУПОК, `}
                             </span>
                             <strong className="price price--fixed-size">
                                 {new Intl.NumberFormat('ru-RU', {
@@ -70,6 +98,53 @@ export const CartBlock = () => {
                                     Удалить все товары
                                 </Button>
                             </div>
+                        </div>
+                        <hr />
+                        <div className={'my-4'}>
+                            <Title level={3}>Доставка</Title>
+                            <Tabs
+                                defaultActiveKey="1"
+                                tabPosition={'left'}
+                                items={[
+                                    {
+                                        key: '1',
+                                        label: 'Доставка по городу Омск',
+                                        children: <DeliveryForm />,
+                                        destroyInactiveTabPane: true,
+                                    },
+                                    {
+                                        key: '2',
+                                        label: 'Доставка',
+                                        children: 'Доставка',
+                                    },
+                                ]}
+                            />
+                        </div>
+                        <hr />
+                        <div className={'my-4'}>
+                            <Title level={3}>Оплата</Title>
+                            <RadioGroup
+                                name="radiogroup"
+                                defaultValue={payment}
+                                options={[
+                                    { value: 'cash', label: 'Наличными' },
+                                ]}
+                                onChange={(e) => {
+                                    setPayment(e.target.value);
+                                }}
+                            />
+                        </div>
+                        <hr />
+                        <div className={'my-4 flex justify-end'}>
+                            <Button
+                                size={'large'}
+                                type={'primary'}
+                                onClick={handleSubmit}
+                                disabled={!isValid}
+                                loading={loading}
+                            >
+                                Оформить заказ
+                            </Button>
                         </div>
                     </>
                 )}
