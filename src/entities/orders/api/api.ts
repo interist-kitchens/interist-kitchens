@@ -17,8 +17,13 @@ export const getOrders = async (): Promise<Order[]> => {
     try {
         const orders = await prisma.order.findMany({
             include: {
-                products: true,
-                user: true,
+                user: true, // Include user data
+                items: {
+                    // Include order items
+                    include: {
+                        product: true, // Include product details for each item
+                    },
+                },
             },
         });
 

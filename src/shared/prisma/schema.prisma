@@ -75,8 +75,9 @@ model Order {
   status    OrderStatus @default(PENDING)
   name      String
   phone     String
-  email     String?
+  email     String
   address   String
+  payment   PaymentType @default(CASH)
   userId    String?
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
@@ -146,4 +147,11 @@ enum OrderStatus {
   PENDING
   FINISHED
   CANCELED
+}
+
+enum PaymentType {
+  CASH
+  CARD
+  ONLINE
+  BANK_TRANSFER
 }
