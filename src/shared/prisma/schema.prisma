@@ -49,6 +49,7 @@ model Product {
   colors          ColorsOnProducts[]
   orderItems      OrderItem[]
   categories      Category           @relation(fields: [categoryId], references: [id])
+  IndividualOrder IndividualOrder[]
 }
 
 model Color {
@@ -98,6 +99,18 @@ model Callback {
   name      String
   email     String?
   phone     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model IndividualOrder {
+  id        Int     @id @default(autoincrement())
+  name      String
+  email     String?
+  phone     String
+  productId Int
+
+  product   Product  @relation(fields: [productId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
