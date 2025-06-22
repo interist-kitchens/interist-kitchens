@@ -4,13 +4,14 @@ import { useUnit } from 'effector-react';
 import { cartModel } from '@/entities/leads/model';
 import ClientOnly from '@/shared/ui/ClientOnly';
 import { DeliveryForm, ProductCart } from '@/entities/leads';
-import { Button, Radio, Tabs } from 'antd';
+import { Button, Grid, Radio, Tabs } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 import { Title } from '@/shared/ui/Typography';
 import { useState } from 'react';
 import { PaymentType } from '@/entities/leads/api';
 
 const { Group: RadioGroup } = Radio;
+const { useBreakpoint } = Grid;
 
 export const CartBlock = () => {
     const [
@@ -32,6 +33,10 @@ export const CartBlock = () => {
         cartModel.submitCartOrder,
         cartModel.$pending,
     ]);
+
+    const screens = useBreakpoint();
+
+    const tabPosition = screens.md ? 'left' : 'top';
 
     const [payment, setPayment] = useState<PaymentType>('cash');
 
@@ -104,7 +109,7 @@ export const CartBlock = () => {
                             <Title level={3}>Доставка</Title>
                             <Tabs
                                 defaultActiveKey="1"
-                                tabPosition={'left'}
+                                tabPosition={tabPosition}
                                 items={[
                                     {
                                         key: '1',
