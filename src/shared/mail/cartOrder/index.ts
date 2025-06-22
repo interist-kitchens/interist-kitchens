@@ -85,7 +85,7 @@ export const cartOrderTemplate = (data: CartOrderType, orderNumber: number) => `
                           <td>${product?.product?.name}</td>
                           <td>${product?.count}</td>
                           <td>${product?.product?.price} ₽</td>
-                          <td>${(product.product.price ?? 0) * product?.count} ₽</td>
+                          <td>${(parseFloat(product.product.price) ?? 0) * product?.count} ₽</td>
                       </tr>
                       `
                       )}
@@ -93,7 +93,7 @@ export const cartOrderTemplate = (data: CartOrderType, orderNumber: number) => `
                     <tfoot>
                       <tr>
                         <td colSpan={3} className="total">Итого:</td>
-                        <td className="total">${data?.products?.reduce((acc, product) => acc + (product.product.price ?? 0) * product?.count, 0)} ₽</td>
+                        <td className="total">${data?.products?.reduce((acc, product) => acc + (parseFloat(product.product.price) ?? 0) * product?.count, 0)} ₽</td>
                       </tr>
                     </tfoot>
                   </table>

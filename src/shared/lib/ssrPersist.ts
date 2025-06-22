@@ -9,11 +9,11 @@ interface StoreConfig<T> {
 
 // Параметры для инициализации нескольких сторов
 interface InitializeMultiSsrPersistParams {
-    stores: StoreConfig<any>[]; // Массив конфигураций сторов
+    stores: StoreConfig<unknown>[]; // Массив конфигураций сторов
     forkParams?: {
         // Дополнительные параметры для fork()
-        values?: [Store<any>, any][]; // Дополнительные начальные значения
-        handlers?: [Store<any>, (value: any) => any][]; // Обработчики
+        values?: [Store<unknown>, unknown][]; // Дополнительные начальные значения
+        handlers?: [Store<unknown>, (value: unknown) => unknown][]; // Обработчики
     };
 }
 
@@ -33,7 +33,7 @@ export function initializeMultiSsrPersist({
     forkParams = {},
 }: InitializeMultiSsrPersistParams) {
     // Подготовка начальных значений
-    const initialValues: [Store<any>, any][] = [];
+    const initialValues: [Store<unknown>, unknown][] = [];
 
     // Обработка каждого стора
     stores.forEach(({ store, key, defaultValue }) => {
@@ -62,6 +62,8 @@ export function initializeMultiSsrPersist({
 
     // Создаем scope со всеми сторами
     const scope = fork({
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         values: allValues, // Начальные значения
         handlers: forkParams.handlers || [], // Обработчики
     });
