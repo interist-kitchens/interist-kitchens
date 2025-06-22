@@ -42,3 +42,13 @@ export type Order = {
         role: UserRole;
     } | null;
 };
+
+export type IndividualOrder = {
+    id: number;
+    name: string;
+    email: string | null;
+    phone: string;
+    product: Product;
+    createdAt: Date;
+    updatedAt: Date;
+};

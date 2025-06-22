@@ -19,7 +19,7 @@ export async function POST(request: Request) {
                 productId: parseInt(formData.product.id),
                 name: formData.name,
                 phone: formData.phone,
-                mail: formData?.mail,
+                email: formData?.mail,
             },
         });
 
