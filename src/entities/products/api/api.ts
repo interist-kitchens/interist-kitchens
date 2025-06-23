@@ -6,6 +6,7 @@ import { createMutation } from '@farfetched/core';
 import { createInternalRequestFx } from '@/shared/api/requests';
 import { Error } from '@/entities/categories';
 import { generateBlurImg } from '@/shared/lib/generateBlurImg';
+import { $Enums } from '@prisma/client';
 
 export const getProducts = async (): Promise<Product[] | undefined> => {
     try {
@@ -15,6 +16,20 @@ export const getProducts = async (): Promise<Product[] | undefined> => {
                     select: {
                         name: true,
                         alias: true,
+                    },
+                },
+                relatedFrom: {
+                    include: {
+                        toProduct: {
+                            include: {
+                                categories: {
+                                    select: {
+                                        name: true,
+                                        alias: true,
+                                    },
+                                },
+                            },
+                        },
                     },
                 },
             },
@@ -36,6 +51,20 @@ export const getProduct = async (id: string): Promise<Product | null> => {
                     alias: true,
                 },
             },
+            relatedFrom: {
+                include: {
+                    toProduct: {
+                        include: {
+                            categories: {
+                                select: {
+                                    name: true,
+                                    alias: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
     });
 
@@ -55,6 +84,14 @@ export const getProduct = async (id: string): Promise<Product | null> => {
                     blurImage: await generateBlurImg(image),
                 }))
             ),
+            relatedProducts: product.relatedFrom.map((relation) => ({
+                id: relation.toProduct.id,
+                name: relation.toProduct.name,
+                image: relation.toProduct.image,
+                price: relation.toProduct.price,
+                type: relation.type,
+                category: relation.toProduct.categories?.name || '',
+            })),
         };
     }
 
@@ -72,6 +109,20 @@ export const getProductByAlias = async (
                     select: {
                         name: true,
                         alias: true,
+                    },
+                },
+                relatedFrom: {
+                    include: {
+                        toProduct: {
+                            include: {
+                                categories: {
+                                    select: {
+                                        name: true,
+                                        alias: true,
+                                    },
+                                },
+                            },
+                        },
                     },
                 },
             },
@@ -93,6 +144,14 @@ export const getProductByAlias = async (
                         blurImage: await generateBlurImg(image),
                     }))
                 ),
+                relatedProducts: product.relatedFrom.map((relation) => ({
+                    id: relation.toProduct.id,
+                    name: relation.toProduct.name,
+                    image: relation.toProduct.image,
+                    price: relation.toProduct.price,
+                    type: relation.type,
+                    category: relation.toProduct.categories?.name || '',
+                })),
             };
         }
     } catch (e) {
@@ -131,6 +190,44 @@ export const updateProduct = createMutation({
         data: data.formData,
         headers: {
             'Content-Type': 'multipart/form-data',
+        },
+    })),
+});
+
+export const addProductRelation = createMutation({
+    effect: createInternalRequestFx<
+        {
+            productId: number;
+            relatedProductId: number;
+            type: $Enums.ProductRelationType;
+        },
+        void,
+        Error
+    >((params) => ({
+        url: `/api/products/${params.productId}/relations`,
+        method: 'POST',
+        data: {
+            relatedProductId: params.relatedProductId,
+            type: params.type,
+        },
+    })),
+});
+
+export const removeProductRelation = createMutation({
+    effect: createInternalRequestFx<
+        {
+            productId: number;
+            relatedProductId: number;
+            type: $Enums.ProductRelationType;
+        },
+        void,
+        Error
+    >((params) => ({
+        url: `/api/products/${params.productId}/relations`,
+        method: 'DELETE',
+        data: {
+            relatedProductId: params.relatedProductId,
+            type: params.type,
         },
     })),
 });

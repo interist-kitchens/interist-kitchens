@@ -19,6 +19,8 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([email])
 }
 
 enum UserRole {
@@ -51,15 +53,45 @@ model Product {
   images          String[]
   alias           String   @unique
   price           String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  categories Category @relation(fields: [categoryId], references: [id])
+  // Связи
+  categories Category           @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   categoryId Int
+  colors     ColorsOnProducts[]
+  order      Order[]
 
-  colors ColorsOnProducts[]
-  order  Order[]
+  // Связи с другими товарами (как источник)
+  relatedFrom RelatedProducts[] @relation("RelatedFrom")
+  // Связи с другими товарами (как цель)
+  relatedTo   RelatedProducts[] @relation("RelatedTo")
+
+  @@index([alias])
+  @@index([categoryId])
+}
+
+model RelatedProducts {
+  id   Int                 @id @default(autoincrement())
+  type ProductRelationType
+
+  // От какого товара связь (источник)
+  fromProduct   Product @relation("RelatedFrom", fields: [fromProductId], references: [id], onDelete: Cascade)
+  fromProductId Int
+
+  // К какому товару связь (цель)
+  toProduct   Product @relation("RelatedTo", fields: [toProductId], references: [id], onDelete: Cascade)
+  toProductId Int
+
+  // Уникальный ключ, чтобы избежать дубликатов связей
+  @@unique([fromProductId, toProductId, type])
+}
+
+enum ProductRelationType {
+  UPSELL
+  BUNDLE
+  SIMILAR
+  CROSS_SELL
 }
 
 model Color {

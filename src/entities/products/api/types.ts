@@ -1,4 +1,5 @@
 import { UploadFile } from 'antd';
+import { $Enums } from '@prisma/client';
 
 export type ProductResponse = {
     name: string;
@@ -14,6 +15,19 @@ export type ProductResponse = {
     categories: { name: string; alias: string };
     price: string;
     images: string[];
+    relatedFrom: {
+        type: string;
+        toProduct: {
+            id: number;
+            name: string;
+            image: string;
+            price: string;
+            categories: {
+                name: string;
+                alias: string;
+            } | null;
+        };
+    }[];
 };
 
 export type Product = {
@@ -35,6 +49,14 @@ export type Product = {
         blurImage?: string;
     }[];
     categories: { name: string; alias: string };
+    relatedProducts: {
+        id: number;
+        name: string;
+        image: string;
+        price: string;
+        type: $Enums.ProductRelationType;
+        category: string;
+    }[];
 };
 
 export type FormFieldType = {
@@ -47,4 +69,14 @@ export type FormFieldType = {
     alias: string;
     categoryId: string;
     price: string;
+    relatedProducts?: Array<{
+        productId: number;
+        type: $Enums.ProductRelationType;
+    }>;
+};
+
+export type Relation = {
+    relatedProductId: number;
+    type: $Enums.ProductRelationType;
+    productName: string;
 };

@@ -1,6 +1,7 @@
 import { Product, ProductResponse } from '@/entities/products/api';
 import { dateFormat } from '@/shared/lib';
 import { generateBlurImg } from '@/shared/lib/generateBlurImg';
+import { $Enums } from '@prisma/client';
 
 export const mapProduct = async (
     res: ProductResponse[]
@@ -20,6 +21,14 @@ export const mapProduct = async (
                     blurImage: await generateBlurImg(image),
                 }))
             ),
+            relatedProducts: product.relatedFrom.map((relation) => ({
+                id: relation.toProduct.id,
+                name: relation.toProduct.name,
+                image: relation.toProduct.image,
+                price: relation.toProduct.price,
+                type: relation.type as $Enums.ProductRelationType,
+                category: relation.toProduct.categories?.name || '',
+            })),
         }))
     );
 };
