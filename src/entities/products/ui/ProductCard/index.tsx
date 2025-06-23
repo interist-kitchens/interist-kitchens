@@ -19,7 +19,7 @@ export const ProductCard: FC<Props> = async ({
     return (
         <div
             className={
-                'flex flex-col bg-white px-5 py-4 w-full lg:w-1/3 gap-y-4'
+                'flex flex-col bg-white px-5 py-4 w-full lg:w-4/12 gap-y-4 rounded-lg shadow-lg'
             }
         >
             <Title style={{ marginBottom: 0 }}>{name}</Title>
