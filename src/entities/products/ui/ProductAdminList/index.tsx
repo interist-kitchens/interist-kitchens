@@ -9,6 +9,10 @@ import { DeleteProduct } from '@/features/products';
 import { useUnit } from 'effector-react';
 import { productDeleteAdminModel } from '@/entities/products/model';
 import { $Enums } from '@prisma/client';
+import {
+    relationTypeToColor,
+    relationTypeToName,
+} from '@/entities/products/lib';
 
 type ProductRelation = {
     id: number;
@@ -25,22 +29,6 @@ interface DataType {
     updatedAt: string;
     relations: ProductRelation[];
 }
-
-const relationTypeToColor: Record<$Enums.ProductRelationType, string> = {
-    SIMILAR: 'blue',
-    UPSELL: 'geekblue',
-    BUNDLE: 'green',
-    CROSS_SELL: 'orange',
-    MODULE: 'purple',
-};
-
-const relationTypeToName: Record<$Enums.ProductRelationType, string> = {
-    SIMILAR: 'Похожий',
-    UPSELL: 'Апселл',
-    BUNDLE: 'Комплект',
-    CROSS_SELL: 'Сопут.',
-    MODULE: 'Модуль',
-};
 
 type Props = {
     products?: Product[];
