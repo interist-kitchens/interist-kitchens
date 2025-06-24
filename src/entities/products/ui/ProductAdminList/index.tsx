@@ -2,67 +2,52 @@
 
 import { FC, useEffect } from 'react';
 import { Product } from '@/entities/products';
-import { message, Table, TableProps } from 'antd';
+import { message, Table, TableProps, Tag, Tooltip } from 'antd';
 import { paths } from '@/shared/routing';
 import { useRouter } from 'next/navigation';
 import { DeleteProduct } from '@/features/products';
 import { useUnit } from 'effector-react';
 import { productDeleteAdminModel } from '@/entities/products/model';
+import { $Enums } from '@prisma/client';
 
-type Props = {
-    products?: Product[];
+type ProductRelation = {
+    id: number;
+    name: string;
+    type: $Enums.ProductRelationType;
 };
 
 interface DataType {
     key: string;
     name: string;
     alias: string;
+    category: string;
     createdAt: string;
     updatedAt: string;
+    relations: ProductRelation[];
 }
 
-const columns: TableProps<DataType>['columns'] = [
-    {
-        title: 'ID',
-        dataIndex: 'key',
-        key: 'key',
-    },
-    {
-        title: 'Категория',
-        dataIndex: 'category',
-        key: 'category',
-    },
-    {
-        title: 'Название',
-        dataIndex: 'name',
-        key: 'name',
-    },
-    {
-        title: 'Алиас',
-        dataIndex: 'alias',
-        key: 'alias',
-    },
-    {
-        title: 'Создано',
-        dataIndex: 'createdAt',
-        key: 'createdAt',
-    },
-    {
-        title: 'Обновлено',
-        dataIndex: 'updatedAt',
-        key: 'updatedAt',
-    },
-    {
-        title: '',
-        dataIndex: 'deleteAction',
-        key: 'deleteAction',
-        render: (_, record) => <DeleteProduct id={record.key} />,
-    },
-];
+const relationTypeToColor: Record<$Enums.ProductRelationType, string> = {
+    SIMILAR: 'blue',
+    UPSELL: 'geekblue',
+    BUNDLE: 'green',
+    CROSS_SELL: 'orange',
+    MODULE: 'purple',
+};
+
+const relationTypeToName: Record<$Enums.ProductRelationType, string> = {
+    SIMILAR: 'Похожий',
+    UPSELL: 'Апселл',
+    BUNDLE: 'Комплект',
+    CROSS_SELL: 'Сопут.',
+    MODULE: 'Модуль',
+};
+
+type Props = {
+    products?: Product[];
+};
 
 export const ProductAdminList: FC<Props> = ({ products }) => {
     const router = useRouter();
-
     const [isSuccess, reset] = useUnit([
         productDeleteAdminModel.$isSuccess,
         productDeleteAdminModel.reset,
@@ -83,18 +68,75 @@ export const ProductAdminList: FC<Props> = ({ products }) => {
         }
     }, [reset, isSuccess, router]);
 
-    useEffect(() => {
-        router.refresh();
-    }, [router]);
+    const columns: TableProps<DataType>['columns'] = [
+        {
+            title: 'ID',
+            dataIndex: 'key',
+            key: 'key',
+            width: 80,
+        },
+        {
+            title: 'Название',
+            dataIndex: 'name',
+            key: 'name',
+            render: (text, record) => (
+                <Tooltip title={`Категория: ${record.category}`}>
+                    <span>{text}</span>
+                </Tooltip>
+            ),
+        },
+        {
+            title: 'Связи',
+            dataIndex: 'relations',
+            key: 'relations',
+            render: (relations) => (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                    {relations?.map((rel: ProductRelation) => (
+                        <Tooltip
+                            key={rel.id}
+                            title={`${relationTypeToName[rel.type]}: ${rel.name}`}
+                        >
+                            <Tag color={relationTypeToColor[rel.type]}>
+                                {rel.name}
+                            </Tag>
+                        </Tooltip>
+                    ))}
+                </div>
+            ),
+        },
+        {
+            title: 'Алиас',
+            dataIndex: 'alias',
+            key: 'alias',
+        },
+        {
+            title: 'Создано',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            width: 120,
+        },
+        {
+            title: 'Действия',
+            key: 'actions',
+            width: 100,
+            render: (_, record) => <DeleteProduct id={record.key} />,
+        },
+    ];
 
     const data: DataType[] =
         products?.map((product) => ({
             key: product.id,
-            category: product.categoryName,
             name: product.name,
+            category: product.categoryName || 'Без категории',
             alias: product.alias,
             createdAt: product.createdAt,
             updatedAt: product.updatedAt,
+            relations:
+                product.relatedProducts?.map((rel) => ({
+                    id: rel.id,
+                    name: rel.name,
+                    type: rel.type,
+                })) || [],
         })) ?? [];
 
     const handleClickRow = (id: string) => {
@@ -105,11 +147,12 @@ export const ProductAdminList: FC<Props> = ({ products }) => {
         <Table<DataType>
             columns={columns}
             dataSource={data}
-            onRow={(record) => {
-                return {
-                    onClick: () => handleClickRow(record.key),
-                };
-            }}
+            onRow={(record) => ({
+                onClick: () => handleClickRow(record.key),
+                style: { cursor: 'pointer' },
+            })}
+            rowKey="key"
+            scroll={{ x: true }}
         />
     );
 };
