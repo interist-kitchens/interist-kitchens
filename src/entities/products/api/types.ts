@@ -80,3 +80,9 @@ export type Relation = {
     type: $Enums.ProductRelationType;
     productName: string;
 };
+
+export type ProductRelation = {
+    id: number;
+    name: string;
+    type: $Enums.ProductRelationType;
+};

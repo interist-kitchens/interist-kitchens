@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { productDetailAdminModel } from '@/entities/products/model/productDetailAdminModel';
 import { ProductEditAdminPage } from '@/page-content/products/ui';
 import { getCategories } from '@/entities/categories';
+import { getProducts } from '@/entities/products';
 
 export async function generateStaticParams() {
     const scope = fork();
@@ -17,9 +18,12 @@ export async function generateStaticParams() {
 }
 
 const preload = async () => {
-    const categories = await getCategories();
+    const [categories, products] = await Promise.all([
+        getCategories(),
+        getProducts(),
+    ]);
 
-    return categories;
+    return { categories, products };
 };
 
 export default async function Page({ params }: { params: { id: string } }) {
@@ -38,7 +42,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         notFound();
     }
 
-    const categories = await preload();
+    const { categories, products } = await preload();
 
     return (
         <EffectorNext values={values}>
@@ -46,6 +50,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                 <ProductEditAdminPage
                     product={product}
                     categories={categories}
+                    products={products}
                 />
             )}
         </EffectorNext>

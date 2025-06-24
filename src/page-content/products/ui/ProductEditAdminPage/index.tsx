@@ -8,15 +8,21 @@ import { ProductAdminLayout } from '@/widgets/layouts/productAdminLayout';
 type Props = {
     product: Product;
     categories?: Categories[];
+    products?: Product[];
 };
 
 export const ProductEditAdminPage: NextPage<Props> = ({
     product,
     categories,
+    products,
 }) => {
     return (
         <ProductAdminLayout titleSlot={<Title>Редактирование товара</Title>}>
-            <EditProductForm product={product} categories={categories} />
+            <EditProductForm
+                product={product}
+                categories={categories}
+                products={products}
+            />
         </ProductAdminLayout>
     );
 };

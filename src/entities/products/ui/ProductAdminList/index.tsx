@@ -1,24 +1,17 @@
 'use client';
 
 import { FC, useEffect } from 'react';
-import { Product } from '@/entities/products';
+import { Product, ProductRelation } from '@/entities/products';
 import { message, Table, TableProps, Tag, Tooltip } from 'antd';
 import { paths } from '@/shared/routing';
 import { useRouter } from 'next/navigation';
 import { DeleteProduct } from '@/features/products';
 import { useUnit } from 'effector-react';
 import { productDeleteAdminModel } from '@/entities/products/model';
-import { $Enums } from '@prisma/client';
 import {
     relationTypeToColor,
     relationTypeToName,
 } from '@/entities/products/lib';
-
-type ProductRelation = {
-    id: number;
-    name: string;
-    type: $Enums.ProductRelationType;
-};
 
 interface DataType {
     key: string;

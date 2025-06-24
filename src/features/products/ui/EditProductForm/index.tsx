@@ -26,18 +26,24 @@ import { useRouter } from 'next/navigation';
 import { useUnit } from 'effector-react/compat';
 import { paths } from '@/shared/routing';
 import { WysiwygEditor } from '@/shared/ui/WysiwygEditor';
-import { FormFieldType, Product } from '@/entities/products';
+import { FormFieldType, Product, Relation } from '@/entities/products';
 import { productEditAdminModel } from '@/entities/products/model';
 import { Categories } from '@/entities/categories';
+import { ProductRelationsEditor } from '@/features/products';
 
 const { Item: FormItem } = Form;
 
 type Props = {
     product: Product;
     categories?: Categories[];
+    products?: Product[];
 };
 
-export const EditProductForm: FC<Props> = ({ product, categories }) => {
+export const EditProductForm: FC<Props> = ({
+    product,
+    categories,
+    products = [],
+}) => {
     const router = useRouter();
 
     const [loading, submit, isSuccess, reset] = useUnit([
@@ -66,9 +72,26 @@ export const EditProductForm: FC<Props> = ({ product, categories }) => {
             url: image.image,
         }))
     );
+    const [relations, setRelations] = useState(
+        product.relatedProducts?.map((p) => ({
+            relatedProductId: p.id,
+            type: p.type,
+            productName: p.name,
+        })) || []
+    );
 
     const onFinish: FormProps<FormFieldType>['onFinish'] = async (values) => {
         const formData = new FormData();
+
+        relations.forEach((rel) => {
+            formData.append(
+                'relations[]',
+                JSON.stringify({
+                    relatedProductId: rel.relatedProductId,
+                    type: rel.type,
+                })
+            );
+        });
 
         const appendedValues = {
             name: values.name,
@@ -107,6 +130,21 @@ export const EditProductForm: FC<Props> = ({ product, categories }) => {
         fileList: newFileList,
     }) => {
         setAdditionalImage(newFileList);
+    };
+
+    const handleRelationsChange = (
+        newRelations: Omit<Relation, 'productName'>[]
+    ) => {
+        const enrichedRelations = newRelations.map((rel) => {
+            const product = products.find(
+                (p) => parseInt(p.id) === rel.relatedProductId
+            );
+            return {
+                ...rel,
+                productName: product?.name || '',
+            };
+        });
+        setRelations(enrichedRelations);
     };
 
     useEffect(() => {
@@ -274,6 +312,14 @@ export const EditProductForm: FC<Props> = ({ product, categories }) => {
                         setContent={setTextDescription}
                     />
                 </FormItem>
+
+                <ProductRelationsEditor
+                    relations={relations}
+                    products={products.filter(
+                        (item) => item?.alias !== product?.alias
+                    )}
+                    onChange={handleRelationsChange}
+                />
 
                 <FormItem label={null}>
                     <Button type="primary" htmlType="submit" loading={loading}>
