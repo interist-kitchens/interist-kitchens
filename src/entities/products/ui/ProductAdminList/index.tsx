@@ -20,7 +20,7 @@ interface DataType {
     category: string;
     createdAt: string;
     updatedAt: string;
-    relations: ProductRelation[];
+    relations: Partial<ProductRelation>[];
 }
 
 type Props = {

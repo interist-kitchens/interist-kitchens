@@ -30,6 +30,15 @@ export type ProductResponse = {
     }[];
 };
 
+export type ProductRelation = {
+    id: number;
+    name: string;
+    image: string;
+    price: string;
+    type: $Enums.ProductRelationType;
+    category: string;
+};
+
 export type Product = {
     name: string;
     id: string;
@@ -49,14 +58,7 @@ export type Product = {
         blurImage?: string;
     }[];
     categories: { name: string; alias: string };
-    relatedProducts: {
-        id: number;
-        name: string;
-        image: string;
-        price: string;
-        type: $Enums.ProductRelationType;
-        category: string;
-    }[];
+    relatedProducts: ProductRelation[];
 };
 
 export type FormFieldType = {
@@ -79,10 +81,4 @@ export type Relation = {
     relatedProductId: number;
     type: $Enums.ProductRelationType;
     productName: string;
-};
-
-export type ProductRelation = {
-    id: number;
-    name: string;
-    type: $Enums.ProductRelationType;
 };
