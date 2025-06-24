@@ -5,5 +5,4 @@ export const relationTypeToColor: Record<$Enums.ProductRelationType, string> = {
     UPSELL: 'geekblue',
     BUNDLE: 'green',
     CROSS_SELL: 'orange',
-    MODULE: 'purple',
 };

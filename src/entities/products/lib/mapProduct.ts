@@ -24,10 +24,12 @@ export const mapProduct = async (
             relatedProducts: product.relatedFrom.map((relation) => ({
                 id: relation.toProduct.id,
                 name: relation.toProduct.name,
+                alias: relation.toProduct.alias,
                 image: relation.toProduct.image,
                 price: relation.toProduct.price,
                 type: relation.type as $Enums.ProductRelationType,
                 category: relation.toProduct.categories?.name || '',
+                categoryAlias: relation.toProduct.categories?.alias || '',
             })),
         }))
     );

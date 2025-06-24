@@ -6,7 +6,6 @@ import { createMutation } from '@farfetched/core';
 import { createInternalRequestFx } from '@/shared/api/requests';
 import { Error } from '@/entities/categories';
 import { generateBlurImg } from '@/shared/lib/generateBlurImg';
-import { $Enums } from '@prisma/client';
 
 export const getProducts = async (): Promise<Product[] | undefined> => {
     try {
@@ -204,25 +203,6 @@ export const updateProduct = createMutation({
         data: data.formData,
         headers: {
             'Content-Type': 'multipart/form-data',
-        },
-    })),
-});
-
-export const addProductRelation = createMutation({
-    effect: createInternalRequestFx<
-        {
-            productId: number;
-            relatedProductId: number;
-            type: $Enums.ProductRelationType;
-        },
-        void,
-        Error
-    >((params) => ({
-        url: `/api/products/${params.productId}/relations`,
-        method: 'POST',
-        data: {
-            relatedProductId: params.relatedProductId,
-            type: params.type,
         },
     })),
 });

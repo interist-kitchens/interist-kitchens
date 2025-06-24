@@ -20,6 +20,7 @@ export type ProductResponse = {
         toProduct: {
             id: number;
             name: string;
+            alias: string;
             image: string;
             price: string;
             categories: {

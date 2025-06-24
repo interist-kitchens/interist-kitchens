@@ -5,5 +5,4 @@ export const relationTypeToName: Record<$Enums.ProductRelationType, string> = {
     UPSELL: 'Апселл',
     BUNDLE: 'Комплект',
     CROSS_SELL: 'Сопут.',
-    MODULE: 'Модуль',
 };
