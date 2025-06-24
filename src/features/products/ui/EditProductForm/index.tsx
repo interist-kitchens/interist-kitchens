@@ -136,9 +136,7 @@ export const EditProductForm: FC<Props> = ({
         newRelations: Omit<Relation, 'productName'>[]
     ) => {
         const enrichedRelations = newRelations.map((rel) => {
-            const product = products.find(
-                (p) => parseInt(p.id) === rel.relatedProductId
-            );
+            const product = products.find((p) => p.id === rel.relatedProductId);
             return {
                 ...rel,
                 productName: product?.name || '',

@@ -92,7 +92,7 @@ export const ProductAdminDetail: FC<Props> = ({ product }) => {
             </div>
 
             {/* Блок связанных товаров */}
-            <ProductRelationsList relations={product.relatedProducts} />
+            <ProductRelationsList relations={product?.relatedProducts} />
         </Flex>
     );
 };

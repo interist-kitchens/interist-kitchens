@@ -56,7 +56,9 @@ export const ProductDetail: FC<Props> = async ({ product }) => {
                     text={product.text}
                     buttonsSlot={
                         <>
-                            <AddToCartBtn product={product} />
+                            {!relationsByType?.BUNDLE && (
+                                <AddToCartBtn product={product} />
+                            )}
                             <SendOrderBtn
                                 product={product}
                                 user={session?.user}

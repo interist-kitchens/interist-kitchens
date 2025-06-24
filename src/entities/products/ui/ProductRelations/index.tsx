@@ -1,12 +1,13 @@
 'use client';
 
-import { Button, Card, Flex, Typography } from 'antd';
+import { Card, Flex, Typography } from 'antd';
 import { paths } from '@/shared/routing';
 import Link from 'next/link';
 import { $Enums } from '@prisma/client';
 import { FC } from 'react';
 import Image from 'next/image';
 import { ProductRelation } from '@/entities/products';
+import { AddToCartBtn } from '@/features/leads/cart';
 
 const { Title, Text } = Typography;
 const { Meta } = Card;
@@ -49,7 +50,7 @@ export const ProductRelations: FC<Props> = ({
                 {relations.map((product) => (
                     <Link
                         key={product.id}
-                        href={`${paths.catalog}/${product.categoryAlias}/${product.alias}`}
+                        href={`${paths.catalog}/${product.categories?.alias}/${product.alias}`}
                     >
                         <Card
                             hoverable
@@ -85,7 +86,7 @@ export const ProductRelations: FC<Props> = ({
                                                 parseInt(product.price)
                                             )}`}
                                         </Text>
-                                        <Button>В корзину</Button>
+                                        <AddToCartBtn product={product} />
                                     </Flex>
                                 }
                             />

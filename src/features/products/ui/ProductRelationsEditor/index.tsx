@@ -22,7 +22,7 @@ export const ProductRelationsEditor: FC<Props> = ({
     onChange,
 }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedProductId, setSelectedProductId] = useState<number | null>(
+    const [selectedProductId, setSelectedProductId] = useState<string | null>(
         null
     );
     const [selectedType, setSelectedType] =
@@ -31,10 +31,8 @@ export const ProductRelationsEditor: FC<Props> = ({
         );
 
     const availableProducts = products
-        .filter(
-            (p) => !relations.some((r) => r.relatedProductId === parseInt(p.id))
-        )
-        .map((p) => ({ value: parseInt(p.id), label: p.name }));
+        .filter((p) => !relations.some((r) => r.relatedProductId === p.id))
+        .map((p) => ({ value: p.id, label: p.name }));
 
     const handleAddRelation = () => {
         if (!selectedProductId) {
@@ -42,9 +40,7 @@ export const ProductRelationsEditor: FC<Props> = ({
             return;
         }
 
-        const product = products.find(
-            (p) => parseInt(p.id) === selectedProductId
-        );
+        const product = products.find((p) => p.id === selectedProductId);
         if (!product) return;
 
         onChange([

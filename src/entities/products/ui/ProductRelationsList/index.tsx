@@ -14,7 +14,7 @@ import { ProductRelation } from '@/entities/products';
 const { Title, Text } = Typography;
 
 type Props = {
-    relations: ProductRelation[];
+    relations?: ProductRelation[];
     title?: string;
     className?: string;
 };

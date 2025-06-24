@@ -20,14 +20,14 @@ export const ProductRelations: FC<Props> = ({
     onChangeRelations,
 }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedProductId, setSelectedProductId] = useState<number | null>(
+    const [selectedProductId, setSelectedProductId] = useState<string | null>(
         null
     );
     const [selectedType, setSelectedType] =
         useState<$Enums.ProductRelationType>($Enums.ProductRelationType.BUNDLE);
 
     const availableProducts = products.filter(
-        (p) => !relations.some((r) => r.relatedProductId === parseInt(p.id))
+        (p) => !relations.some((r) => r.relatedProductId === p.id)
     );
 
     const handleAddRelation = () => {
@@ -36,9 +36,7 @@ export const ProductRelations: FC<Props> = ({
             return;
         }
 
-        const product = products.find(
-            (p) => parseInt(p.id) === selectedProductId
-        );
+        const product = products.find((p) => p.id === selectedProductId);
         if (!product) return;
 
         onChangeRelations([

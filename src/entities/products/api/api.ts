@@ -89,14 +89,16 @@ export const getProduct = async (id: string): Promise<Product | null> => {
                 }))
             ),
             relatedProducts: product.relatedFrom.map((relation) => ({
-                id: relation.toProduct.id,
+                id: String(relation.id),
                 name: relation.toProduct.name,
                 alias: relation.toProduct.alias,
                 image: relation.toProduct.image,
                 price: relation.toProduct.price,
                 type: relation.type,
-                category: relation.toProduct.categories?.name || '',
-                categoryAlias: relation.toProduct.categories?.alias || '',
+                categories: {
+                    name: relation.toProduct.categories?.name || '',
+                    alias: relation.toProduct.categories?.alias || '',
+                },
             })),
         };
     }
@@ -156,14 +158,16 @@ export const getProductByAlias = async (
                     }))
                 ),
                 relatedProducts: product.relatedFrom.map((relation) => ({
-                    id: relation.toProduct.id,
+                    id: String(relation.toProduct.id),
                     name: relation.toProduct.name,
                     alias: relation.toProduct.alias,
                     image: relation.toProduct.image,
                     price: relation.toProduct.price,
                     type: relation.type,
-                    category: relation.toProduct.categories?.name || '',
-                    categoryAlias: relation.toProduct.categories?.alias || '',
+                    categories: {
+                        name: relation.toProduct.categories?.name || '',
+                        alias: relation.toProduct.categories?.alias || '',
+                    },
                 })),
             };
         }
