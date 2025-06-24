@@ -2,7 +2,6 @@
 
 import React, { CSSProperties, useState } from 'react';
 import { Button, Menu, type MenuProps } from 'antd';
-import { Link } from '@/shared/ui/Typography';
 import { paths } from '@/shared/routing';
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
 import { CloseOutlined, MenuOutlined } from '@ant-design/icons';
@@ -10,6 +9,7 @@ import { CallBackButton } from '@/features/leads/callBack/ui/CallBackButton';
 import { PhoneLink } from '@/shared/ui/PhoneLink';
 import { useMenuKeyFromPath } from '@/widgets/headerMenu/hooks/useMenuKeyFromPath';
 import { MENU_KEYS } from '@/widgets/headerMenu/constants';
+import Link from 'next/link';
 
 type MenuItem = Required<MenuProps>['items'][number];
 const menuItemClassName = 'font-bold';
@@ -122,7 +122,6 @@ export const HeaderMenu = ({ burgerMode, phone }: Props) => {
                         type="text"
                         shape="circle"
                         size="large"
-                        ghost
                         onClick={() => {
                             setCollapsed((prev) => !prev);
                         }}

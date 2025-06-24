@@ -10,6 +10,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions, UserSession } from '@/shared/constants/authOptions';
 import { Breadcrumbs } from '@/shared/ui/Breadcrumbs';
 import { paths } from '@/shared/routing';
+import { AddToCartBtn } from '@/features/leads/cart';
+import Link from 'next/link';
 import { $Enums } from '@prisma/client';
 
 type Props = {
@@ -32,15 +34,15 @@ export const ProductDetail: FC<Props> = async ({ product }) => {
         <div className={'container mx-auto px-6 pt-5 pb-16'}>
             <Breadcrumbs
                 breadcrumbs={[
-                    { title: <a href={paths.home}>Главная</a> },
-                    { title: <a href={paths.catalog}>Каталог</a> },
+                    { title: <Link href={paths.home}>Главная</Link> },
+                    { title: <Link href={paths.catalog}>Каталог</Link> },
                     {
                         title: (
-                            <a
+                            <Link
                                 href={`${paths.catalog}/${product.categories.alias}`}
                             >
                                 {product.categories.name}
-                            </a>
+                            </Link>
                         ),
                     },
                     { title: product.name },
@@ -53,7 +55,13 @@ export const ProductDetail: FC<Props> = async ({ product }) => {
                     price={product.price}
                     text={product.text}
                     buttonsSlot={
-                        <SendOrderBtn product={product} user={session?.user} />
+                        <>
+                            <AddToCartBtn product={product} />
+                            <SendOrderBtn
+                                product={product}
+                                user={session?.user}
+                            />
+                        </>
                     }
                 />
             </div>

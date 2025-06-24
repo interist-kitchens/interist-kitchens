@@ -18,7 +18,7 @@ export async function POST(request: Request) {
             data: {
                 name: formData.name,
                 phone: formData.phone,
-                mail: formData?.mail,
+                email: formData?.mail,
             },
         });
 

@@ -5,6 +5,7 @@ import { paths } from '@/shared/routing';
 import { Breadcrumbs } from '@/shared/ui/Breadcrumbs';
 import { Title } from '@/shared/ui/Typography';
 import parse from 'html-react-parser';
+import Link from 'next/link';
 
 type Props = {
     page: Page;
@@ -20,7 +21,7 @@ export const StaticPage: NextPage<Props> = ({ page }) => {
             >
                 <Breadcrumbs
                     breadcrumbs={[
-                        { title: <a href={paths.home}>Главная</a> },
+                        { title: <Link href={paths.home}>Главная</Link> },
                         { title: page.name },
                     ]}
                 />

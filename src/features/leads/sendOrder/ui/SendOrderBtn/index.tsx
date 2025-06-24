@@ -26,7 +26,7 @@ export const SendOrderBtn: FC<Props> = ({ product, user }) => {
 
     return (
         <Button type={'primary'} size={'large'} onClick={handleOpenModal}>
-            <div className={'text-white'}>Отправить заявку</div>
+            Индвидуальный размер
         </Button>
     );
 };

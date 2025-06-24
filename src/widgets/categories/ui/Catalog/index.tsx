@@ -3,6 +3,7 @@ import { CatalogItem, Categories } from '@/entities/categories';
 import { Title } from '@/shared/ui/Typography';
 import { Breadcrumbs } from '@/shared/ui/Breadcrumbs';
 import { paths } from '@/shared/routing';
+import Link from 'next/link';
 
 type Props = {
     categories?: Categories[];
@@ -13,7 +14,7 @@ export const Catalog: FC<Props> = ({ categories }) => {
         <div className={'flex flex-col container mx-auto py-10'}>
             <Breadcrumbs
                 breadcrumbs={[
-                    { title: <a href={paths.home}>Главная</a> },
+                    { title: <Link href={paths.home}>Главная</Link> },
                     { title: 'Каталог' },
                 ]}
             />

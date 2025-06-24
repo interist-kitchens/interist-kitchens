@@ -7,6 +7,7 @@ import { Header as HeaderLayout } from '@/shared/ui/Layout';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/shared/constants/authOptions';
 import { HeaderLogo } from '@/widgets/headerLogo';
+import { HeaderCart } from '@/features/leads/cart';
 
 const MAIN_COMPANY_INFO = {
     phone: '8 800 511-96-59',
@@ -24,6 +25,7 @@ export const Header: FC = async () => {
             <Flex justify={'end'} align={'center'} gap={24}>
                 <ContactsBlock phone={MAIN_COMPANY_INFO.phone} />
                 <UserInfo session={session} />
+                <HeaderCart />
                 <HeaderMenu burgerMode phone={MAIN_COMPANY_INFO.phone} />
             </Flex>
         </HeaderLayout>

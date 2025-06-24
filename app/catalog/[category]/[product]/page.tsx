@@ -15,6 +15,10 @@ export async function generateMetadata({
 
     const product = scope.getState(productModel.$currentProduct);
 
+    if (!product || params.category !== product.categories.alias) {
+        notFound();
+    }
+
     return {
         title: product?.metaTitle?.length
             ? product?.metaTitle

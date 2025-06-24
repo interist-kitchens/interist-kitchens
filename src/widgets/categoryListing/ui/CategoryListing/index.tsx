@@ -4,6 +4,7 @@ import { paths } from '@/shared/routing';
 import { Categories } from '@/entities/categories';
 import { Title } from '@/shared/ui/Typography';
 import { ProductListingCard } from '@/entities/products';
+import Link from 'next/link';
 
 type Props = {
     category: Categories;
@@ -14,8 +15,8 @@ export const CategoryListing: FC<Props> = async ({ category }) => {
         <div className={'container mx-auto px-6 pt-5 pb-16'}>
             <Breadcrumbs
                 breadcrumbs={[
-                    { title: <a href={paths.home}>Главная</a> },
-                    { title: <a href={paths.catalog}>Каталог</a> },
+                    { title: <Link href={paths.home}>Главная</Link> },
+                    { title: <Link href={paths.catalog}>Каталог</Link> },
                     { title: category.name },
                 ]}
             />

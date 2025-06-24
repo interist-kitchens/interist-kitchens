@@ -36,6 +36,11 @@ export const menuItems: MenuItemType[] = [
         label: 'Обратные звонки',
     },
     {
+        key: paths.individualsOrders,
+        icon: <PhoneOutlined />,
+        label: 'Заказ на индивидуальный расчет',
+    },
+    {
         key: paths.orderAdmin,
         icon: <ShoppingCartOutlined />,
         label: 'Заказы',
