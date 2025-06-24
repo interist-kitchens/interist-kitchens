@@ -1,4 +1,5 @@
 import { prisma } from './prisma-client';
+import { hash } from 'bcryptjs';
 
 async function main() {
     const modernKitchens = await prisma.category.upsert({
@@ -18,18 +19,25 @@ async function main() {
     });
     const romeKitchen = await prisma.product.upsert({
         where: {
-            alias: 'rome-kitchen',
+            alias: 'kitchen-1-1',
         },
         update: {},
         create: {
-            name: 'Rome',
+            name: 'Кухня 1 3 метра',
             categoryId: 1,
-            alias: 'rome',
+            alias: 'kitchen-1-1',
             price: '67000',
-            metaTitle: 'Современная кухня Rome',
+            metaTitle: 'Современная кухня Кухня 1 3 метра',
             metaDescription:
-                'Купить современные кухни Rome под заказ по выгодным ценам и доставкой по России',
-            image: 'https://0cu49g0vululgtgg.public.blob.vercel-storage.com/public/Rome_01_1730x1152_min-AxkgEiUD9lzBEW335USIXvdadSuqVt.webp',
+                'Купить современные кухни Кухня 1 3 метра под заказ по выгодным ценам и доставкой по России',
+            image: 'https://0cu49g0vululgtgg.public.blob.vercel-storage.com/public/11-ZVCXPOPmYTv9UnHs14hCXbjE5l7GO3.webp',
+            images: [
+                'https://0cu49g0vululgtgg.public.blob.vercel-storage.com/public/12-NwvAK5qKf8RNA6l6U3qILCJczYuxOx.webp',
+                'https://0cu49g0vululgtgg.public.blob.vercel-storage.com/public/13-qEgXVnVStgvjNLPXibxWracQqgEqwn.webp',
+                'https://0cu49g0vululgtgg.public.blob.vercel-storage.com/public/14-EJ72wQOlMFYIU1gDwgFhaHiiuPMT1R.webp',
+                'https://0cu49g0vululgtgg.public.blob.vercel-storage.com/public/15-4dhwD8WVHi2I6oxo1LMZec0zUuNgNJ.webp',
+                'https://0cu49g0vululgtgg.public.blob.vercel-storage.com/public/16-n8TdZvluRWK3Z0ix3IYiuiIF3q0TOY.webp',
+            ],
         },
     });
     const tssKitchen = await prisma.product.upsert({
@@ -100,6 +108,22 @@ async function main() {
             text: '<div class="ver-wrap center-wrap text-page__wrap _first txt"><p class="txt__h4">Гарантийные обязательства не&nbsp;распространяются:</p><ol><li>На недостатки, возникшие в результате нарушения требований, установленных Руководством по эксплуатации;</li><li>На случаи порчи изделий в результате механических воздействий и небрежной эксплуатации;</li><li>На случаи порчи изделий в результате попадания влаги или эксплуатации в условиях повышенной влажности (разбухание материалов, деформация изделий, отслаивание покрытий, в том числе кромочных покрытий, коррозия и т.п.);</li><li>На случаи порчи изделий при перегревании выше или охлаждении ниже норм, установленных в Руководством по эксплуатации;</li><li>На недостатки, возникшие в результате несоблюдения и нарушения требований по техническому обслуживанию, установленных Руководством по эксплуатации;</li><li>На случаи порчи изделий покупателем в момент приёмки и эксплуатации в связи с применением разрушающих методов контроля качества изделий;</li><li>На встраиваемую технику, приобретённую покупателем у третьих лиц (сторонних продавцов);</li><li>На фурнитуру и комплектующие, установленные покупателем самостоятельно или приобретённые у третьих лиц;</li><li>На нестандартные модули и другие составные элементы, изготавливаемые по желанию покупателя;</li><li>На модуль под мойкой и столешницу в случае, если мойка установлена покупателем самостоятельно;</li><li>На лампы, входящие в комплект светильников, если их замена предусмотрена конструкцией светильника;</li><li>На заменяемые элементы питания (батареи или аккумуляторные батареи), поставленные в комплекте с электронными устройствами.</li></ol></div>',
         },
     });
+    const users = await prisma.user.createMany({
+        data: [
+            {
+                name: 'admin',
+                email: 'admin@i.ru',
+                password: await hash('adminadmin', 12),
+                role: 'ADMIN',
+            },
+            {
+                name: 'user',
+                email: 'user@i.ru',
+                password: await hash('useruser', 12),
+                role: 'USER',
+            },
+        ],
+    });
     console.log({
         modernKitchens,
         romeKitchen,
@@ -108,6 +132,7 @@ async function main() {
         montagePage,
         montageConditionsPage,
         warrantyPage,
+        users,
     });
 }
 

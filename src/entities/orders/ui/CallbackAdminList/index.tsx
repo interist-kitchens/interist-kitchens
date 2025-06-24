@@ -53,7 +53,7 @@ export const CallbackAdminList: FC<Props> = ({ callbackList }) => {
     const data: DataType[] = callbackList.map((callback) => ({
         key: callback.id,
         name: callback.name,
-        mail: callback.mail,
+        mail: callback.email,
         phone: callback.phone,
         createdAt: callback.createdAt,
     }));

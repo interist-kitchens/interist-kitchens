@@ -22,7 +22,7 @@ export const ProductOrderForm: FC<Props> = ({ product, user }) => {
     ]);
 
     const onFinish: FormProps<FormType>['onFinish'] = (values) => {
-        submitForm({ ...values, product, user });
+        submitForm({ ...values, product });
     };
 
     return (
