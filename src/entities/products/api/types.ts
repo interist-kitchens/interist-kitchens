@@ -33,10 +33,12 @@ export type ProductResponse = {
 export type ProductRelation = {
     id: number;
     name: string;
+    alias: string;
     image: string;
     price: string;
     type: $Enums.ProductRelationType;
     category: string;
+    categoryAlias: string;
 };
 
 export type Product = {

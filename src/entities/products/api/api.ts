@@ -54,7 +54,12 @@ export const getProduct = async (id: string): Promise<Product | null> => {
             relatedFrom: {
                 include: {
                     toProduct: {
-                        include: {
+                        select: {
+                            id: true,
+                            name: true,
+                            alias: true,
+                            image: true,
+                            price: true,
                             categories: {
                                 select: {
                                     name: true,
@@ -87,10 +92,12 @@ export const getProduct = async (id: string): Promise<Product | null> => {
             relatedProducts: product.relatedFrom.map((relation) => ({
                 id: relation.toProduct.id,
                 name: relation.toProduct.name,
+                alias: relation.toProduct.alias,
                 image: relation.toProduct.image,
                 price: relation.toProduct.price,
                 type: relation.type,
                 category: relation.toProduct.categories?.name || '',
+                categoryAlias: relation.toProduct.categories?.alias || '',
             })),
         };
     }
@@ -114,7 +121,12 @@ export const getProductByAlias = async (
                 relatedFrom: {
                     include: {
                         toProduct: {
-                            include: {
+                            select: {
+                                id: true,
+                                name: true,
+                                alias: true,
+                                image: true,
+                                price: true,
                                 categories: {
                                     select: {
                                         name: true,
@@ -147,10 +159,12 @@ export const getProductByAlias = async (
                 relatedProducts: product.relatedFrom.map((relation) => ({
                     id: relation.toProduct.id,
                     name: relation.toProduct.name,
+                    alias: relation.toProduct.alias,
                     image: relation.toProduct.image,
                     price: relation.toProduct.price,
                     type: relation.type,
                     category: relation.toProduct.categories?.name || '',
+                    categoryAlias: relation.toProduct.categories?.alias || '',
                 })),
             };
         }
@@ -206,25 +220,6 @@ export const addProductRelation = createMutation({
     >((params) => ({
         url: `/api/products/${params.productId}/relations`,
         method: 'POST',
-        data: {
-            relatedProductId: params.relatedProductId,
-            type: params.type,
-        },
-    })),
-});
-
-export const removeProductRelation = createMutation({
-    effect: createInternalRequestFx<
-        {
-            productId: number;
-            relatedProductId: number;
-            type: $Enums.ProductRelationType;
-        },
-        void,
-        Error
-    >((params) => ({
-        url: `/api/products/${params.productId}/relations`,
-        method: 'DELETE',
         data: {
             relatedProductId: params.relatedProductId,
             type: params.type,
