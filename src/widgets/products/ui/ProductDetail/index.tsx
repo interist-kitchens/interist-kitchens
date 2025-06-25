@@ -2,7 +2,7 @@ import { Product, ProductCard, ProductSlider } from '@/entities/products';
 import { FC } from 'react';
 import { SendOrderBtn } from '@/features/leads/sendOrder';
 import { getServerSession } from 'next-auth';
-import { authOptions, UserSession } from '@/shared/constants/authOptions';
+import { authOptions } from '@/shared/constants/authOptions';
 import { Breadcrumbs } from '@/shared/ui/Breadcrumbs';
 import { paths } from '@/shared/routing';
 import { AddToCartBtn } from '@/features/leads/cart';
@@ -13,7 +13,7 @@ type Props = {
 };
 
 export const ProductDetail: FC<Props> = async ({ product }) => {
-    const session: UserSession | null = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions);
 
     return (
         <div className={'container mx-auto px-6 pt-5 pb-16'}>

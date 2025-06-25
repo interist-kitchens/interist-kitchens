@@ -10,6 +10,7 @@ import {
     Select,
     Spin,
     Upload,
+    UploadFile,
 } from 'antd';
 import { ArrowLeftOutlined, UserOutlined } from '@ant-design/icons';
 import { useUnit } from 'effector-react';
@@ -21,6 +22,7 @@ import { $Enums } from '@prisma/client';
 import { User } from '@/entities/user-profile';
 import Link from 'next/link';
 import { paths } from '@/shared/routing';
+import { UploadChangeParam } from 'antd/es/upload';
 
 const { Option } = Select;
 
@@ -66,19 +68,16 @@ export const UserProfileForm: FC<Props> = ({ user }) => {
             return message.error('Имя должно содержать минимум 2 символа');
         }
 
-        // Добавляем только измененные поля
         if (values.name !== user.name) {
             formData.append('name', values.name);
         }
         if (values.phone !== user.phone) {
             formData.append('phone', values.phone || '');
         }
-        // Только админ может менять роль
         if (values.role !== user.role && user.role === 'ADMIN') {
             formData.append('role', values.role);
         }
 
-        // Добавляем файл аватара, если он был изменен
         if (avatarFile) {
             formData.append('avatar', avatarFile);
         } else if (values.avatar !== user.image) {
@@ -102,7 +101,7 @@ export const UserProfileForm: FC<Props> = ({ user }) => {
         return true;
     };
 
-    const handleAvatarChange = (info: any) => {
+    const handleAvatarChange = (info: UploadChangeParam<UploadFile<File>>) => {
         if (info.file.status === 'done') {
             const file = info.file.originFileObj as File;
             setAvatarFile(file);
@@ -111,109 +110,111 @@ export const UserProfileForm: FC<Props> = ({ user }) => {
     };
 
     return (
-        <Card
-            title="Редактирование профиля"
-            style={{ maxWidth: 800, margin: '24px auto' }}
-            extra={
-                <Link href={paths.profile}>
-                    <Button icon={<ArrowLeftOutlined />}>
-                        Назад к профилю
-                    </Button>
-                </Link>
-            }
-        >
-            <Spin spinning={pending}>
-                <Form
-                    form={form}
-                    initialValues={{
-                        name: user.name,
-                        email: user.email,
-                        phone: user.phone || '',
-                        role: user.role,
-                        avatar: user.image,
-                    }}
-                    onFinish={onFinish}
-                    layout="vertical"
-                >
-                    <Form.Item name="avatar" label="Аватар">
-                        <Upload
-                            name="avatar"
-                            listType="picture-card"
-                            showUploadList={false}
-                            beforeUpload={beforeUpload}
-                            onChange={handleAvatarChange}
-                            customRequest={(file) => {
-                                setTimeout(() => file.onSuccess?.('ok'), 0);
-                            }}
-                        >
-                            {avatarPreview ? (
-                                <Avatar src={avatarPreview} size={96} />
-                            ) : (
-                                <Avatar icon={<UserOutlined />} size={96} />
-                            )}
-                        </Upload>
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Имя"
-                        name="name"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Пожалуйста, введите ваше имя',
-                            },
-                            {
-                                min: 2,
-                                message:
-                                    'Имя должно содержать минимум 2 символа',
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item label="Email" name="email">
-                        <Input disabled />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Телефон"
-                        name="phone"
-                        rules={[
-                            {
-                                pattern: /^\+?[0-9]{10,15}$/,
-                                message:
-                                    'Пожалуйста, введите корректный номер телефона',
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-
-                    {user.role === 'ADMIN' && (
-                        <Form.Item
-                            label="Роль"
-                            name="role"
-                            rules={[{ required: true }]}
-                        >
-                            <Select>
-                                <Option value="USER">Пользователь</Option>
-                                <Option value="ADMIN">Администратор</Option>
-                            </Select>
-                        </Form.Item>
-                    )}
-
-                    <Form.Item>
-                        <Button
-                            type="primary"
-                            htmlType="submit"
-                            loading={pending}
-                        >
-                            Сохранить изменения
+        <section className={'w-full my-6 flex justify-center'}>
+            <Card
+                title="Редактирование профиля"
+                className="container"
+                extra={
+                    <Link href={paths.profile}>
+                        <Button icon={<ArrowLeftOutlined />}>
+                            Назад к профилю
                         </Button>
-                    </Form.Item>
-                </Form>
-            </Spin>
-        </Card>
+                    </Link>
+                }
+            >
+                <Spin spinning={pending}>
+                    <Form
+                        form={form}
+                        initialValues={{
+                            name: user.name,
+                            email: user.email,
+                            phone: user.phone || '',
+                            role: user.role,
+                            avatar: user.image,
+                        }}
+                        onFinish={onFinish}
+                        layout="vertical"
+                    >
+                        <Form.Item name="avatar" label="Аватар">
+                            <Upload
+                                name="avatar"
+                                listType="picture-card"
+                                showUploadList={false}
+                                beforeUpload={beforeUpload}
+                                onChange={handleAvatarChange}
+                                customRequest={(file) => {
+                                    setTimeout(() => file.onSuccess?.('ok'), 0);
+                                }}
+                            >
+                                {avatarPreview ? (
+                                    <Avatar src={avatarPreview} size={96} />
+                                ) : (
+                                    <Avatar icon={<UserOutlined />} size={96} />
+                                )}
+                            </Upload>
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Имя"
+                            name="name"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Пожалуйста, введите ваше имя',
+                                },
+                                {
+                                    min: 2,
+                                    message:
+                                        'Имя должно содержать минимум 2 символа',
+                                },
+                            ]}
+                        >
+                            <Input />
+                        </Form.Item>
+
+                        <Form.Item label="Email" name="email">
+                            <Input disabled />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Телефон"
+                            name="phone"
+                            rules={[
+                                {
+                                    pattern: /^\+?[0-9]{10,15}$/,
+                                    message:
+                                        'Пожалуйста, введите корректный номер телефона',
+                                },
+                            ]}
+                        >
+                            <Input />
+                        </Form.Item>
+
+                        {user.role === 'ADMIN' && (
+                            <Form.Item
+                                label="Роль"
+                                name="role"
+                                rules={[{ required: true }]}
+                            >
+                                <Select>
+                                    <Option value="USER">Пользователь</Option>
+                                    <Option value="ADMIN">Администратор</Option>
+                                </Select>
+                            </Form.Item>
+                        )}
+
+                        <Form.Item>
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                loading={pending}
+                            >
+                                Сохранить изменения
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                </Spin>
+            </Card>
+        </section>
     );
 };

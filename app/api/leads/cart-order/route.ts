@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { CartOrderType } from '@/entities/leads/api';
 import { getServerSession } from 'next-auth';
-import { authOptions, UserSession } from '@/shared/constants/authOptions';
+import { authOptions } from '@/shared/constants/authOptions';
 import { prisma } from '@/shared/prisma/prisma-client';
 import nodemailer from 'nodemailer';
 import { cartOrderTemplate } from '@/shared/mail/cartOrder';
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
 
     try {
         const data = (await request.json()) as CartOrderType;
-        const session: UserSession | null = await getServerSession(authOptions);
+        const session = await getServerSession(authOptions);
 
         const order = await prisma.order.create({
             data: {

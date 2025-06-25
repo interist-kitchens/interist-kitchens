@@ -52,3 +52,16 @@ export type IndividualOrder = {
     createdAt: Date;
     updatedAt: Date;
 };
+
+export type UserOrder = {
+    id: number;
+    status: $Enums.OrderStatus;
+    createdAt: Date;
+    items: {
+        product: {
+            name: string;
+            price: string;
+        };
+        quantity: number;
+    }[];
+};

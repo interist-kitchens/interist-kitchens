@@ -6,7 +6,7 @@ import { SidebarMenu } from '@/widgets/sidebarAdmin';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { paths } from '@/shared/routing';
-import { authOptions, UserSession } from '@/shared/constants/authOptions';
+import { authOptions } from '@/shared/constants/authOptions';
 
 export const metadata: Metadata = {
     title: 'Admin Panel',
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export async function AdminLayout({ children }: { children: ReactNode }) {
-    const session: UserSession | null = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions);
 
     if (!session) {
         redirect(paths.login);

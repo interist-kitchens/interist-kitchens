@@ -6,6 +6,7 @@ import { Space, Table, Typography } from 'antd';
 import dayjs from 'dayjs';
 import { dateFormat } from '@/shared/lib';
 import { IndividualOrder } from '@/entities/orders';
+import Image from 'next/image';
 
 const { Text, Link } = Typography;
 
@@ -39,7 +40,7 @@ const columns: TableProps<IndividualOrder>['columns'] = [
         key: 'product',
         render: (_, record) => (
             <Space>
-                <img
+                <Image
                     src={record.product.image}
                     alt={record.product.name}
                     style={{ width: 40, height: 40, objectFit: 'cover' }}

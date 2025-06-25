@@ -1,19 +1,30 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/shared/constants/authOptions';
 import { getUserProfile, UserProfile } from '@/entities/user-profile';
+import { getUserOrders } from '@/entities/orders';
+import { MainLayout } from '@/widgets/layouts';
+import { notFound, redirect } from 'next/navigation';
+import { paths } from '@/shared/routing';
 
 export default async function ProfilePage() {
     const session = await getServerSession(authOptions);
 
     if (!session) {
-        return <div>Необходимо авторизоваться</div>;
+        redirect(paths.login);
     }
 
-    const user = await getUserProfile(session.user.id);
+    const [user, orders] = await Promise.all([
+        getUserProfile(session.user.id),
+        getUserOrders(session.user.id),
+    ]);
 
     if (!user) {
-        return <div>Пользователь не найден</div>;
+        notFound();
     }
 
-    return <UserProfile user={user} />;
+    return (
+        <MainLayout>
+            <UserProfile user={user} orders={orders} />
+        </MainLayout>
+    );
 }
