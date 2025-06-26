@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getUUID } from 'rc-select/lib/hooks/useId';
 import { put, PutBlobResult } from '@vercel/blob';
 import { prisma } from '@/shared/prisma/prisma-client';
+import { $Enums } from '@prisma/client';
 
 export async function DELETE(
     _: Request,
@@ -38,6 +39,7 @@ export async function PUT(
 
     try {
         const formData = await request.formData();
+        const relationsRaw = formData.getAll('relations[]');
 
         const image = formData.get('image') as File | string;
 
@@ -78,6 +80,30 @@ export async function PUT(
         const categoryId = formData.get('categoryId') as string;
         const price = formData.get('price') as string;
 
+        const relations = relationsRaw.map((rel) =>
+            JSON.parse(rel as string)
+        ) as Array<{
+            relatedProductId: number;
+            type: $Enums.ProductRelationType;
+        }>;
+
+        // Удаляем старые связи
+        await prisma.relatedProducts.deleteMany({
+            where: { fromProductId: Number(params.id) },
+        });
+
+        // Добавляем новые связи
+        if (relations.length > 0) {
+            await prisma.relatedProducts.createMany({
+                data: relations.map((rel) => ({
+                    fromProductId: Number(params.id),
+                    toProductId: rel.relatedProductId,
+                    type: rel.type,
+                })),
+                skipDuplicates: true,
+            });
+        }
+
         const product = await prisma.product.update({
             where: { id: Number.parseInt(params.id) },
             data: {
@@ -93,6 +119,7 @@ export async function PUT(
                     ? [...uploadedFiles, ...blobs.map((blob) => blob.url)]
                     : [...uploadedFiles],
             },
+            include: { relatedFrom: { include: { toProduct: true } } },
         });
 
         return NextResponse.json(product);

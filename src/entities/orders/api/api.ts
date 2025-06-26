@@ -1,5 +1,10 @@
 import { prisma } from '@/shared/prisma/prisma-client';
-import { Callback, IndividualOrder, Order } from '@/entities/orders/api/types';
+import {
+    Callback,
+    IndividualOrder,
+    Order,
+    UserOrder,
+} from '@/entities/orders/api/types';
 
 export const getCallbackList = async (): Promise<Callback[]> => {
     try {
@@ -49,4 +54,34 @@ export const getIndividualsOrders = async (): Promise<IndividualOrder[]> => {
     }
 
     return [];
+};
+
+export const getUserOrders = async (
+    userId: string
+): Promise<UserOrder[] | null> => {
+    try {
+        const orders = await prisma.order.findMany({
+            where: { userId },
+            include: {
+                items: {
+                    include: {
+                        product: {
+                            select: {
+                                name: true,
+                                price: true,
+                            },
+                        },
+                    },
+                },
+            },
+            orderBy: {
+                createdAt: 'desc',
+            },
+        });
+
+        return orders;
+    } catch (error) {
+        console.error('Failed to fetch user order:', error);
+        return null;
+    }
 };

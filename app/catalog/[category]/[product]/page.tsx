@@ -61,7 +61,7 @@ export default async function Page({
 
     return (
         <EffectorNext values={values}>
-            {product && <ProductPage product={product} />}
+            <ProductPage product={product} />
         </EffectorNext>
     );
 }

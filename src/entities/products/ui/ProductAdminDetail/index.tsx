@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Flex } from 'antd';
-import { Product } from '@/entities/products';
+import { Product, ProductRelationsList } from '@/entities/products';
 import Image from 'next/image';
 import { TextDecor } from '@/shared/ui/TextDecor';
 import { Text } from '@/shared/ui/Typography';
@@ -12,6 +12,7 @@ type Props = {
 export const ProductAdminDetail: FC<Props> = ({ product }) => {
     return (
         <Flex vertical gap={24}>
+            {/* Блок основной информации */}
             <div className={'flex justify-between bg-white p-2 rounded-md'}>
                 <Flex vertical>
                     <TextDecor name={'Алиас'} value={product?.alias} />
@@ -34,9 +35,13 @@ export const ProductAdminDetail: FC<Props> = ({ product }) => {
                     </div>
                 )}
             </div>
+
+            {/* Блок цены */}
             <div className={'bg-white p-2 flex flex-col rounded-md'}>
                 <TextDecor name={'Цена'} value={product?.price} />
             </div>
+
+            {/* Блок мета-данных */}
             <div className={'bg-white p-2 flex flex-col rounded-md'}>
                 <TextDecor name={'Meta-Title'} value={product?.metaTitle} />
                 <TextDecor
@@ -44,6 +49,8 @@ export const ProductAdminDetail: FC<Props> = ({ product }) => {
                     value={product?.metaDescription}
                 />
             </div>
+
+            {/* Блок описания */}
             <div>
                 <Text className={'mb-1'} strong>
                     Описание
@@ -58,6 +65,8 @@ export const ProductAdminDetail: FC<Props> = ({ product }) => {
                     )}
                 </div>
             </div>
+
+            {/* Блок дополнительных изображений */}
             <div>
                 <Text className={'mb-1'} strong>
                     Доп. картинки
@@ -81,6 +90,9 @@ export const ProductAdminDetail: FC<Props> = ({ product }) => {
                     </Flex>
                 </div>
             </div>
+
+            {/* Блок связанных товаров */}
+            <ProductRelationsList relations={product?.relatedProducts} />
         </Flex>
     );
 };

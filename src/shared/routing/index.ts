@@ -19,6 +19,8 @@ export const paths = {
     conditionsMontage: 'usloviya-montazha',
     warranty: 'garantiya',
     contacts: 'kontakty',
+    profile: '/profile',
+    profileEdit: '/profile/edit',
 };
 
 export const protectedRoutes = [

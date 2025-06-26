@@ -4,18 +4,30 @@ import { Button } from 'antd';
 import { useUnit } from 'effector-react';
 import { cartModel } from '@/entities/leads/model';
 import { Product } from '@/entities/products';
-import { FC } from 'react';
+import { FC, SyntheticEvent } from 'react';
 import ClientOnly from '@/shared/ui/ClientOnly';
 import { AddRemoveCartBlock } from '@/entities/leads';
 
 type Props = {
-    product: Product;
+    product: Omit<
+        Product,
+        | 'createdAt'
+        | 'updatedAt'
+        | 'metaTitle'
+        | 'metaDescription'
+        | 'categoryId'
+        | 'text'
+        | 'images'
+    >;
 };
 
 export const AddToCartBtn: FC<Props> = ({ product }) => {
     const [add, cart] = useUnit([cartModel.addToCart, cartModel.$cart]);
 
-    const handleAddToCart = () => {
+    const handleAddToCart = (e: SyntheticEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
         add({ product, count: 1 });
     };
 

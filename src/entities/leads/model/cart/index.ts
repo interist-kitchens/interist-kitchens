@@ -9,14 +9,60 @@ import { modalModel } from '@/shared/ui/ModalManager';
 
 export const cartModel = atom(() => {
     //** Работа с корзиной */
-    const addToCart = createEvent<{ product: Product; count: number }>();
-    const removeFromCart = createEvent<{ product: Product }>();
-    const removeFromCartByProduct = createEvent<{ product: Product }>();
+    const addToCart = createEvent<{
+        product: Omit<
+            Product,
+            | 'createdAt'
+            | 'updatedAt'
+            | 'metaTitle'
+            | 'metaDescription'
+            | 'categoryId'
+            | 'text'
+            | 'images'
+        >;
+        count: number;
+    }>();
+    const removeFromCart = createEvent<{
+        product: Omit<
+            Product,
+            | 'createdAt'
+            | 'updatedAt'
+            | 'metaTitle'
+            | 'metaDescription'
+            | 'categoryId'
+            | 'text'
+            | 'images'
+        >;
+    }>();
+    const removeFromCartByProduct = createEvent<{
+        product: Omit<
+            Product,
+            | 'createdAt'
+            | 'updatedAt'
+            | 'metaTitle'
+            | 'metaDescription'
+            | 'categoryId'
+            | 'text'
+            | 'images'
+        >;
+    }>();
     const clearCart = createEvent();
 
-    const $cart = createStore<{ product: Product; count: number }[]>([]).reset(
-        clearCart
-    );
+    const $cart = createStore<
+        {
+            product: Omit<
+                Product,
+                | 'createdAt'
+                | 'updatedAt'
+                | 'metaTitle'
+                | 'metaDescription'
+                | 'categoryId'
+                | 'text'
+                | 'images'
+            >;
+            count: number;
+        }[]
+    >([]).reset(clearCart);
 
     $cart.on(addToCart, (state, { product, count }) => {
         const existingItem = state.find(

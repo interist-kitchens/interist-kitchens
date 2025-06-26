@@ -1,4 +1,3 @@
-// schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,15 +8,19 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   name      String?
-  email     String   @unique
+  email     String    @unique
+  phone     String?
   password  String
   image     String?
-  role      UserRole @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  role      UserRole  @default(USER)
+  lastLogin DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   orders    Order[]
+
+  @@index([email])
 }
 
 model Category {
@@ -34,23 +37,54 @@ model Category {
 }
 
 model Product {
-  id              Int                  @id @default(autoincrement())
+  id              Int                @id @default(autoincrement())
   name            String
   metaTitle       String?
   metaDescription String?
   text            String?
   image           String
   images          String[]
-  alias           String               @unique
+  alias           String             @unique
   price           String
-  createdAt       DateTime             @default(now())
-  updatedAt       DateTime             @updatedAt
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
   categoryId      Int
   colors          ColorsOnProducts[]
   orderItems      OrderItem[]
-  categories      Category             @relation(fields: [categoryId], references: [id])
+  categories      Category           @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   IndividualOrder IndividualOrder[]
   coordinates     ProductCoordinates[]
+
+  // Связи с другими товарами (как источник)
+  relatedFrom RelatedProducts[] @relation("RelatedFrom")
+  // Связи с другими товарами (как цель)
+  relatedTo   RelatedProducts[] @relation("RelatedTo")
+
+  @@index([alias])
+  @@index([categoryId])
+}
+
+model RelatedProducts {
+  id   Int                 @id @default(autoincrement())
+  type ProductRelationType
+
+  // От какого товара связь (источник)
+  fromProduct   Product @relation("RelatedFrom", fields: [fromProductId], references: [id], onDelete: Cascade)
+  fromProductId Int
+
+  // К какому товару связь (цель)
+  toProduct   Product @relation("RelatedTo", fields: [toProductId], references: [id], onDelete: Cascade)
+  toProductId Int
+
+  // Уникальный ключ, чтобы избежать дубликатов связей
+  @@unique([fromProductId, toProductId, type])
+}
+
+enum ProductRelationType {
+  UPSELL
+  BUNDLE
+  SIMILAR
+  CROSS_SELL
 }
 
 model Color {

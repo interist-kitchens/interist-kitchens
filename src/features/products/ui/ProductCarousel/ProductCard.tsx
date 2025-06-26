@@ -19,7 +19,7 @@ export const ProductCard: FC<Props> = ({ product, href }) => {
     return (
         <div className={'lg:h-[300px] 2xl:h-[350px] sm:pr-6'}>
             <div className={'flex flex-col h-full justify-between'}>
-                <div className={'h-[290px]'}>
+                <div className={'h-[290px] overflow-hidden'}>
                     <Image
                         src={product.image}
                         alt={product.name}
