@@ -70,13 +70,21 @@ export const productDetailAdminModel = atom(() => {
         pageType: 'productEditAdminPage',
     });
 
+    const productEditModuleAdminPage = declarePage<{ id: string }>({
+        pageType: 'productEditModuleAdminPage',
+    });
+
     sample({
         clock: productViewStarted,
         target: getProductsFx,
     });
 
     sample({
-        clock: [productDetailAdminPage.open, productEditAdminPage.open],
+        clock: [
+            productDetailAdminPage.open,
+            productEditAdminPage.open,
+            productEditModuleAdminPage.open,
+        ],
         fn: ({ id }) => id,
         target: singleRequested,
     });
@@ -84,6 +92,7 @@ export const productDetailAdminModel = atom(() => {
     return {
         productDetailAdminPage,
         productEditAdminPage,
+        productEditModuleAdminPage,
         $products,
         $currentProduct,
         productViewStarted,

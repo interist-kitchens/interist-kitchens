@@ -16,9 +16,18 @@ export const ProductDetailAdminPage: NextPage<Props> = ({ product }) => {
             titleSlot={
                 <Flex align={'center'} justify={'space-between'}>
                     <Title>{product?.name}</Title>
-                    <Link href={`${paths.productsAdmin}/${product?.id}/edit`}>
-                        Редактировать
-                    </Link>
+                    <Flex vertical gap={3}>
+                        <Link
+                            href={`${paths.productsAdmin}/${product?.id}/edit`}
+                        >
+                            Редактировать
+                        </Link>
+                        <Link
+                            href={`${paths.productsAdmin}/${product?.id}/edit-module`}
+                        >
+                            Привязать модули
+                        </Link>
+                    </Flex>
                 </Flex>
             }
         >
