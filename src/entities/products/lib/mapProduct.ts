@@ -20,6 +20,7 @@ export const mapProduct = async (
                     blurImage: await generateBlurImg(image),
                 }))
             ),
+            coordinates: product.coordinates,
         }))
     );
 };

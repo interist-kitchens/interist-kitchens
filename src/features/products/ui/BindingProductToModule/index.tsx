@@ -5,20 +5,18 @@ import { Product } from '@/entities/products';
 import Image from 'next/image';
 import type { TableProps } from 'antd';
 import { Button, Input, Popconfirm, Table } from 'antd';
+import { useUnit } from 'effector-react';
+import { productCoordinatesModel } from '@/entities/products/model';
 
 type Props = {
     product: Product;
 };
 
-type CoordinateItem = {
-    id: string;
-    x: number;
-    y: number;
-    link: string;
-};
-
 export const BindingProductToModule: FC<Props> = ({ product }) => {
-    const [coordinates, setCoordinates] = useState<CoordinateItem[]>([]);
+    const { coordinateAdded, coordinateDeleted, $pending } = useUnit(
+        productCoordinatesModel
+    );
+
     const [imageSize, setImageSize] = useState<{
         width: number;
         height: number;
@@ -27,21 +25,19 @@ export const BindingProductToModule: FC<Props> = ({ product }) => {
     const [containerWidth, setContainerWidth] = useState<number>(0);
 
     const handleImageClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (!containerRef.current) return;
+        if (!containerRef.current || !imageSize) return;
 
         const rect = containerRef.current.getBoundingClientRect();
-        const scale = rect.width / (imageSize?.width || 1);
-        const x = (e.clientX - rect.left) / scale;
-        const y = (e.clientY - rect.top) / scale;
+        const scale = imageSize.width / rect.width;
+        const x = Math.round((e.clientX - rect.left) * scale);
+        const y = Math.round((e.clientY - rect.top) * scale);
 
-        const newItem: CoordinateItem = {
-            id: Date.now().toString(),
-            x: Math.round(x),
-            y: Math.round(y),
+        coordinateAdded({
+            productId: product.id,
+            x,
+            y,
             link: '',
-        };
-
-        setCoordinates([...coordinates, newItem]);
+        });
     };
 
     const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -74,30 +70,23 @@ export const BindingProductToModule: FC<Props> = ({ product }) => {
         return () => window.removeEventListener('resize', handleResize);
     }, [imageSize]);
 
-    const deleteCoordinate = (id: string) => {
-        setCoordinates(coordinates.filter((item) => item.id !== id));
+    const handleUpdateLink = (id: number, link: string) => {
+        // TODO заменить на привязку товара
+        console.log(id, link);
     };
 
-    const updateLink = (id: string, newLink: string) => {
-        setCoordinates(
-            coordinates.map((item) =>
-                item.id === id ? { ...item, link: newLink } : item
-            )
-        );
-    };
-
-    const columns: TableProps<CoordinateItem>['columns'] = [
+    const columns: TableProps<(typeof product.coordinates)[0]>['columns'] = [
         {
-            title: 'X (px от левого края)',
+            title: 'X (px)',
             dataIndex: 'x',
             key: 'x',
-            width: 150,
+            width: 100,
         },
         {
-            title: 'Y (px от верхнего края)',
+            title: 'Y (px)',
             dataIndex: 'y',
             key: 'y',
-            width: 150,
+            width: 100,
         },
         {
             title: 'Ссылка',
@@ -106,7 +95,9 @@ export const BindingProductToModule: FC<Props> = ({ product }) => {
             render: (text, record) => (
                 <Input
                     value={text}
-                    onChange={(e) => updateLink(record.id, e.target.value)}
+                    onChange={(e) =>
+                        handleUpdateLink(record.id, e.target.value)
+                    }
                     placeholder="Введите URL"
                 />
             ),
@@ -118,7 +109,12 @@ export const BindingProductToModule: FC<Props> = ({ product }) => {
             render: (_, record) => (
                 <Popconfirm
                     title="Удалить эту точку?"
-                    onConfirm={() => deleteCoordinate(record.id)}
+                    onConfirm={() =>
+                        coordinateDeleted({
+                            coordinateId: record.id,
+                            productId: product.id,
+                        })
+                    }
                     okText="Да"
                     cancelText="Нет"
                 >
@@ -164,7 +160,7 @@ export const BindingProductToModule: FC<Props> = ({ product }) => {
                     onLoad={handleImageLoad}
                 />
 
-                {coordinates.map((coord) => {
+                {product?.coordinates?.map((coord) => {
                     if (!imageSize) return null;
                     const scale = containerWidth / imageSize.width;
                     return (
@@ -190,7 +186,7 @@ export const BindingProductToModule: FC<Props> = ({ product }) => {
             <div className="overflow-x-auto">
                 <Table
                     columns={columns}
-                    dataSource={coordinates}
+                    dataSource={product.coordinates}
                     rowKey="id"
                     pagination={false}
                     size="small"
@@ -201,6 +197,7 @@ export const BindingProductToModule: FC<Props> = ({ product }) => {
                     style={{
                         width: containerWidth || '100%',
                     }}
+                    loading={$pending}
                 />
             </div>
         </section>

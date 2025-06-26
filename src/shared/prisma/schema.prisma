@@ -34,22 +34,23 @@ model Category {
 }
 
 model Product {
-  id              Int                @id @default(autoincrement())
+  id              Int                  @id @default(autoincrement())
   name            String
   metaTitle       String?
   metaDescription String?
   text            String?
   image           String
   images          String[]
-  alias           String             @unique
+  alias           String               @unique
   price           String
-  createdAt       DateTime           @default(now())
-  updatedAt       DateTime           @updatedAt
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
   categoryId      Int
   colors          ColorsOnProducts[]
   orderItems      OrderItem[]
-  categories      Category           @relation(fields: [categoryId], references: [id])
+  categories      Category             @relation(fields: [categoryId], references: [id])
   IndividualOrder IndividualOrder[]
+  coordinates     ProductCoordinates[]
 }
 
 model Color {
@@ -154,4 +155,15 @@ enum PaymentType {
   CARD
   ONLINE
   BANK_TRANSFER
+}
+
+model ProductCoordinates {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  x         Int
+  y         Int
+  link      String
+  product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

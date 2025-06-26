@@ -17,6 +17,7 @@ export const getProducts = async (): Promise<Product[] | undefined> => {
                         alias: true,
                     },
                 },
+                coordinates: true,
             },
         });
 
@@ -36,6 +37,7 @@ export const getProduct = async (id: string): Promise<Product | null> => {
                     alias: true,
                 },
             },
+            coordinates: true,
         },
     });
 
@@ -55,6 +57,7 @@ export const getProduct = async (id: string): Promise<Product | null> => {
                     blurImage: await generateBlurImg(image),
                 }))
             ),
+            coordinates: product.coordinates,
         };
     }
 
@@ -74,6 +77,7 @@ export const getProductByAlias = async (
                         alias: true,
                     },
                 },
+                coordinates: true,
             },
         });
 
@@ -93,6 +97,7 @@ export const getProductByAlias = async (
                         blurImage: await generateBlurImg(image),
                     }))
                 ),
+                coordinates: product.coordinates,
             };
         }
     } catch (e) {
@@ -132,5 +137,29 @@ export const updateProduct = createMutation({
         headers: {
             'Content-Type': 'multipart/form-data',
         },
+    })),
+});
+
+export const addCoordinate = createMutation({
+    effect: createInternalRequestFx<
+        { productId: string; x: number; y: number; link: string },
+        void,
+        Error
+    >((data) => ({
+        url: `/products/${data.productId}/coordinates`,
+        method: 'POST',
+        data: { x: data.x, y: data.y, link: data.link },
+    })),
+});
+
+export const deleteCoordinate = createMutation({
+    effect: createInternalRequestFx<
+        { coordinateId: number; productId: string },
+        void,
+        Error
+    >((data) => ({
+        url: `/products/${data.productId}/coordinates`,
+        method: 'DELETE',
+        data: { coordinateId: data.coordinateId },
     })),
 });

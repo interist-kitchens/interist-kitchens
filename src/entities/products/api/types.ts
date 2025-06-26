@@ -14,6 +14,15 @@ export type ProductResponse = {
     categories: { name: string; alias: string };
     price: string;
     images: string[];
+    coordinates: {
+        link: string;
+        id: number;
+        createdAt: Date;
+        updatedAt: Date;
+        productId: number;
+        x: number;
+        y: number;
+    }[];
 };
 
 export type Product = {
@@ -35,6 +44,15 @@ export type Product = {
         blurImage?: string;
     }[];
     categories: { name: string; alias: string };
+    coordinates: {
+        link: string;
+        id: number;
+        createdAt: Date;
+        updatedAt: Date;
+        productId: number;
+        x: number;
+        y: number;
+    }[];
 };
 
 export type FormFieldType = {
