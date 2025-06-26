@@ -1,25 +1,17 @@
 import { compare } from 'bcryptjs';
-import type { NextAuthOptions, Session } from 'next-auth';
+import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { prisma } from '@/shared/prisma/prisma-client';
-import { PrismaAdapter } from '@auth/prisma-adapter';
-
-export interface UserSession extends Session {
-    user: {
-        name?: string | null;
-        email?: string | null;
-        image?: string | null;
-        id: string;
-        role: 'USER' | 'ADMIN';
-    };
-}
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
 
 export const authOptions: NextAuthOptions = {
     pages: {
         signIn: '/login',
+        error: '/auth/error',
     },
     session: {
         strategy: 'jwt',
+        maxAge: 30 * 24 * 60 * 60,
     },
     adapter: PrismaAdapter(prisma),
     secret: process.env.NEXTAUTH_SECRET,
@@ -31,7 +23,6 @@ export const authOptions: NextAuthOptions = {
                 email: {
                     label: 'Email',
                     type: 'email',
-                    placeholder: 'example@example.com',
                 },
                 password: { label: 'Password', type: 'password' },
             },
@@ -40,75 +31,69 @@ export const authOptions: NextAuthOptions = {
                     throw new Error('Введите почту и пароль');
                 }
 
-                let user = null;
-
                 try {
-                    user = await prisma.user.findUnique({
-                        where: {
-                            email: credentials?.email,
-                        },
+                    const user = await prisma.user.findUnique({
+                        where: { email: credentials.email },
                     });
-                } catch (e) {
-                    console.error(e);
+
+                    if (!user) throw new Error('Пользователь не найден');
+                    if (!user.password) throw new Error('Неверный метод входа');
+
+                    const isValid = await compare(
+                        credentials.password,
+                        user.password
+                    );
+                    if (!isValid) throw new Error('Неверный пароль');
+
+                    return {
+                        id: user.id,
+                        name: user.name,
+                        email: user.email,
+                        phone: user?.phone,
+                        image: user?.image,
+                        role: user.role,
+                    };
+                } catch (error) {
+                    console.error('Authorization error:', error);
+                    throw new Error('Ошибка авторизации');
                 }
-
-                if (!user || !user?.password) {
-                    throw new Error('Пользователь не найден');
-                }
-
-                const passwordMatch = await compare(
-                    credentials.password,
-                    user.password
-                );
-
-                if (!passwordMatch) {
-                    throw new Error('Не верный пароль');
-                }
-
-                return {
-                    id: user.id,
-                    name: user.name,
-                    email: user.email,
-                    role: user.role,
-                };
             },
         }),
     ],
     callbacks: {
-        async jwt({ token }) {
-            if (!token.email) {
-                return token;
-            }
-
-            let user = null;
-
-            try {
-                user = await prisma.user.findFirst({
-                    where: {
-                        email: token.email,
-                    },
-                });
-            } catch (e) {
-                console.error(e);
-            }
-
+        async jwt({ token, user }) {
             if (user) {
                 token.id = user.id;
+                token.name = user.name;
                 token.email = user.email;
+                token.image = user.image;
+                token.phone = user.phone;
                 token.role = user.role;
             }
-
             return token;
         },
-        async session({ session, token }): Promise<UserSession> {
-            return {
-                ...session,
-                user: {
+        async session({ session, token }) {
+            if (token) {
+                session.user = {
                     ...session.user,
-                    id: token.id as string,
-                    role: token.role as 'USER' | 'ADMIN',
-                },
-            };
+                    id: token.id,
+                    name: token.name,
+                    email: token.email,
+                    image: token.image,
+                    phone: token.phone,
+                    role: token.role,
+                };
+            }
+            return session;
         },
     },
+    events: {
+        async signIn({ user }) {
+            await prisma.user.update({
+                where: { id: user.id },
+                data: { lastLogin: new Date() },
+            });
+        },
+    },
+    debug: process.env.NODE_ENV === 'development',
 };
