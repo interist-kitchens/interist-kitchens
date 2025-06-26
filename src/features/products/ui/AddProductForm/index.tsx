@@ -26,17 +26,20 @@ import { normFile, uploadProps } from '@/features/categories/lib';
 import { WysiwygEditor } from '@/shared/ui/WysiwygEditor';
 import { paths } from '@/shared/routing';
 import { productCreateAdminModel } from '@/entities/products/model';
-import { FormFieldType } from '@/entities/products';
+import { FormFieldType, Product, Relation } from '@/entities/products';
+import { ProductRelations } from '@/features/products';
 
 const { Item: FormItem } = Form;
 
 type Props = {
     categories?: Categories[];
+    products?: Product[];
 };
 
-export const AddProductForm: FC<Props> = ({ categories }) => {
+export const AddProductForm: FC<Props> = ({ categories, products = [] }) => {
     const router = useRouter();
     const [textDescription, setTextDescription] = useState<string>('');
+    const [relationsToAdd, setRelationsToAdd] = useState<Relation[]>([]);
 
     const [loading, submit, isSuccess, reset] = useUnit([
         productCreateAdminModel.$pending,
@@ -61,6 +64,7 @@ export const AddProductForm: FC<Props> = ({ categories }) => {
                     ?.map((file) => file.originFileObj)
                     .filter((file) => typeof file !== 'undefined') ?? [],
             price: values.price,
+            relations: relationsToAdd,
         };
 
         appendFieldsToFormData(formData, appendedValues);
@@ -73,7 +77,7 @@ export const AddProductForm: FC<Props> = ({ categories }) => {
             message
                 .open({
                     type: 'success',
-                    content: 'Товар создан успешно',
+                    content: 'Товар создан! Связи добавлены',
                     duration: 1,
                 })
                 .then(() => {
@@ -211,9 +215,17 @@ export const AddProductForm: FC<Props> = ({ categories }) => {
                 <WysiwygEditor setContent={setTextDescription} />
             </FormItem>
 
+            <FormItem label="Связанные товары">
+                <ProductRelations
+                    products={products}
+                    relations={relationsToAdd}
+                    onChangeRelations={setRelationsToAdd}
+                />
+            </FormItem>
+
             <FormItem label={null}>
                 <Button type="primary" htmlType="submit" loading={loading}>
-                    Отправить
+                    Создать товар
                 </Button>
             </FormItem>
         </Form>

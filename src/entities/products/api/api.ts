@@ -17,6 +17,20 @@ export const getProducts = async (): Promise<Product[] | undefined> => {
                         alias: true,
                     },
                 },
+                relatedFrom: {
+                    include: {
+                        toProduct: {
+                            include: {
+                                categories: {
+                                    select: {
+                                        name: true,
+                                        alias: true,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
             },
         });
 
@@ -34,6 +48,25 @@ export const getProduct = async (id: string): Promise<Product | null> => {
                 select: {
                     name: true,
                     alias: true,
+                },
+            },
+            relatedFrom: {
+                include: {
+                    toProduct: {
+                        select: {
+                            id: true,
+                            name: true,
+                            alias: true,
+                            image: true,
+                            price: true,
+                            categories: {
+                                select: {
+                                    name: true,
+                                    alias: true,
+                                },
+                            },
+                        },
+                    },
                 },
             },
         },
@@ -55,6 +88,18 @@ export const getProduct = async (id: string): Promise<Product | null> => {
                     blurImage: await generateBlurImg(image),
                 }))
             ),
+            relatedProducts: product.relatedFrom.map((relation) => ({
+                id: String(relation.id),
+                name: relation.toProduct.name,
+                alias: relation.toProduct.alias,
+                image: relation.toProduct.image,
+                price: relation.toProduct.price,
+                type: relation.type,
+                categories: {
+                    name: relation.toProduct.categories?.name || '',
+                    alias: relation.toProduct.categories?.alias || '',
+                },
+            })),
         };
     }
 
@@ -72,6 +117,25 @@ export const getProductByAlias = async (
                     select: {
                         name: true,
                         alias: true,
+                    },
+                },
+                relatedFrom: {
+                    include: {
+                        toProduct: {
+                            select: {
+                                id: true,
+                                name: true,
+                                alias: true,
+                                image: true,
+                                price: true,
+                                categories: {
+                                    select: {
+                                        name: true,
+                                        alias: true,
+                                    },
+                                },
+                            },
+                        },
                     },
                 },
             },
@@ -93,6 +157,18 @@ export const getProductByAlias = async (
                         blurImage: await generateBlurImg(image),
                     }))
                 ),
+                relatedProducts: product.relatedFrom.map((relation) => ({
+                    id: String(relation.toProduct.id),
+                    name: relation.toProduct.name,
+                    alias: relation.toProduct.alias,
+                    image: relation.toProduct.image,
+                    price: relation.toProduct.price,
+                    type: relation.type,
+                    categories: {
+                        name: relation.toProduct.categories?.name || '',
+                        alias: relation.toProduct.categories?.alias || '',
+                    },
+                })),
             };
         }
     } catch (e) {

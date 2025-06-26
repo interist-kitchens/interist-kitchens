@@ -38,7 +38,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
     return (
         <EffectorNext values={values}>
-            {product && <ProductDetailAdminPage product={product} />}
+            <ProductDetailAdminPage product={product} />
         </EffectorNext>
     );
 }

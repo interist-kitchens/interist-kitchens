@@ -23,7 +23,11 @@ export type DeliveryCartType = {
 
 export type CartOrderType = {
     products: {
-        product: Product;
+        product: {
+            id: string;
+            price: string;
+            name: string;
+        };
         count: number;
     }[];
     payment: PaymentType;

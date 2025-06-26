@@ -1,12 +1,21 @@
 import { Button, Flex } from 'antd';
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
-import { FC } from 'react';
+import { FC, SyntheticEvent } from 'react';
 import { useUnit } from 'effector-react';
 import { cartModel } from '@/entities/leads/model';
 import { Product } from '@/entities/products';
 
 type Props = {
-    product: Product;
+    product: Omit<
+        Product,
+        | 'createdAt'
+        | 'updatedAt'
+        | 'metaTitle'
+        | 'metaDescription'
+        | 'categoryId'
+        | 'text'
+        | 'images'
+    >;
 };
 
 export const AddRemoveCartBlock: FC<Props> = ({ product }) => {
@@ -16,11 +25,17 @@ export const AddRemoveCartBlock: FC<Props> = ({ product }) => {
         cartModel.$cart,
     ]);
 
-    const handleAddToCart = () => {
+    const handleAddToCart = (e: SyntheticEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
         add({ product, count: 1 });
     };
 
-    const handleRemoveFromCart = () => {
+    const handleRemoveFromCart = (e: SyntheticEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
         remove({ product });
     };
 

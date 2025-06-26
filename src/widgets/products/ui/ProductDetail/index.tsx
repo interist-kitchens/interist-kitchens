@@ -1,4 +1,9 @@
-import { Product, ProductCard, ProductSlider } from '@/entities/products';
+import {
+    Product,
+    ProductCard,
+    ProductRelations,
+    ProductSlider,
+} from '@/entities/products';
 import { FC } from 'react';
 import { SendOrderBtn } from '@/features/leads/sendOrder';
 import { getServerSession } from 'next-auth';
@@ -7,6 +12,7 @@ import { Breadcrumbs } from '@/shared/ui/Breadcrumbs';
 import { paths } from '@/shared/routing';
 import { AddToCartBtn } from '@/features/leads/cart';
 import Link from 'next/link';
+import { $Enums } from '@prisma/client';
 
 type Props = {
     product: Product;
@@ -14,6 +20,15 @@ type Props = {
 
 export const ProductDetail: FC<Props> = async ({ product }) => {
     const session: UserSession | null = await getServerSession(authOptions);
+
+    const relationsByType = product.relatedProducts?.reduce(
+        (acc, rel) => {
+            if (!acc[rel.type]) acc[rel.type] = [];
+            acc[rel.type].push(rel);
+            return acc;
+        },
+        {} as Record<$Enums.ProductRelationType, typeof product.relatedProducts>
+    );
 
     return (
         <div className={'container mx-auto px-6 pt-5 pb-16'}>
@@ -41,7 +56,9 @@ export const ProductDetail: FC<Props> = async ({ product }) => {
                     text={product.text}
                     buttonsSlot={
                         <>
-                            <AddToCartBtn product={product} />
+                            {!relationsByType?.BUNDLE && (
+                                <AddToCartBtn product={product} />
+                            )}
                             <SendOrderBtn
                                 product={product}
                                 user={session?.user}
@@ -50,6 +67,13 @@ export const ProductDetail: FC<Props> = async ({ product }) => {
                     }
                 />
             </div>
+            {relationsByType?.BUNDLE && (
+                <ProductRelations
+                    relations={relationsByType.BUNDLE}
+                    relationType="BUNDLE"
+                    title={'Комплект'}
+                />
+            )}
         </div>
     );
 };
