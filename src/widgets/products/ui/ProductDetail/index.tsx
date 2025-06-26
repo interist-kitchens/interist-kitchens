@@ -34,7 +34,11 @@ export const ProductDetail: FC<Props> = async ({ product }) => {
                 ]}
             />
             <div className={'flex flex-col lg:flex-row gap-8 pt-5'}>
-                <ProductSlider name={product.name} images={product.images} />
+                <ProductSlider
+                    name={product.name}
+                    images={product.images}
+                    coordinates={product?.coordinates}
+                />
                 <ProductCard
                     name={product.name}
                     price={product.price}

@@ -43,8 +43,8 @@ export const BindingProductToModule: FC<Props> = ({ product }) => {
     const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
         const img = e.target as HTMLImageElement;
         const newSize = {
-            width: img.naturalWidth,
-            height: img.naturalHeight,
+            width: img.offsetWidth,
+            height: img.offsetHeight,
         };
         setImageSize(newSize);
 
@@ -141,11 +141,8 @@ export const BindingProductToModule: FC<Props> = ({ product }) => {
                 ref={containerRef}
                 className="relative cursor-crosshair border border-dashed border-gray-300 mx-auto"
                 style={{
-                    width: containerWidth ? `${containerWidth}px` : 'auto',
-                    height:
-                        containerWidth && imageSize
-                            ? `${(containerWidth / imageSize.width) * imageSize.height}px`
-                            : '500px',
+                    width: '970px',
+                    height: '500px',
                 }}
                 onClick={handleImageClick}
             >
