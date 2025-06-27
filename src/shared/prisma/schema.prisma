@@ -37,23 +37,24 @@ model Category {
 }
 
 model Product {
-  id              Int                @id @default(autoincrement())
-  name            String
-  metaTitle       String?
-  metaDescription String?
-  text            String?
-  image           String
-  images          String[]
-  alias           String             @unique
-  price           String
-  createdAt       DateTime           @default(now())
-  updatedAt       DateTime           @updatedAt
-  categoryId      Int
-  colors          ColorsOnProducts[]
-  orderItems      OrderItem[]
-  categories      Category           @relation(fields: [categoryId], references: [id], onDelete: Restrict)
-  IndividualOrder IndividualOrder[]
-  coordinates     ProductCoordinates[]
+  id                   Int                  @id @default(autoincrement())
+  name                 String
+  metaTitle            String?
+  metaDescription      String?
+  text                 String?
+  image                String
+  images               String[]
+  alias                String               @unique
+  price                String
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+  categoryId           Int
+  colors               ColorsOnProducts[]
+  orderItems           OrderItem[]
+  categories           Category             @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  IndividualOrder      IndividualOrder[]
+  coordinates          ProductCoordinates[]
+  coordinateReferences ProductCoordinates[] @relation("CoordinateRelation")
 
   // Связи с другими товарами (как источник)
   relatedFrom RelatedProducts[] @relation("RelatedFrom")
@@ -192,12 +193,13 @@ enum PaymentType {
 }
 
 model ProductCoordinates {
-  id        Int      @id @default(autoincrement())
-  productId Int
-  x         Int
-  y         Int
-  link      String
-  product   Product  @relation(fields: [productId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               Int      @id @default(autoincrement())
+  productId        Int
+  x                Int
+  y                Int
+  relatedProductId Int? // Ссылка на связанный товар
+  product          Product  @relation(fields: [productId], references: [id])
+  relatedProduct   Product? @relation(fields: [relatedProductId], references: [id], name: "CoordinateRelation")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }

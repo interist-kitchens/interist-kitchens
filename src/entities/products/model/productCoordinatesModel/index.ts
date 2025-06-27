@@ -1,6 +1,10 @@
 import { atom } from '@/shared/factory/atom';
 import { combine, createEvent, sample } from 'effector';
-import { addCoordinate, deleteCoordinate } from '@/entities/products/api';
+import {
+    addCoordinate,
+    deleteCoordinate,
+    updateCoordinate,
+} from '@/entities/products/api';
 import { messageModel } from '@/shared/lib/messageApi';
 import { ArgsProps } from 'antd/es/message/interface';
 
@@ -9,11 +13,15 @@ export const productCoordinatesModel = atom(() => {
         productId: string;
         x: number;
         y: number;
-        link: string;
+        relatedProductId: string | null;
     }>();
     const coordinateDeleted = createEvent<{
         coordinateId: number;
         productId: string;
+    }>();
+    const coordinateUpdated = createEvent<{
+        coordinateId: number;
+        relatedProductId: string | null;
     }>();
 
     sample({
@@ -27,6 +35,11 @@ export const productCoordinatesModel = atom(() => {
     });
 
     sample({
+        clock: coordinateUpdated,
+        target: updateCoordinate.start,
+    });
+
+    sample({
         clock: addCoordinate.$succeeded,
         fn: () =>
             ({ type: 'success', content: 'Координата добавлена' }) as ArgsProps,
@@ -37,6 +50,12 @@ export const productCoordinatesModel = atom(() => {
         clock: deleteCoordinate.$succeeded,
         fn: () =>
             ({ type: 'success', content: 'Координата удалена' }) as ArgsProps,
+        target: messageModel.open,
+    });
+    sample({
+        clock: updateCoordinate.$succeeded,
+        fn: () =>
+            ({ type: 'success', content: 'Точка обновлена' }) as ArgsProps,
         target: messageModel.open,
     });
 
@@ -60,13 +79,31 @@ export const productCoordinatesModel = atom(() => {
         target: messageModel.open,
     });
 
+    sample({
+        clock: updateCoordinate.finished.failure,
+        fn: () =>
+            ({
+                type: 'error',
+                content: 'Ошибка обновления точки',
+            }) as ArgsProps,
+        target: messageModel.open,
+    });
+
     return {
         coordinateAdded,
         coordinateDeleted,
+        coordinateUpdated,
         $pending: combine(
             addCoordinate.$pending,
             deleteCoordinate.$pending,
-            (adding, deleting) => adding || deleting
+            updateCoordinate.$pending,
+            (adding, deleting, updating) => adding || deleting || updating
+        ),
+        $isSuccess: combine(
+            addCoordinate.$succeeded,
+            updateCoordinate.$succeeded,
+            deleteCoordinate.$succeeded,
+            (adding, deleting, updating) => adding || deleting || updating
         ),
     };
 });

@@ -30,7 +30,7 @@ export type ProductResponse = {
         };
     }[];
     coordinates: {
-        link: string;
+        relatedProductId: number | null;
         id: number;
         createdAt: Date;
         updatedAt: Date;
@@ -74,7 +74,7 @@ export type Product = {
     categories: { name: string; alias: string };
     relatedProducts?: ProductRelation[];
     coordinates: {
-        link: string;
+        relatedProductId: number | null;
         id: number;
         createdAt: Date;
         updatedAt: Date;

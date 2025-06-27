@@ -141,7 +141,18 @@ export const getProductByAlias = async (
                         },
                     },
                 },
-                coordinates: true,
+                coordinates: {
+                    include: {
+                        relatedProduct: {
+                            select: {
+                                id: true,
+                                name: true,
+                                image: true,
+                                price: true,
+                            },
+                        },
+                    },
+                },
             },
         });
 
@@ -218,13 +229,18 @@ export const updateProduct = createMutation({
 
 export const addCoordinate = createMutation({
     effect: createInternalRequestFx<
-        { productId: string; x: number; y: number; link: string },
+        {
+            productId: string;
+            x: number;
+            y: number;
+            relatedProductId: string | null;
+        },
         void,
         Error
     >((data) => ({
         url: `/products/${data.productId}/coordinates`,
         method: 'POST',
-        data: { x: data.x, y: data.y, link: data.link },
+        data: { x: data.x, y: data.y, relatedProductId: data.relatedProductId },
     })),
 });
 
@@ -237,5 +253,17 @@ export const deleteCoordinate = createMutation({
         url: `/products/${data.productId}/coordinates`,
         method: 'DELETE',
         data: { coordinateId: data.coordinateId },
+    })),
+});
+
+export const updateCoordinate = createMutation({
+    effect: createInternalRequestFx<
+        { coordinateId: number; relatedProductId: string | null },
+        void,
+        Error
+    >((data) => ({
+        url: `/products/coordinates/${data.coordinateId}`,
+        method: 'PUT',
+        data: { relatedProductId: data.relatedProductId },
     })),
 });

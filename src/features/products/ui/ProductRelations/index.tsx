@@ -27,7 +27,7 @@ export const ProductRelations: FC<Props> = ({
         useState<$Enums.ProductRelationType>($Enums.ProductRelationType.BUNDLE);
 
     const availableProducts = products.filter(
-        (p) => !relations.some((r) => r.relatedProductId === p.id)
+        (p) => !relations.some((r) => r.relatedProductId.toString() === p.id)
     );
 
     const handleAddRelation = () => {
@@ -36,7 +36,9 @@ export const ProductRelations: FC<Props> = ({
             return;
         }
 
-        const product = products.find((p) => p.id === selectedProductId);
+        const product = products.find(
+            (p) => p.id === selectedProductId.toString()
+        );
         if (!product) return;
 
         onChangeRelations([

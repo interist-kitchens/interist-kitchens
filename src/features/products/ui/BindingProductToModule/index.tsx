@@ -3,40 +3,52 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { Product } from '@/entities/products';
 import Image from 'next/image';
-import type { TableProps } from 'antd';
-import { Button, Input, Popconfirm, Table } from 'antd';
+import { Button, Popconfirm, Select, Table, TableProps } from 'antd';
 import { useUnit } from 'effector-react';
 import { productCoordinatesModel } from '@/entities/products/model';
+import { useRouter } from 'next/navigation';
+
+const { Option } = Select;
 
 type Props = {
     product: Product;
 };
 
 export const BindingProductToModule: FC<Props> = ({ product }) => {
-    const { coordinateAdded, coordinateDeleted, $pending } = useUnit(
-        productCoordinatesModel
-    );
+    const router = useRouter();
+    const {
+        coordinateAdded,
+        coordinateDeleted,
+        coordinateUpdated,
+        $pending,
+        $isSuccess,
+    } = useUnit(productCoordinatesModel);
 
     const [imageSize, setImageSize] = useState<{
         width: number;
         height: number;
     } | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
-    const [containerWidth, setContainerWidth] = useState<number>(0);
+
+    useEffect(() => {
+        if ($isSuccess) {
+            router.refresh();
+        }
+    }, [$isSuccess]);
 
     const handleImageClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (!containerRef.current || !imageSize) return;
 
         const rect = containerRef.current.getBoundingClientRect();
-        const scale = imageSize.width / rect.width;
-        const x = Math.round((e.clientX - rect.left) * scale);
-        const y = Math.round((e.clientY - rect.top) * scale);
+
+        const x = Math.round(e.clientX - rect.left);
+        const y = Math.round(e.clientY - rect.top);
 
         coordinateAdded({
             productId: product.id,
             x,
             y,
-            link: '',
+            relatedProductId: null,
         });
     };
 
@@ -47,32 +59,16 @@ export const BindingProductToModule: FC<Props> = ({ product }) => {
             height: img.offsetHeight,
         };
         setImageSize(newSize);
-
-        // Устанавливаем ширину контейнера по ширине изображения
-        if (containerRef.current) {
-            const maxWidth = Math.min(newSize.width, window.innerWidth - 40); // 40px для отступов
-            setContainerWidth(maxWidth);
-        }
     };
 
-    useEffect(() => {
-        const handleResize = () => {
-            if (imageSize && containerRef.current) {
-                const maxWidth = Math.min(
-                    imageSize.width,
-                    window.innerWidth - 40
-                );
-                setContainerWidth(maxWidth);
-            }
-        };
-
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, [imageSize]);
-
-    const handleUpdateLink = (id: number, link: string) => {
-        // TODO заменить на привязку товара
-        console.log(id, link);
+    const handleUpdateRelatedProduct = (
+        coordinateId: number,
+        relatedProductId: string | null
+    ) => {
+        coordinateUpdated({
+            coordinateId,
+            relatedProductId: relatedProductId ? relatedProductId : null,
+        });
     };
 
     const columns: TableProps<(typeof product.coordinates)[0]>['columns'] = [
@@ -89,17 +85,28 @@ export const BindingProductToModule: FC<Props> = ({ product }) => {
             width: 100,
         },
         {
-            title: 'Ссылка',
-            dataIndex: 'link',
-            key: 'link',
-            render: (text, record) => (
-                <Input
-                    value={text}
-                    onChange={(e) =>
-                        handleUpdateLink(record.id, e.target.value)
+            title: 'Связанный товар',
+            dataIndex: 'relatedProductId',
+            key: 'relatedProduct',
+            render: (relatedProductId, record) => (
+                <Select
+                    style={{ width: '100%' }}
+                    value={relatedProductId ? String(relatedProductId) : null}
+                    onChange={(value) =>
+                        handleUpdateRelatedProduct(record.id, value)
                     }
-                    placeholder="Введите URL"
-                />
+                    placeholder="Выберите товар"
+                    allowClear
+                >
+                    {product.relatedProducts?.map((relatedProduct) => (
+                        <Option
+                            key={relatedProduct.id}
+                            value={relatedProduct.id}
+                        >
+                            {relatedProduct.name}
+                        </Option>
+                    ))}
+                </Select>
             ),
         },
         {
@@ -159,16 +166,25 @@ export const BindingProductToModule: FC<Props> = ({ product }) => {
 
                 {product?.coordinates?.map((coord) => {
                     if (!imageSize) return null;
-                    const scale = containerWidth / imageSize.width;
+                    const relatedProduct = product.relatedProducts?.find(
+                        (p) => p.id === String(coord.relatedProductId)
+                    );
+
                     return (
                         <div
                             key={coord.id}
                             className="absolute w-4 h-4 bg-red-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 border-2 border-white"
                             style={{
-                                left: `${coord.x * scale}px`,
-                                top: `${coord.y * scale}px`,
+                                left: `${coord.x}px`,
+                                top: `${coord.y}px`,
                             }}
-                        />
+                        >
+                            {relatedProduct && (
+                                <div className="absolute -top-6 -left-6 bg-white text-xs px-1 py-0.5 rounded shadow">
+                                    {relatedProduct.name}
+                                </div>
+                            )}
+                        </div>
                     );
                 })}
             </div>
@@ -192,7 +208,7 @@ export const BindingProductToModule: FC<Props> = ({ product }) => {
                             'Нет добавленных точек. Кликните по изображению, чтобы добавить.',
                     }}
                     style={{
-                        width: containerWidth || '100%',
+                        width: '100%',
                     }}
                     loading={$pending}
                 />

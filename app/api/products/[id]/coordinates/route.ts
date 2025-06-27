@@ -12,7 +12,7 @@ export async function POST(
                 productId: Number(params.id),
                 x: body.x,
                 y: body.y,
-                link: body.link,
+                relatedProductId: body?.relatedProductId,
             },
         });
         return NextResponse.json(coordinate);
