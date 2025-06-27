@@ -18,6 +18,7 @@ type Props = {
         | 'categoryId'
         | 'text'
         | 'images'
+        | 'coordinates'
     >;
     count: number;
 };

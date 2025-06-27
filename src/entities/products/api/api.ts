@@ -31,6 +31,7 @@ export const getProducts = async (): Promise<Product[] | undefined> => {
                         },
                     },
                 },
+                coordinates: true,
             },
         });
 
@@ -69,6 +70,7 @@ export const getProduct = async (id: string): Promise<Product | null> => {
                     },
                 },
             },
+            coordinates: true,
         },
     });
 
@@ -100,6 +102,7 @@ export const getProduct = async (id: string): Promise<Product | null> => {
                     alias: relation.toProduct.categories?.alias || '',
                 },
             })),
+            coordinates: product.coordinates,
         };
     }
 
@@ -138,6 +141,18 @@ export const getProductByAlias = async (
                         },
                     },
                 },
+                coordinates: {
+                    include: {
+                        relatedProduct: {
+                            select: {
+                                id: true,
+                                name: true,
+                                image: true,
+                                price: true,
+                            },
+                        },
+                    },
+                },
             },
         });
 
@@ -169,6 +184,7 @@ export const getProductByAlias = async (
                         alias: relation.toProduct.categories?.alias || '',
                     },
                 })),
+                coordinates: product.coordinates,
             };
         }
     } catch (e) {
@@ -208,5 +224,46 @@ export const updateProduct = createMutation({
         headers: {
             'Content-Type': 'multipart/form-data',
         },
+    })),
+});
+
+export const addCoordinate = createMutation({
+    effect: createInternalRequestFx<
+        {
+            productId: string;
+            x: number;
+            y: number;
+            relatedProductId: string | null;
+        },
+        void,
+        Error
+    >((data) => ({
+        url: `/products/${data.productId}/coordinates`,
+        method: 'POST',
+        data: { x: data.x, y: data.y, relatedProductId: data.relatedProductId },
+    })),
+});
+
+export const deleteCoordinate = createMutation({
+    effect: createInternalRequestFx<
+        { coordinateId: number; productId: string },
+        void,
+        Error
+    >((data) => ({
+        url: `/products/${data.productId}/coordinates`,
+        method: 'DELETE',
+        data: { coordinateId: data.coordinateId },
+    })),
+});
+
+export const updateCoordinate = createMutation({
+    effect: createInternalRequestFx<
+        { coordinateId: number; relatedProductId: string | null },
+        void,
+        Error
+    >((data) => ({
+        url: `/products/coordinates/${data.coordinateId}`,
+        method: 'PUT',
+        data: { relatedProductId: data.relatedProductId },
     })),
 });

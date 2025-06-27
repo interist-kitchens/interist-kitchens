@@ -5,3 +5,4 @@ export { ProductCarousel } from './ui/ProductCarousel';
 export { ProductRelations } from './ui/ProductRelations';
 export { ProductRelationsEditor } from './ui/ProductRelationsEditor';
 export * from './lib';
+export { BindingProductToModule } from './ui/BindingProductToModule';

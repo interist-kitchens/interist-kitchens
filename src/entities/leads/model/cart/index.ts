@@ -19,6 +19,7 @@ export const cartModel = atom(() => {
             | 'categoryId'
             | 'text'
             | 'images'
+            | 'coordinates'
         >;
         count: number;
     }>();
@@ -32,6 +33,7 @@ export const cartModel = atom(() => {
             | 'categoryId'
             | 'text'
             | 'images'
+            | 'coordinates'
         >;
     }>();
     const removeFromCartByProduct = createEvent<{
@@ -44,6 +46,7 @@ export const cartModel = atom(() => {
             | 'categoryId'
             | 'text'
             | 'images'
+            | 'coordinates'
         >;
     }>();
     const clearCart = createEvent();
@@ -59,6 +62,7 @@ export const cartModel = atom(() => {
                 | 'categoryId'
                 | 'text'
                 | 'images'
+                | 'coordinates'
             >;
             count: number;
         }[]

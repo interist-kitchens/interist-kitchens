@@ -33,6 +33,7 @@ export const mapProduct = async (
                     alias: relation.toProduct.categories?.alias || '',
                 },
             })),
+            coordinates: product.coordinates,
         }))
     );
 };

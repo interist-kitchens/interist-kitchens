@@ -29,6 +29,15 @@ export type ProductResponse = {
             } | null;
         };
     }[];
+    coordinates: {
+        relatedProductId: number | null;
+        id: number;
+        createdAt: Date;
+        updatedAt: Date;
+        productId: number;
+        x: number;
+        y: number;
+    }[];
 };
 
 export type ProductRelation = {
@@ -64,6 +73,15 @@ export type Product = {
     }[];
     categories: { name: string; alias: string };
     relatedProducts?: ProductRelation[];
+    coordinates: {
+        relatedProductId: number | null;
+        id: number;
+        createdAt: Date;
+        updatedAt: Date;
+        productId: number;
+        x: number;
+        y: number;
+    }[];
 };
 
 export type FormFieldType = {
