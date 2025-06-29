@@ -37,24 +37,25 @@ model Category {
 }
 
 model Product {
-  id                   Int                  @id @default(autoincrement())
+  id                   Int                     @id @default(autoincrement())
   name                 String
   metaTitle            String?
   metaDescription      String?
   text                 String?
   image                String
   images               String[]
-  alias                String               @unique
+  alias                String                  @unique
   price                String
-  createdAt            DateTime             @default(now())
-  updatedAt            DateTime             @updatedAt
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @updatedAt
   categoryId           Int
   colors               ColorsOnProducts[]
   orderItems           OrderItem[]
-  categories           Category             @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  categories           Category                @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   IndividualOrder      IndividualOrder[]
   coordinates          ProductCoordinates[]
-  coordinateReferences ProductCoordinates[] @relation("CoordinateRelation")
+  coordinateReferences ProductCoordinates[]    @relation("CoordinateRelation")
+  attributes           ProductAttributeValue[]
 
   // Связи с другими товарами (как источник)
   relatedFrom RelatedProducts[] @relation("RelatedFrom")
@@ -63,6 +64,29 @@ model Product {
 
   @@index([alias])
   @@index([categoryId])
+}
+
+model ProductAttribute {
+  id          Int                     @id @default(autoincrement())
+  name        String                  @unique
+  slug        String                  @unique
+  description String?
+  values      ProductAttributeValue[]
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+}
+
+model ProductAttributeValue {
+  id          Int              @id @default(autoincrement())
+  attribute   ProductAttribute @relation(fields: [attributeId], references: [id])
+  attributeId Int
+  product     Product          @relation(fields: [productId], references: [id])
+  productId   Int
+  value       String
+  isPublic    Boolean          @default(true)
+  createdAt   DateTime         @default(now())
+
+  @@unique([attributeId, productId]) // Один атрибут одного типа на товар
 }
 
 model RelatedProducts {

@@ -29,7 +29,7 @@ import { productCreateAdminModel } from '@/entities/products/model';
 import { FormFieldType, Product, Relation } from '@/entities/products';
 import { ProductRelations } from '@/features/products';
 
-const { Item: FormItem } = Form;
+const { Item: FormItem, List: FormList } = Form;
 
 type Props = {
     categories?: Categories[];
