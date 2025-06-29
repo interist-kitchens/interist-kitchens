@@ -5,6 +5,7 @@ import { prisma } from '@/shared/prisma/prisma-client';
 import { put } from '@vercel/blob';
 import { getUUID } from 'rc-select/lib/hooks/useId';
 import { $Enums } from '@prisma/client';
+import { revalidateTag } from 'next/cache';
 
 export async function PUT(
     request: Request,
@@ -76,6 +77,8 @@ export async function PUT(
                 role: true,
             },
         });
+
+        revalidateTag('user-profile');
 
         return NextResponse.json(updatedUser);
     } catch (error) {

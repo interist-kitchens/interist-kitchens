@@ -3,30 +3,39 @@ import { createMutation } from '@farfetched/core';
 import { createInternalRequestFx } from '@/shared/api/requests';
 import { Error } from '@/entities/categories';
 import { PageCreateRequest } from '@/entities/pages/api/types';
+import { unstable_cache } from 'next/cache';
 
-export const getPages = async () => {
-    try {
-        const pages = await prisma.page.findMany();
+export const getPages = unstable_cache(
+    async () => {
+        try {
+            const pages = await prisma.page.findMany();
 
-        return pages;
-    } catch (e) {
-        console.error(e);
-    }
-};
+            return pages;
+        } catch (e) {
+            console.error(e);
+        }
+    },
+    ['pages'],
+    { tags: ['pages'], revalidate: 3600 }
+);
 
-export const getPage = async (alias: string) => {
-    try {
-        const page = await prisma.page.findUnique({
-            where: { alias },
-        });
+export const getPage = unstable_cache(
+    async (alias: string) => {
+        try {
+            const page = await prisma.page.findUnique({
+                where: { alias },
+            });
 
-        return page;
-    } catch (e) {
-        console.error(e);
-    }
+            return page;
+        } catch (e) {
+            console.error(e);
+        }
 
-    return null;
-};
+        return null;
+    },
+    ['pages'],
+    { tags: ['pages'], revalidate: 3600 }
+);
 
 export const createPage = createMutation({
     effect: createInternalRequestFx<PageCreateRequest, void, Error>((data) => ({

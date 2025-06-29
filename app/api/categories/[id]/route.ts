@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/shared/prisma/prisma-client';
 import { getUUID } from 'rc-select/lib/hooks/useId';
 import { put, PutBlobResult } from '@vercel/blob';
+import { revalidateTag } from 'next/cache';
 
 export async function DELETE(
     _: Request,
@@ -18,6 +19,8 @@ export async function DELETE(
         const result = await prisma.category.delete({
             where: { id: Number.parseInt(params.id) },
         });
+
+        revalidateTag('categories');
 
         return NextResponse.json(result);
     } catch (error) {
@@ -71,6 +74,8 @@ export async function PUT(
                 image: typeof blob !== 'string' ? blob.url : blob,
             },
         });
+
+        revalidateTag('categories');
 
         return NextResponse.json(categoryUpdated);
     } catch (error) {

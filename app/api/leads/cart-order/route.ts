@@ -5,6 +5,7 @@ import { authOptions } from '@/shared/constants/authOptions';
 import { prisma } from '@/shared/prisma/prisma-client';
 import nodemailer from 'nodemailer';
 import { cartOrderTemplate } from '@/shared/mail/cartOrder';
+import { revalidateTag } from 'next/cache';
 
 export async function POST(request: Request) {
     if (!process.env.DATABASE_URL) {
@@ -62,6 +63,8 @@ export async function POST(request: Request) {
         };
 
         await transporter.sendMail(messageForUser);
+
+        revalidateTag('orders');
 
         return NextResponse.json(
             { status: 'success send', order },

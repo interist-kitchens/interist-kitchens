@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/shared/prisma/prisma-client';
+import { revalidateTag } from 'next/cache';
 
 export async function DELETE(
     _: Request,
@@ -16,6 +17,8 @@ export async function DELETE(
         const result = await prisma.page.delete({
             where: { id: Number.parseInt(params.id) },
         });
+
+        revalidateTag('pages');
 
         return NextResponse.json(result);
     } catch (error) {
@@ -41,6 +44,8 @@ export async function PUT(
             where: { id: Number.parseInt(params.id) },
             data,
         });
+
+        revalidateTag('pages');
 
         return NextResponse.json(pageUpdated);
     } catch (error) {
