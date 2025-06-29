@@ -1,5 +1,6 @@
 import { prisma } from '@/shared/prisma/prisma-client';
 import { NextResponse } from 'next/server';
+import { revalidateTag } from 'next/cache';
 
 export async function PUT(
     request: Request,
@@ -25,6 +26,8 @@ export async function PUT(
                 },
             },
         });
+
+        revalidateTag('products');
 
         return NextResponse.json(coordinate);
     } catch (error) {

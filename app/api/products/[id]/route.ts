@@ -3,6 +3,7 @@ import { getUUID } from 'rc-select/lib/hooks/useId';
 import { put, PutBlobResult } from '@vercel/blob';
 import { prisma } from '@/shared/prisma/prisma-client';
 import { $Enums } from '@prisma/client';
+import { revalidateTag } from 'next/cache';
 
 export async function DELETE(
     _: Request,
@@ -19,6 +20,8 @@ export async function DELETE(
         const result = await prisma.product.delete({
             where: { id: Number.parseInt(params.id) },
         });
+
+        revalidateTag('products');
 
         return NextResponse.json(result);
     } catch (error) {
@@ -121,6 +124,8 @@ export async function PUT(
             },
             include: { relatedFrom: { include: { toProduct: true } } },
         });
+
+        revalidateTag('products');
 
         return NextResponse.json(product);
     } catch (error) {
