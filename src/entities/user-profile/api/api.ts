@@ -1,7 +1,11 @@
 import { createMutation } from '@farfetched/core';
 import { createInternalRequestFx } from '@/shared/api/requests';
-import { Error } from '@/entities/categories';
-import { ProfileResponse, User } from '@/entities/user-profile';
+import {
+    ChangePasswordParams,
+    Error,
+    ProfileResponse,
+    User,
+} from '@/entities/user-profile';
 import { prisma } from '@/shared/prisma/prisma-client';
 
 export const getUserProfile = async (userId: string): Promise<User | null> => {
@@ -36,4 +40,14 @@ export const updateUserProfile = createMutation({
             'Content-Type': 'multipart/form-data',
         },
     })),
+});
+
+export const changePassword = createMutation({
+    effect: createInternalRequestFx<ChangePasswordParams, void, Error>(
+        (data) => ({
+            url: `/user-profile/change-password`,
+            method: 'POST',
+            data,
+        })
+    ),
 });

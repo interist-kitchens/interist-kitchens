@@ -41,17 +41,29 @@ type Props = {
 
 export const UserProfileForm: FC<Props> = ({ user }) => {
     const [form] = Form.useForm();
+    const [passwordForm] = Form.useForm();
     const router = useRouter();
 
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<
         string | undefined | null
     >(user.image);
+    const [showPasswordForm, setShowPasswordForm] = useState(false);
 
-    const [updateProfile, data, pending] = useUnit([
+    const [
+        updateProfile,
+        data,
+        pending,
+        changePassword,
+        passwordChanging,
+        successChangedPassword,
+    ] = useUnit([
         userProfileUpdateModel.updateProfile,
         userProfileUpdateModel.$profile,
         userProfileUpdateModel.$pending,
+        userProfileUpdateModel.changePasswordEvent,
+        userProfileUpdateModel.$pendingPasswordChanged,
+        userProfileUpdateModel.$isSuccessChangedPassword,
     ]);
 
     useEffect(() => {
@@ -60,6 +72,14 @@ export const UserProfileForm: FC<Props> = ({ user }) => {
             router.refresh();
         }
     }, [data, router]);
+
+    useEffect(() => {
+        if (successChangedPassword) {
+            message.success('Пароль успешно изменен');
+            passwordForm.resetFields();
+            setShowPasswordForm(false);
+        }
+    }, [successChangedPassword, passwordForm]);
 
     const onFinish = (values: FormValues) => {
         const formData = new FormData();
@@ -109,6 +129,23 @@ export const UserProfileForm: FC<Props> = ({ user }) => {
         }
     };
 
+    const handlePasswordChange = (values: {
+        oldPassword: string;
+        newPassword: string;
+        confirmNewPassword: string;
+    }) => {
+        if (values.newPassword !== values.confirmNewPassword) {
+            message.error('Новые пароли не совпадают');
+            return;
+        }
+
+        changePassword({
+            userId: user.id,
+            oldPassword: values.oldPassword,
+            newPassword: values.newPassword,
+        });
+    };
+
     return (
         <section className={'w-full my-6 flex justify-center'}>
             <Card
@@ -122,7 +159,7 @@ export const UserProfileForm: FC<Props> = ({ user }) => {
                     </Link>
                 }
             >
-                <Spin spinning={pending}>
+                <Spin spinning={pending || passwordChanging}>
                     <Form
                         form={form}
                         initialValues={{
@@ -213,6 +250,103 @@ export const UserProfileForm: FC<Props> = ({ user }) => {
                             </Button>
                         </Form.Item>
                     </Form>
+                    {/* Секция смены пароля */}
+                    <Card
+                        type="inner"
+                        title="Смена пароля"
+                        className="mt-6"
+                        extra={
+                            <Button
+                                onClick={() =>
+                                    setShowPasswordForm(!showPasswordForm)
+                                }
+                            >
+                                {showPasswordForm
+                                    ? 'Скрыть'
+                                    : 'Изменить пароль'}
+                            </Button>
+                        }
+                    >
+                        {showPasswordForm && (
+                            <Form
+                                form={passwordForm}
+                                onFinish={handlePasswordChange}
+                                layout="vertical"
+                            >
+                                <Form.Item
+                                    label="Текущий пароль"
+                                    name="oldPassword"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Введите текущий пароль',
+                                        },
+                                    ]}
+                                >
+                                    <Input.Password />
+                                </Form.Item>
+
+                                <Form.Item
+                                    label="Новый пароль"
+                                    name="newPassword"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Введите новый пароль',
+                                        },
+                                        {
+                                            min: 6,
+                                            message:
+                                                'Пароль должен быть не менее 6 символов',
+                                        },
+                                    ]}
+                                >
+                                    <Input.Password />
+                                </Form.Item>
+
+                                <Form.Item
+                                    label="Подтвердите новый пароль"
+                                    name="confirmNewPassword"
+                                    dependencies={['newPassword']}
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Подтвердите новый пароль',
+                                        },
+                                        ({ getFieldValue }) => ({
+                                            validator(_, value) {
+                                                if (
+                                                    !value ||
+                                                    getFieldValue(
+                                                        'newPassword'
+                                                    ) === value
+                                                ) {
+                                                    return Promise.resolve();
+                                                }
+                                                return Promise.reject(
+                                                    new Error(
+                                                        'Пароли не совпадают'
+                                                    )
+                                                );
+                                            },
+                                        }),
+                                    ]}
+                                >
+                                    <Input.Password />
+                                </Form.Item>
+
+                                <Form.Item>
+                                    <Button
+                                        type="primary"
+                                        htmlType="submit"
+                                        loading={passwordChanging}
+                                    >
+                                        Сменить пароль
+                                    </Button>
+                                </Form.Item>
+                            </Form>
+                        )}
+                    </Card>
                 </Spin>
             </Card>
         </section>
