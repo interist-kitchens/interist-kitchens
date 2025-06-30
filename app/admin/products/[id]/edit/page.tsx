@@ -6,6 +6,7 @@ import { productDetailAdminModel } from '@/entities/products/model/productDetail
 import { ProductEditAdminPage } from '@/page-content/products/ui';
 import { getCategories } from '@/entities/categories';
 import { getProducts } from '@/entities/products';
+import { getAttributes } from '@/entities/attributes';
 
 export async function generateStaticParams() {
     const scope = fork();
@@ -18,12 +19,13 @@ export async function generateStaticParams() {
 }
 
 const preload = async () => {
-    const [categories, products] = await Promise.all([
+    const [categories, products, attributes] = await Promise.all([
         getCategories(),
         getProducts(),
+        getAttributes(),
     ]);
 
-    return { categories, products };
+    return { categories, products, attributes };
 };
 
 export default async function Page({ params }: { params: { id: string } }) {
@@ -42,7 +44,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         notFound();
     }
 
-    const { categories, products } = await preload();
+    const { categories, products, attributes } = await preload();
 
     return (
         <EffectorNext values={values}>
@@ -51,6 +53,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                     product={product}
                     categories={categories}
                     products={products}
+                    attributes={attributes}
                 />
             )}
         </EffectorNext>

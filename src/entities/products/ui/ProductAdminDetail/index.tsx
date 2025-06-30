@@ -1,9 +1,10 @@
 import { FC } from 'react';
-import { Flex } from 'antd';
+import { Flex, Tooltip } from 'antd';
 import { Product, ProductRelationsList } from '@/entities/products';
 import Image from 'next/image';
 import { TextDecor } from '@/shared/ui/TextDecor';
 import { Text } from '@/shared/ui/Typography';
+import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 
 type Props = {
     product: Product;
@@ -74,7 +75,7 @@ export const ProductAdminDetail: FC<Props> = ({ product }) => {
                 <div className={'bg-white w-full rounded-md p-4'}>
                     <Flex gap={8}>
                         {product?.images &&
-                            product?.images.map((image) => (
+                            product?.images?.slice(1).map((image) => (
                                 <div className={'w-fit'} key={image.image}>
                                     <Image
                                         src={image.image}
@@ -88,6 +89,48 @@ export const ProductAdminDetail: FC<Props> = ({ product }) => {
                                 </div>
                             ))}
                     </Flex>
+                </div>
+            </div>
+
+            {/* Блок атрибутов */}
+            <div>
+                <Text className={'mb-1'} strong>
+                    Атрибуты
+                </Text>
+                <div className={'bg-white rounded-md p-4'}>
+                    {product.attributes?.length ? (
+                        <Flex gap="small" wrap="wrap">
+                            {product.attributes.map((attr) => (
+                                <div
+                                    key={`${attr.attributeId}-${attr.productId}`}
+                                    className="border rounded-md p-3"
+                                >
+                                    <div className="flex gap-2 items-center mb-1">
+                                        <Text strong>
+                                            {attr.attribute.name}
+                                        </Text>
+                                        <Tooltip
+                                            title={
+                                                attr.isPublic
+                                                    ? 'Включен'
+                                                    : 'Выключен'
+                                            }
+                                            placement="top"
+                                        >
+                                            {attr.isPublic ? (
+                                                <EyeOutlined />
+                                            ) : (
+                                                <EyeInvisibleOutlined />
+                                            )}
+                                        </Tooltip>
+                                    </div>
+                                    <Text>{attr.value}</Text>
+                                </div>
+                            ))}
+                        </Flex>
+                    ) : (
+                        <Text className={'text-gray-400'}>Атрибутов нет</Text>
+                    )}
                 </div>
             </div>
 

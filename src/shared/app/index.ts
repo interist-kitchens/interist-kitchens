@@ -28,6 +28,7 @@ const pageTypes = [
     'cartPage',
     'individualsOrdersAdminPage',
     'productEditModuleAdminPage',
+    'attributesListAdminPage',
 ] as const;
 
 export const pageStarted = createEvent<{

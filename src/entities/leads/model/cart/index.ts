@@ -10,59 +10,31 @@ import { modalModel } from '@/shared/ui/ModalManager';
 export const cartModel = atom(() => {
     //** Работа с корзиной */
     const addToCart = createEvent<{
-        product: Omit<
+        product: Pick<
             Product,
-            | 'createdAt'
-            | 'updatedAt'
-            | 'metaTitle'
-            | 'metaDescription'
-            | 'categoryId'
-            | 'text'
-            | 'images'
-            | 'coordinates'
+            'id' | 'name' | 'alias' | 'image' | 'price' | 'categories'
         >;
         count: number;
     }>();
     const removeFromCart = createEvent<{
-        product: Omit<
+        product: Pick<
             Product,
-            | 'createdAt'
-            | 'updatedAt'
-            | 'metaTitle'
-            | 'metaDescription'
-            | 'categoryId'
-            | 'text'
-            | 'images'
-            | 'coordinates'
+            'id' | 'name' | 'alias' | 'image' | 'price' | 'categories'
         >;
     }>();
     const removeFromCartByProduct = createEvent<{
-        product: Omit<
+        product: Pick<
             Product,
-            | 'createdAt'
-            | 'updatedAt'
-            | 'metaTitle'
-            | 'metaDescription'
-            | 'categoryId'
-            | 'text'
-            | 'images'
-            | 'coordinates'
+            'id' | 'name' | 'alias' | 'image' | 'price' | 'categories'
         >;
     }>();
     const clearCart = createEvent();
 
     const $cart = createStore<
         {
-            product: Omit<
+            product: Pick<
                 Product,
-                | 'createdAt'
-                | 'updatedAt'
-                | 'metaTitle'
-                | 'metaDescription'
-                | 'categoryId'
-                | 'text'
-                | 'images'
-                | 'coordinates'
+                'id' | 'name' | 'alias' | 'image' | 'price' | 'categories'
             >;
             count: number;
         }[]

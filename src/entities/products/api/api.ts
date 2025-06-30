@@ -32,6 +32,11 @@ export const getProducts = async (): Promise<Product[] | undefined> => {
                     },
                 },
                 coordinates: true,
+                attributes: {
+                    include: {
+                        attribute: true,
+                    },
+                },
             },
         });
 
@@ -71,6 +76,11 @@ export const getProduct = async (id: string): Promise<Product | null> => {
                 },
             },
             coordinates: true,
+            attributes: {
+                include: {
+                    attribute: true,
+                },
+            },
         },
     });
 
@@ -103,6 +113,7 @@ export const getProduct = async (id: string): Promise<Product | null> => {
                 },
             })),
             coordinates: product.coordinates,
+            attributes: product.attributes,
         };
     }
 
@@ -153,6 +164,11 @@ export const getProductByAlias = async (
                         },
                     },
                 },
+                attributes: {
+                    include: {
+                        attribute: true,
+                    },
+                },
             },
         });
 
@@ -185,6 +201,7 @@ export const getProductByAlias = async (
                     },
                 })),
                 coordinates: product.coordinates,
+                attributes: product.attributes,
             };
         }
     } catch (e) {

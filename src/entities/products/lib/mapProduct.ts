@@ -34,6 +34,7 @@ export const mapProduct = async (
                 },
             })),
             coordinates: product.coordinates,
+            attributes: product.attributes,
         }))
     );
 };

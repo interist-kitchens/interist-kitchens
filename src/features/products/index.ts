@@ -6,3 +6,4 @@ export { ProductRelations } from './ui/ProductRelations';
 export { ProductRelationsEditor } from './ui/ProductRelationsEditor';
 export * from './lib';
 export { BindingProductToModule } from './ui/BindingProductToModule';
+export { ProductAttributesEditor } from './ui/ProductAttributesEditor';
