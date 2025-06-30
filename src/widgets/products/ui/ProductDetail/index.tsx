@@ -69,6 +69,7 @@ export const ProductDetail: FC<Props> = async ({ product }) => {
                             />
                         </>
                     }
+                    attributes={product?.attributes}
                 />
             </div>
             {relationsByType?.BUNDLE && (
