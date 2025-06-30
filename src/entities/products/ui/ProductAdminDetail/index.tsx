@@ -75,7 +75,7 @@ export const ProductAdminDetail: FC<Props> = ({ product }) => {
                 <div className={'bg-white w-full rounded-md p-4'}>
                     <Flex gap={8}>
                         {product?.images &&
-                            product?.images.map((image) => (
+                            product?.images?.slice(1).map((image) => (
                                 <div className={'w-fit'} key={image.image}>
                                     <Image
                                         src={image.image}

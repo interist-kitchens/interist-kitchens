@@ -77,7 +77,7 @@ export const EditProductForm: FC<Props> = ({
         },
     ]);
     const [additionalImage, setAdditionalImage] = useState<UploadFile[]>(
-        product.images.map((image) => ({
+        product.images.slice(1).map((image) => ({
             uid: image.image,
             name: image.image,
             status: 'done',
