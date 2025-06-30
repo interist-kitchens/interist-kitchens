@@ -4,20 +4,22 @@ import { productCreateAdminModel } from '@/entities/products/model';
 import { ProductCreateAdminPage } from '@/page-content/products/ui';
 import { getCategories } from '@/entities/categories';
 import { getProducts } from '@/entities/products';
+import { getAttributes } from '@/entities/attributes';
 
 const preload = async () => {
-    const [categories, products] = await Promise.all([
+    const [categories, products, attributes] = await Promise.all([
         getCategories(),
         getProducts(),
+        getAttributes(),
     ]);
 
-    return { categories, products };
+    return { categories, products, attributes };
 };
 
 export default async function Page() {
     const scope = fork();
 
-    const { categories, products } = await preload();
+    const { categories, products, attributes } = await preload();
 
     await allSettled(productCreateAdminModel.productCreateAdminPage.open, {
         scope,
@@ -30,6 +32,7 @@ export default async function Page() {
             <ProductCreateAdminPage
                 categories={categories}
                 products={products}
+                attributes={attributes}
             />
         </EffectorNext>
     );

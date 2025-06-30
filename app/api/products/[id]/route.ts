@@ -39,7 +39,6 @@ export async function PUT(
 
     try {
         const formData = await request.formData();
-        const relationsRaw = formData.getAll('relations[]');
 
         const image = formData.get('image') as File | string;
 
@@ -79,6 +78,8 @@ export async function PUT(
         const alias = formData.get('alias') as string;
         const categoryId = formData.get('categoryId') as string;
         const price = formData.get('price') as string;
+        const relationsRaw = formData.getAll('relations[]');
+        const attributesRaw = formData.getAll('attributes[]');
 
         const relations = relationsRaw.map((rel) =>
             JSON.parse(rel as string)
@@ -87,39 +88,88 @@ export async function PUT(
             type: $Enums.ProductRelationType;
         }>;
 
-        // Удаляем старые связи
-        await prisma.relatedProducts.deleteMany({
-            where: { fromProductId: Number(params.id) },
-        });
+        const attributes = attributesRaw.map((attr) =>
+            JSON.parse(attr as string)
+        ) as Array<{
+            attributeId: number;
+            value: string;
+            isPublic: boolean;
+        }>;
 
-        // Добавляем новые связи
-        if (relations.length > 0) {
-            await prisma.relatedProducts.createMany({
-                data: relations.map((rel) => ({
-                    fromProductId: Number(params.id),
-                    toProductId: rel.relatedProductId,
-                    type: rel.type,
-                })),
-                skipDuplicates: true,
-            });
+        // Валидация данных
+        if (!name || !categoryId || !price) {
+            return NextResponse.json(
+                { error: 'Required fields are missing' },
+                { status: 400 }
+            );
         }
 
-        const product = await prisma.product.update({
-            where: { id: Number.parseInt(params.id) },
-            data: {
-                name,
-                alias,
-                metaTitle,
-                metaDescription,
-                text,
-                image: typeof blob !== 'string' ? blob.url : blob,
-                categoryId: parseInt(categoryId),
-                price,
-                images: blobs
-                    ? [...uploadedFiles, ...blobs.map((blob) => blob.url)]
-                    : [...uploadedFiles],
-            },
-            include: { relatedFrom: { include: { toProduct: true } } },
+        // Транзакция - либо все операции выполнятся, либо ни одна
+        const product = await prisma.$transaction(async (tx) => {
+            // 1. Удаляем старые связи
+            await tx.relatedProducts.deleteMany({
+                where: { fromProductId: Number(params.id) },
+            });
+
+            // 2. Удаляем старые атрибуты
+            await tx.productAttributeValue.deleteMany({
+                where: { productId: Number(params.id) },
+            });
+
+            // 3. Добавляем новые связи
+            if (relations.length > 0) {
+                await tx.relatedProducts.createMany({
+                    data: relations.map((rel) => ({
+                        fromProductId: Number(params.id),
+                        toProductId: rel.relatedProductId,
+                        type: rel.type,
+                    })),
+                    skipDuplicates: true,
+                });
+            }
+
+            // 4. Добавляем новые атрибуты
+            if (attributes.length > 0) {
+                await tx.productAttributeValue.createMany({
+                    data: attributes.map((attr) => ({
+                        attributeId: attr.attributeId,
+                        productId: Number(params.id),
+                        value: attr.value,
+                        isPublic: attr.isPublic,
+                    })),
+                    skipDuplicates: true,
+                });
+            }
+
+            // 5. Обновляем основной продукт
+            const product = await tx.product.update({
+                where: { id: Number.parseInt(params.id) },
+                data: {
+                    name,
+                    alias,
+                    metaTitle,
+                    metaDescription,
+                    text,
+                    image: typeof blob !== 'string' ? blob.url : blob,
+                    categoryId: parseInt(categoryId),
+                    price,
+                    images: blobs
+                        ? [...uploadedFiles, ...blobs.map((blob) => blob.url)]
+                        : [...uploadedFiles],
+                },
+                include: {
+                    relatedFrom: {
+                        include: { toProduct: true },
+                    },
+                    attributes: {
+                        include: {
+                            attribute: true,
+                        },
+                    },
+                },
+            });
+
+            return product;
         });
 
         return NextResponse.json(product);

@@ -3,6 +3,8 @@
 import { FC, useEffect, useState } from 'react';
 import {
     Button,
+    Card,
+    Checkbox,
     Col,
     Flex,
     Form,
@@ -28,18 +30,33 @@ import { paths } from '@/shared/routing';
 import { productCreateAdminModel } from '@/entities/products/model';
 import { FormFieldType, Product, Relation } from '@/entities/products';
 import { ProductRelations } from '@/features/products';
+import { Attributes } from '@/entities/attributes';
 
-const { Item: FormItem, List: FormList } = Form;
+const { Item: FormItem } = Form;
+
+type AttributeValue = {
+    attributeId: number;
+    value: string;
+    isPublic: boolean;
+};
 
 type Props = {
     categories?: Categories[];
     products?: Product[];
+    attributes?: Attributes[];
 };
 
-export const AddProductForm: FC<Props> = ({ categories, products = [] }) => {
+export const AddProductForm: FC<Props> = ({
+    categories,
+    products = [],
+    attributes = [],
+}) => {
     const router = useRouter();
     const [textDescription, setTextDescription] = useState<string>('');
     const [relationsToAdd, setRelationsToAdd] = useState<Relation[]>([]);
+    const [selectedAttributes, setSelectedAttributes] = useState<
+        AttributeValue[]
+    >([]);
 
     const [loading, submit, isSuccess, reset] = useUnit([
         productCreateAdminModel.$pending,
@@ -47,6 +64,26 @@ export const AddProductForm: FC<Props> = ({ categories, products = [] }) => {
         productCreateAdminModel.$isSuccess,
         productCreateAdminModel.reset,
     ]);
+
+    const handleAttributeChange = (
+        attributeId: number,
+        value: string,
+        isPublic: boolean
+    ) => {
+        setSelectedAttributes((prev) => {
+            const existingIndex = prev.findIndex(
+                (a) => a.attributeId === attributeId
+            );
+
+            if (existingIndex >= 0) {
+                const updated = [...prev];
+                updated[existingIndex] = { attributeId, value, isPublic };
+                return updated;
+            }
+
+            return [...prev, { attributeId, value, isPublic }];
+        });
+    };
 
     const onFinish: FormProps<FormFieldType>['onFinish'] = async (values) => {
         const formData = new FormData();
@@ -65,6 +102,9 @@ export const AddProductForm: FC<Props> = ({ categories, products = [] }) => {
                     .filter((file) => typeof file !== 'undefined') ?? [],
             price: values.price,
             relations: relationsToAdd,
+            attributes: selectedAttributes.filter(
+                (attr) => attr.value.trim() !== ''
+            ),
         };
 
         appendFieldsToFormData(formData, appendedValues);
@@ -214,6 +254,53 @@ export const AddProductForm: FC<Props> = ({ categories, products = [] }) => {
             <FormItem<FormFieldType> label="Описание" name="text">
                 <WysiwygEditor setContent={setTextDescription} />
             </FormItem>
+
+            {attributes.length > 0 && (
+                <Card title="Атрибуты товара" style={{ marginBottom: 24 }}>
+                    {attributes.map((attribute) => (
+                        <div key={attribute.id} style={{ marginBottom: 16 }}>
+                            <FormItem
+                                label={attribute.name}
+                                name={`attribute_${attribute.id}`}
+                            >
+                                <Input
+                                    placeholder={`Введите ${attribute.name.toLowerCase()}`}
+                                    onChange={(e) =>
+                                        handleAttributeChange(
+                                            attribute.id,
+                                            e.target.value,
+                                            selectedAttributes.find(
+                                                (a) =>
+                                                    a.attributeId ===
+                                                    attribute.id
+                                            )?.isPublic ?? true
+                                        )
+                                    }
+                                />
+                            </FormItem>
+                            <Checkbox
+                                checked={
+                                    selectedAttributes.find(
+                                        (a) => a.attributeId === attribute.id
+                                    )?.isPublic ?? true
+                                }
+                                onChange={(e) =>
+                                    handleAttributeChange(
+                                        attribute.id,
+                                        selectedAttributes.find(
+                                            (a) =>
+                                                a.attributeId === attribute.id
+                                        )?.value || '',
+                                        e.target.checked
+                                    )
+                                }
+                            >
+                                Показывать на сайте
+                            </Checkbox>
+                        </div>
+                    ))}
+                </Card>
+            )}
 
             <FormItem label="Связанные товары">
                 <ProductRelations

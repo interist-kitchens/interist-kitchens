@@ -29,20 +29,32 @@ import { WysiwygEditor } from '@/shared/ui/WysiwygEditor';
 import { FormFieldType, Product, Relation } from '@/entities/products';
 import { productEditAdminModel } from '@/entities/products/model';
 import { Categories } from '@/entities/categories';
-import { ProductRelationsEditor } from '@/features/products';
+import {
+    ProductAttributesEditor,
+    ProductRelationsEditor,
+} from '@/features/products';
+import { Attributes } from '@/entities/attributes';
 
 const { Item: FormItem } = Form;
+
+type AttributeValue = {
+    attributeId: number;
+    value: string;
+    isPublic: boolean;
+};
 
 type Props = {
     product: Product;
     categories?: Categories[];
     products?: Product[];
+    attributes?: Attributes[];
 };
 
 export const EditProductForm: FC<Props> = ({
     product,
     categories,
     products = [],
+    attributes = [],
 }) => {
     const router = useRouter();
 
@@ -79,6 +91,15 @@ export const EditProductForm: FC<Props> = ({
             productName: p.name,
         })) || []
     );
+    const [selectedAttributes, setSelectedAttributes] = useState<
+        AttributeValue[]
+    >(
+        product.attributes?.map((attr) => ({
+            attributeId: attr.attribute.id,
+            value: attr.value,
+            isPublic: attr.isPublic,
+        })) || []
+    );
 
     const onFinish: FormProps<FormFieldType>['onFinish'] = async (values) => {
         const formData = new FormData();
@@ -111,6 +132,7 @@ export const EditProductForm: FC<Props> = ({
                     )
                     .filter((file) => typeof file !== 'undefined') ?? [],
             price: values.price,
+            attributes: selectedAttributes,
         };
 
         appendFieldsToFormData(formData, appendedValues);
@@ -310,6 +332,20 @@ export const EditProductForm: FC<Props> = ({
                         setContent={setTextDescription}
                     />
                 </FormItem>
+
+                <ProductAttributesEditor
+                    allAttributes={attributes}
+                    initialValues={
+                        product.attributes?.map((attr) => ({
+                            attributeId: attr.attribute.id,
+                            value: attr.value,
+                            isPublic: attr.isPublic,
+                        })) || []
+                    }
+                    onChange={(updatedAttributes) => {
+                        setSelectedAttributes(updatedAttributes);
+                    }}
+                />
 
                 <ProductRelationsEditor
                     relations={relations}

@@ -38,6 +38,21 @@ export type ProductResponse = {
         x: number;
         y: number;
     }[];
+    attributes: {
+        id: number;
+        createdAt: Date;
+        productId: number;
+        attributeId: number;
+        value: string;
+        isPublic: boolean;
+        attribute: {
+            id: number;
+            name: string;
+            slug: string;
+            createdAt?: Date;
+            updatedAt?: Date;
+        };
+    }[];
 };
 
 export type ProductRelation = {
@@ -81,6 +96,21 @@ export type Product = {
         productId: number;
         x: number;
         y: number;
+    }[];
+    attributes: {
+        id: number;
+        createdAt: Date;
+        productId: number;
+        attributeId: number;
+        value: string;
+        isPublic: boolean;
+        attribute: {
+            id: number;
+            name: string;
+            slug: string;
+            createdAt?: Date;
+            updatedAt?: Date;
+        };
     }[];
 };
 
