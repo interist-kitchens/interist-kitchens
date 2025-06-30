@@ -6,16 +6,9 @@ import { cartModel } from '@/entities/leads/model';
 import { Product } from '@/entities/products';
 
 type Props = {
-    product: Omit<
+    product: Pick<
         Product,
-        | 'createdAt'
-        | 'updatedAt'
-        | 'metaTitle'
-        | 'metaDescription'
-        | 'categoryId'
-        | 'text'
-        | 'images'
-        | 'coordinates'
+        'id' | 'name' | 'alias' | 'image' | 'price' | 'categories'
     >;
 };
 
