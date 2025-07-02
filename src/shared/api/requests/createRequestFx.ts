@@ -1,12 +1,6 @@
 import { createEffect } from 'effector';
-import axios, {
-    AxiosError,
-    AxiosHeaders,
-    AxiosRequestConfig,
-    AxiosResponse,
-} from 'axios';
 
-type CreateRequestParams = AxiosRequestConfig & {
+type CreateRequestParams = RequestInit & {
     url: string;
 };
 
@@ -14,9 +8,11 @@ type Fn<P> = (params: P) => CreateRequestParams;
 
 type Payload<P> = CreateRequestParams | Fn<P>;
 
-type CreateRequestInstanceParams<P> = CreateRequestParams & {
-    withTokenInHeaders?: boolean;
+type CreateRequestInstanceParams<P> = {
+    baseURL?: string;
+    headers?: HeadersInit;
     payload: Payload<P>;
+    withTokenInHeaders?: boolean;
 };
 
 type CreateRequestFxParams = Omit<
@@ -34,28 +30,42 @@ const createRequestInstance = <P = CreateRequestParams, R = void, E = Error>({
     payload,
     withTokenInHeaders,
 }: CreateRequestInstanceParams<P>) =>
-    createEffect<P, AxiosResponse<R>, AxiosError<E>>(async (params) => {
+    createEffect<P, R, E>(async (params) => {
         const { url, ...fetchOptions } = getConfig(payload, params);
 
-        const newHeaders = { ...headers } as AxiosHeaders;
+        const newHeaders = new Headers(headers);
 
         if (withTokenInHeaders) {
-            newHeaders['Authorization'] =
-                `Bearer ${localStorage.getItem('accessToken')}`;
+            const token = localStorage.getItem('accessToken');
+            if (token) {
+                newHeaders.append('Authorization', `Bearer ${token}`);
+            }
         }
 
-        return axios.request<R>({
-            url,
+        const fullUrl = baseURL ? `${baseURL}${url}` : url;
+
+        const response = await fetch(fullUrl, {
             ...fetchOptions,
             headers: newHeaders,
-            baseURL,
         });
+
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({
+                message: `Request failed with status ${response.status}`,
+            }));
+            throw new Error(
+                error.message || `Request failed with status ${response.status}`
+            );
+        }
+
+        // Возвращаем распарсенный JSON или другой формат в зависимости от R
+        return response.json() as Promise<R>;
     });
 
 export const createRequestFx =
     (params: CreateRequestFxParams) =>
     <P = CreateRequestParams, R = void, E = Error>(payload: Payload<P>) =>
         createRequestInstance<P, R, E>({
-            ...(params as CreateRequestParams),
+            ...params,
             payload,
         });

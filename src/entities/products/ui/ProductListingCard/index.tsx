@@ -11,7 +11,7 @@ type Props = {
         name: string;
         id: number;
         image: string;
-        imageBlur?: string;
+        imageBlur?: string | null;
         alias: string;
         price: string;
     };
@@ -29,7 +29,7 @@ export const ProductListingCard: FC<Props> = ({ category, product }) => {
                     src={product.image}
                     alt={product.name}
                     placeholder={'blur'}
-                    blurDataURL={product.imageBlur}
+                    blurDataURL={product.imageBlur ?? ''}
                     fill
                     priority
                 />

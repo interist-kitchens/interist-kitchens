@@ -9,7 +9,7 @@ type Props = {
     name: string;
     images: {
         image: string;
-        blurImage?: string;
+        blurImage?: string | null;
     }[];
     coordinates?: {
         id: number;
@@ -79,7 +79,7 @@ export const ProductSlider: FC<Props> = ({
                                     placeholder={
                                         image.blurImage ? 'blur' : 'empty'
                                     }
-                                    blurDataURL={image.blurImage}
+                                    blurDataURL={image.blurImage ?? ''}
                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
                                     priority={index === 0}
                                 />

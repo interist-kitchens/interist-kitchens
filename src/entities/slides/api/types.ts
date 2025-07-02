@@ -7,5 +7,5 @@ export type Slide = {
     buttonText: string | null;
     href: string | null;
     imageSrc: string;
-    imageBlur?: string;
+    imageBlur?: string | null;
 };

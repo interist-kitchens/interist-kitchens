@@ -1,7 +1,6 @@
 import { atom } from '@/shared/factory/atom';
 import { AuthDto, signUpQuery } from '@/entities/session';
 import { createEffect, createEvent, createStore, sample } from 'effector';
-import axios from 'axios';
 import { signIn, SignInResponse } from 'next-auth/react';
 import { or } from 'patronum';
 
@@ -33,10 +32,16 @@ export const sessionModel = atom(() => {
     sample({
         source: signUpQuery.finished.failure,
         fn: (res) => {
-            if (axios.isAxiosError(res.error)) {
-                return (
-                    res.error.response?.data?.message ?? 'Неизвестная ошибка'
-                );
+            if (res.error instanceof Error) {
+                try {
+                    if ('response' in res.error) {
+                        const errorResponse = res.error.response as Response;
+                        return errorResponse.statusText || 'Неизвестная ошибка';
+                    }
+                    return res.error.message || 'Неизвестная ошибка';
+                } catch {
+                    return 'Неизвестная ошибка';
+                }
             }
             return 'Неизвестная ошибка';
         },
@@ -46,10 +51,18 @@ export const sessionModel = atom(() => {
     sample({
         source: submitLoginFx.fail,
         fn: (res) => {
-            if (axios.isAxiosError(res.error)) {
-                return res.error.response?.data;
+            if (res.error instanceof Error) {
+                try {
+                    if ('response' in res.error) {
+                        const errorResponse = res.error.response as Response;
+                        return errorResponse.statusText || res.error.message;
+                    }
+                    return res.error.message || 'Неизвестная ошибка';
+                } catch {
+                    return 'Неизвестная ошибка';
+                }
             }
-            return res.error ?? 'Неизвестная ошибка';
+            return 'Неизвестная ошибка';
         },
         target: $error,
     });
@@ -61,7 +74,9 @@ export const sessionModel = atom(() => {
 
     sample({
         source: signUpQuery.finished.success,
-        fn: (res) => res.result.data,
+        fn: (res) => {
+            return res.result;
+        },
         target: submitLoginFx,
     });
 

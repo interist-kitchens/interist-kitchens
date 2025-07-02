@@ -82,7 +82,7 @@ export const ProductAdminDetail: FC<Props> = ({ product }) => {
                                         width={200}
                                         height={200}
                                         placeholder={'blur'}
-                                        blurDataURL={image.blurImage}
+                                        blurDataURL={image?.blurImage ?? ''}
                                         priority
                                     />
                                 </div>
