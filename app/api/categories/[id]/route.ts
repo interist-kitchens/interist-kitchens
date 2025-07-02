@@ -4,10 +4,8 @@ import { getUUID } from 'rc-select/lib/hooks/useId';
 import { put, PutBlobResult } from '@vercel/blob';
 import { revalidateTag } from 'next/cache';
 
-export async function DELETE(
-    _: Request,
-    { params }: { params: { id: string } }
-) {
+export async function DELETE(_: Request, props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
     if (!process.env.DATABASE_URL) {
         return NextResponse.json(
             { error: 'DATABASE_URL is not set' },
@@ -28,10 +26,8 @@ export async function DELETE(
     }
 }
 
-export async function PUT(
-    request: Request,
-    { params }: { params: { id: string } }
-) {
+export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
     if (!process.env.DATABASE_URL) {
         return NextResponse.json(
             { error: 'DATABASE_URL is not set' },

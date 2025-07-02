@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, Fragment } from 'react';
 import { Title } from '@/shared/ui/Typography';
 import { Divider, Typography } from 'antd';
 import { ADVANTAGE_CONFIG } from '@/widgets/mainPageAdvantages/config/constants';
@@ -24,8 +24,8 @@ export const Advantages: FC = () => {
                 </div>
                 <div className={'flex flex-col'}>
                     {ADVANTAGE_CONFIG.map((item, index) => (
-                        <>
-                            <div key={item.id} className={'flex gap-x-5'}>
+                        <Fragment key={item.id}>
+                            <div className={'flex gap-x-5'}>
                                 <div className={'pl-3'}>
                                     <Image
                                         src={item.image}
@@ -42,7 +42,7 @@ export const Advantages: FC = () => {
                             {index !== ADVANTAGE_CONFIG.length - 1 && (
                                 <Divider />
                             )}
-                        </>
+                        </Fragment>
                     ))}
                 </div>
             </div>

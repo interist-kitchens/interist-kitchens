@@ -7,10 +7,8 @@ import { getUUID } from 'rc-select/lib/hooks/useId';
 import { $Enums } from '@prisma/client';
 import { revalidateTag } from 'next/cache';
 
-export async function PUT(
-    request: Request,
-    { params }: { params: { id: string } }
-) {
+export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
     const session = await getServerSession(authOptions);
 
     // Проверка авторизации

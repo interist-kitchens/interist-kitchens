@@ -4,11 +4,12 @@ import { notFound } from 'next/navigation';
 import { categoryListModel } from '@/entities/categories';
 import { CategoryListPage } from '@/page-content/categories';
 
-export async function generateMetadata({
-    params,
-}: {
-    params: { category: string };
-}) {
+export async function generateMetadata(
+    props: {
+        params: Promise<{ category: string }>;
+    }
+) {
+    const params = await props.params;
     const scope = fork();
 
     await allSettled(categoryListModel.categoryListPage.open, {
@@ -40,11 +41,12 @@ export async function generateStaticParams() {
     }));
 }
 
-export default async function Page({
-    params,
-}: {
-    params: { category: string };
-}) {
+export default async function Page(
+    props: {
+        params: Promise<{ category: string }>;
+    }
+) {
+    const params = await props.params;
     const scope = fork();
 
     await allSettled(categoryListModel.categoryListPage.open, {

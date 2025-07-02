@@ -4,11 +4,14 @@ import { ProductPage } from '@/page-content/products/ui/ProductPage';
 import { productModel } from '@/entities/products/model/productModel';
 import { notFound } from 'next/navigation';
 
-export async function generateMetadata({
-    params,
-}: {
-    params: { category: string; product: string };
+export const revalidate = 60;
+
+export const dynamicParams = true;
+
+export async function generateMetadata(props: {
+    params: Promise<{ category: string; product: string }>;
 }) {
+    const params = await props.params;
     const scope = fork();
 
     await allSettled(productModel.productPage.open, { scope, params });
@@ -42,11 +45,10 @@ export async function generateStaticParams() {
     }));
 }
 
-export default async function Page({
-    params,
-}: {
-    params: { category: string; product: string };
+export default async function Page(props: {
+    params: Promise<{ category: string; product: string }>;
 }) {
+    const params = await props.params;
     const scope = fork();
 
     await allSettled(productModel.productPage.open, { scope, params });

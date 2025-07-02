@@ -20,7 +20,8 @@ export async function generateStaticParams() {
     return pages.map((page) => ({ alias: `${page.alias}` }));
 }
 
-export default async function Page({ params }: { params: { alias: string } }) {
+export default async function Page(props: { params: Promise<{ alias: string }> }) {
+    const params = await props.params;
     const scope = fork();
 
     await allSettled(pageDetailAdminModel.pageDetailAdminPage.open, {
