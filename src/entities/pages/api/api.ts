@@ -41,7 +41,10 @@ export const createPage = createMutation({
     effect: createInternalRequestFx<PageCreateRequest, void, Error>((data) => ({
         url: '/pages',
         method: 'POST',
-        data,
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json',
+        },
     })),
 });
 
@@ -60,6 +63,9 @@ export const updatePage = createMutation({
     >((data) => ({
         url: `/pages/${data.id}`,
         method: 'PUT',
-        data: data.data,
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json',
+        },
     })),
 });

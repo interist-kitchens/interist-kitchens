@@ -7,7 +7,10 @@ export const signUpQuery = createMutation({
         (data) => ({
             url: '/auth/register',
             method: 'post',
-            data,
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json',
+            },
         })
     ),
 });

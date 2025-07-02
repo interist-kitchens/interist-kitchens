@@ -3,6 +3,7 @@ import { getUUID } from 'rc-select/lib/hooks/useId';
 import { put } from '@vercel/blob';
 import { prisma } from '@/shared/prisma/prisma-client';
 import { $Enums } from '@prisma/client';
+import { revalidateTag } from 'next/cache';
 
 export async function POST(request: Request) {
     if (!process.env.DATABASE_URL) {
@@ -122,6 +123,8 @@ export async function POST(request: Request) {
 
             return product;
         });
+
+        revalidateTag('products');
 
         return NextResponse.json(result);
     } catch (error) {

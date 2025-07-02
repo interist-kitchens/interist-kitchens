@@ -20,8 +20,12 @@ export const productModel = atom(() => {
     const getProductFx = createEffect(getProductByAlias);
 
     const $products = createStore<Product[]>([]);
-    const $currentProductAlias = createStore<string | null>(null);
-    const $currentProduct = createStore<Product | null>(null);
+    const $currentProductAlias = createStore<string | null>(null, {
+        sid: 'currentProductAlias',
+    });
+    const $currentProduct = createStore<Product | null>(null, {
+        sid: 'currentProduct',
+    });
 
     $products.on(getProductsFx.doneData, (_, result) => result);
 

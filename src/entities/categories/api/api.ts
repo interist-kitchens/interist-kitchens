@@ -29,10 +29,7 @@ export const createCategory = createMutation({
     effect: createInternalRequestFx<FormData, void, Error>((data) => ({
         url: '/categories',
         method: 'POST',
-        data,
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
+        body: data,
     })),
 });
 
@@ -51,10 +48,7 @@ export const updateCategory = createMutation({
     >((data) => ({
         url: `/categories/${data.id}`,
         method: 'PUT',
-        data: data.formData,
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
+        body: data.formData,
     })),
 });
 

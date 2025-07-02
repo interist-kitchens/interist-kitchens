@@ -22,7 +22,9 @@ export const pageDetailAdminModel = atom(() => {
 
     const $pages = createStore<Page[]>([]);
     const $currentPageId = createStore<string | null>(null);
-    const $currentPage = createStore<Page | null>(null);
+    const $currentPage = createStore<Page | null>(null, {
+        sid: 'pageDetailAdminPage',
+    });
 
     $pages.on(getPagesFx.doneData, (_, result) => result);
 

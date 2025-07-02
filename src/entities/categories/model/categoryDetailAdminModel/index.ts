@@ -20,8 +20,12 @@ export const categoryDetailAdminModel = atom(() => {
     const getCategoryFx = createEffect(getCategory);
 
     const $categories = createStore<Categories[]>([]);
-    const $currentCategoryId = createStore<string | null>(null);
-    const $currentCategory = createStore<Categories | null>(null);
+    const $currentCategoryId = createStore<string | null>(null, {
+        sid: '$currentCategoryId',
+    });
+    const $currentCategory = createStore<Categories | null>(null, {
+        sid: '$currentCategoryAdmin',
+    });
 
     $categories.on(getCategoriesFx.doneData, (_, result) => result);
 

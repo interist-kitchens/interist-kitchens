@@ -24,8 +24,12 @@ export const categoryListModel = atom(() => {
     const getCategoryFx = createEffect(getCategoryByAlias);
 
     const $categories = createStore<Categories[]>([]);
-    const $currentCategoryAlias = createStore<string | null>(null);
-    const $currentCategory = createStore<Categories | null>(null);
+    const $currentCategoryAlias = createStore<string | null>(null, {
+        sid: '$currentCategoryAlias',
+    });
+    const $currentCategory = createStore<Categories | null>(null, {
+        sid: '$currentCategory',
+    });
 
     $categories.on(getCategoriesFx.doneData, (_, result) => result);
 

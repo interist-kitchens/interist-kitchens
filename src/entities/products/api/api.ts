@@ -211,10 +211,7 @@ export const createProduct = createMutation({
     effect: createInternalRequestFx<FormData, void, Error>((data) => ({
         url: '/products',
         method: 'POST',
-        data,
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
+        body: data,
     })),
 });
 
@@ -233,10 +230,7 @@ export const updateProduct = createMutation({
     >((data) => ({
         url: `/products/${data.id}`,
         method: 'PUT',
-        data: data.formData,
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
+        body: data.formData,
     })),
 });
 
@@ -253,7 +247,14 @@ export const addCoordinate = createMutation({
     >((data) => ({
         url: `/products/${data.productId}/coordinates`,
         method: 'POST',
-        data: { x: data.x, y: data.y, relatedProductId: data.relatedProductId },
+        body: JSON.stringify({
+            x: data.x,
+            y: data.y,
+            relatedProductId: data.relatedProductId,
+        }),
+        headers: {
+            'Content-Type': 'application/json',
+        },
     })),
 });
 
@@ -265,7 +266,10 @@ export const deleteCoordinate = createMutation({
     >((data) => ({
         url: `/products/${data.productId}/coordinates`,
         method: 'DELETE',
-        data: { coordinateId: data.coordinateId },
+        body: JSON.stringify({ coordinateId: data.coordinateId }),
+        headers: {
+            'Content-Type': 'application/json',
+        },
     })),
 });
 
@@ -277,6 +281,9 @@ export const updateCoordinate = createMutation({
     >((data) => ({
         url: `/products/coordinates/${data.coordinateId}`,
         method: 'PUT',
-        data: { relatedProductId: data.relatedProductId },
+        body: JSON.stringify({ coordinateId: data.coordinateId }),
+        headers: {
+            'Content-Type': 'application/json',
+        },
     })),
 });

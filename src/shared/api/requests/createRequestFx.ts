@@ -48,7 +48,7 @@ const createRequestInstance = <P = CreateRequestParams, R = void, E = Error>({
             ...fetchOptions,
             headers: newHeaders,
         });
-
+        console.log(baseURL, headers, payload, withTokenInHeaders);
         if (!response.ok) {
             const error = await response.json().catch(() => ({
                 message: `Request failed with status ${response.status}`,

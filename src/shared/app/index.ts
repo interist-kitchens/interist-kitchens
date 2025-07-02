@@ -36,7 +36,8 @@ export const pageStarted = createEvent<{
 }>();
 
 export const $currentPage = createStore<(typeof pageTypes)[number] | null>(
-    null
+    null,
+    { sid: '$currentPage' }
 ).on(pageStarted, (_, { pageType }) => pageType ?? 'unknown_page');
 
 export function declarePage<Ctx = void>(config: {

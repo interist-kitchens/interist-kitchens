@@ -36,9 +36,6 @@ export const updateUserProfile = createMutation({
     >(({ userId, formData }) => ({
         url: `/user-profile/${userId}`,
         method: 'PUT',
-        data: formData,
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
+        body: formData,
     })),
 });
