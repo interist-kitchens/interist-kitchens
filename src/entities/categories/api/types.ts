@@ -38,7 +38,7 @@ export type Categories = {
         name: string;
         id: number;
         image: string;
-        imageBlur?: string;
+        imageBlur?: string | null;
         alias: string;
         price: string;
     }[];

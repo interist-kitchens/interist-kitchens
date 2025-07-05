@@ -34,7 +34,7 @@ export const BindingProductToModule: FC<Props> = ({ product }) => {
         if ($isSuccess) {
             router.refresh();
         }
-    }, [$isSuccess]);
+    }, [$isSuccess, router]);
 
     const handleImageClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (!containerRef.current || !imageSize) return;

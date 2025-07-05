@@ -6,7 +6,7 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: 'Регистрация',
-    description: 'Компания QКухни регистрация.',
+    description: 'Компания Interest Mebel регистрация.',
 };
 
 export default async function Page() {

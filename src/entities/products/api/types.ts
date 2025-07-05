@@ -57,7 +57,7 @@ export type Product = {
     name: string;
     id: string;
     image: string;
-    imageBlur?: string;
+    imageBlur?: string | null;
     createdAt: string;
     updatedAt: string;
     metaTitle: string | null;
@@ -69,7 +69,7 @@ export type Product = {
     price: string;
     images: {
         image: string;
-        blurImage?: string;
+        blurImage?: string | null;
     }[];
     categories: { name: string; alias: string };
     relatedProducts?: ProductRelation[];

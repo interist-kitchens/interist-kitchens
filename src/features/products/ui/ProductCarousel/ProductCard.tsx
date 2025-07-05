@@ -8,7 +8,7 @@ type Props = {
         name: string;
         id: number;
         image: string;
-        imageBlur?: string;
+        imageBlur?: string | null;
         alias: string;
         price: string;
     };
@@ -26,7 +26,7 @@ export const ProductCard: FC<Props> = ({ product, href }) => {
                         width={420}
                         height={290}
                         placeholder={'blur'}
-                        blurDataURL={product.imageBlur}
+                        blurDataURL={product.imageBlur ?? ''}
                     />
                 </div>
                 <Link href={href}>

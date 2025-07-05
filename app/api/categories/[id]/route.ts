@@ -2,11 +2,13 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/shared/prisma/prisma-client';
 import { getUUID } from 'rc-select/lib/hooks/useId';
 import { put, PutBlobResult } from '@vercel/blob';
+import { revalidateTag } from 'next/cache';
 
 export async function DELETE(
     _: Request,
-    { params }: { params: { id: string } }
+    props: { params: Promise<{ id: string }> }
 ) {
+    const params = await props.params;
     if (!process.env.DATABASE_URL) {
         return NextResponse.json(
             { error: 'DATABASE_URL is not set' },
@@ -19,6 +21,8 @@ export async function DELETE(
             where: { id: Number.parseInt(params.id) },
         });
 
+        revalidateTag('categories');
+
         return NextResponse.json(result);
     } catch (error) {
         return NextResponse.json(error, { status: 500 });
@@ -27,8 +31,9 @@ export async function DELETE(
 
 export async function PUT(
     request: Request,
-    { params }: { params: { id: string } }
+    props: { params: Promise<{ id: string }> }
 ) {
+    const params = await props.params;
     if (!process.env.DATABASE_URL) {
         return NextResponse.json(
             { error: 'DATABASE_URL is not set' },
@@ -47,7 +52,10 @@ export async function PUT(
             const imageName = image.name ?? getUUID();
 
             blob = await put(`public/${imageName}`, image, {
-                token: process.env.NEXT_PUBLIC_READ_WRITE_TOKEN,
+                token:
+                    process.env.NODE_ENV === 'production'
+                        ? process.env.PROD_READ_WRITE_TOKEN
+                        : process.env.NEXT_PUBLIC_READ_WRITE_TOKEN,
                 access: 'public',
             });
         } else {
@@ -71,6 +79,8 @@ export async function PUT(
                 image: typeof blob !== 'string' ? blob.url : blob,
             },
         });
+
+        revalidateTag('categories');
 
         return NextResponse.json(categoryUpdated);
     } catch (error) {

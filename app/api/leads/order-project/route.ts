@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { OrderProjectFormType } from '@/entities/leads/api';
 import nodemailer from 'nodemailer';
 import { prisma } from '@/shared/prisma/prisma-client';
+import { revalidateTag } from 'next/cache';
 
 export async function POST(request: Request) {
     if (!process.env.DATABASE_URL) {
@@ -51,6 +52,8 @@ export async function POST(request: Request) {
 
             await transporter.sendMail(messageForUser);
         }
+
+        revalidateTag('callback-list');
 
         return NextResponse.json(
             { status: 'success send', order },

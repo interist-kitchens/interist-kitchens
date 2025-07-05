@@ -4,11 +4,10 @@ import { notFound } from 'next/navigation';
 import { pageDetailAdminModel } from '@/entities/pages';
 import { StaticPage } from '@/page-content/pages';
 
-export async function generateMetadata({
-    params,
-}: {
-    params: { alias: string };
+export async function generateMetadata(props: {
+    params: Promise<{ alias: string }>;
 }) {
+    const params = await props.params;
     const scope = fork();
 
     await allSettled(pageDetailAdminModel.staticPage.open, { scope, params });
@@ -21,7 +20,7 @@ export async function generateMetadata({
             : `${pageData?.name}`,
         description: pageData?.metaDescription?.length
             ? pageData?.metaDescription
-            : `Компания QКухни предлагает ознакомится с информацией - ${pageData?.name}`,
+            : `Компания Interest Mebel предлагает ознакомится с информацией - ${pageData?.name}`,
     };
 }
 
@@ -37,7 +36,10 @@ export async function generateStaticParams() {
     }));
 }
 
-export default async function Page({ params }: { params: { alias: string } }) {
+export default async function Page(props: {
+    params: Promise<{ alias: string }>;
+}) {
+    const params = await props.params;
     const scope = fork();
 
     await allSettled(pageDetailAdminModel.staticPage.open, { scope, params });

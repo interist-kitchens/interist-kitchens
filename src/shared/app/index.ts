@@ -36,7 +36,8 @@ export const pageStarted = createEvent<{
 }>();
 
 export const $currentPage = createStore<(typeof pageTypes)[number] | null>(
-    null
+    null,
+    { sid: '$currentPage' }
 ).on(pageStarted, (_, { pageType }) => pageType ?? 'unknown_page');
 
 export function declarePage<Ctx = void>(config: {
@@ -60,6 +61,7 @@ export function declarePage<Ctx = void>(config: {
          * See the docs on SIDs: https://effector.dev/docs/api/effector/babel-plugin#sid
          */
         sid: `pageCtx:${config.pageType}`,
+        skipVoid: false,
     });
 
     sample({

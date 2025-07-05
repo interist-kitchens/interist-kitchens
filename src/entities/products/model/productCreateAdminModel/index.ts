@@ -3,8 +3,8 @@ import { declarePage } from '@/shared/app';
 import { createProduct } from '@/entities/products';
 import { createStore, sample } from 'effector';
 import { getPrismaTypeError } from '@/shared/lib';
-import { messageModel } from "@/shared/lib/messageApi";
-import { ArgsProps } from "antd/es/message/interface";
+import { messageModel } from '@/shared/lib/messageApi';
+import { ArgsProps } from 'antd/es/message/interface';
 
 export const productCreateAdminModel = atom(() => {
     const submitCreate = createProduct.start;
@@ -17,11 +17,12 @@ export const productCreateAdminModel = atom(() => {
 
     sample({
         source: createProduct.finished.failure,
-        fn: (res) => ({
-            type: 'error',
-            content: getPrismaTypeError(res.error.response?.data?.code ?? ''),
-        } as ArgsProps),
-        target: messageModel.open
+        fn: (res) =>
+            ({
+                type: 'error',
+                content: getPrismaTypeError(res.error.code ?? ''),
+            }) as ArgsProps,
+        target: messageModel.open,
     });
 
     const productCreateAdminPage = declarePage({

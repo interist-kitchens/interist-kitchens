@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/shared/prisma/prisma-client';
+import { revalidateTag } from 'next/cache';
 
 export async function POST(request: Request) {
     if (!process.env.DATABASE_URL) {
@@ -15,6 +16,8 @@ export async function POST(request: Request) {
         const category = await prisma.page.create({
             data,
         });
+
+        revalidateTag('pages');
 
         return NextResponse.json(category);
     } catch (error) {

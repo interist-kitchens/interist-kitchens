@@ -4,8 +4,8 @@ import { EffectorNext } from '@effector/next';
 import { Cart } from '@/page-content/cart';
 
 export const metadata: Metadata = {
-    title: 'QКухни - Корзина',
-    description: 'Компания QКухни - Корзина.',
+    title: 'Interest Mebel - Корзина',
+    description: 'Компания Interest Mebel - Корзина.',
 };
 
 export default async function Page() {

@@ -3,8 +3,8 @@ import { createCategory } from '@/entities/categories';
 import { createStore, sample } from 'effector';
 import { declarePage } from '@/shared/app';
 import { getPrismaTypeError } from '@/shared/lib';
-import { messageModel } from "@/shared/lib/messageApi";
-import type { ArgsProps } from "antd/es/message/interface";
+import { messageModel } from '@/shared/lib/messageApi';
+import type { ArgsProps } from 'antd/es/message/interface';
 
 export const categoryCreateAdminModel = atom(() => {
     const submitCreate = createCategory.start;
@@ -18,8 +18,12 @@ export const categoryCreateAdminModel = atom(() => {
 
     sample({
         source: createCategory.finished.failure,
-        fn: (res) =>  ({ type: 'error', content: getPrismaTypeError(res.error.response?.data?.code ?? '') } as ArgsProps),
-        target: messageModel.open
+        fn: (res) =>
+            ({
+                type: 'error',
+                content: getPrismaTypeError(res.error.code ?? ''),
+            }) as ArgsProps,
+        target: messageModel.open,
     });
 
     const categoryCreateAdminPage = declarePage({

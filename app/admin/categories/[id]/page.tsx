@@ -20,7 +20,8 @@ export async function generateStaticParams() {
     return categories.map((category) => ({ id: `${category.id}` }));
 }
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default async function Page(props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
     const scope = fork();
 
     await allSettled(categoryDetailAdminModel.categoryDetailAdminPage.open, {

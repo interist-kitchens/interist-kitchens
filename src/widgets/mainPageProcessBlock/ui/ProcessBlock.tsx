@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, Fragment } from 'react';
 import Image from 'next/image';
 import banner from '@/app/assets/1-d-1x.webp';
 import { Title } from '@/shared/ui/Typography';
@@ -32,8 +32,8 @@ export const ProcessBlock: FC = () => {
                 </div>
                 <div className={'flex flex-col sm:col-span-2'}>
                     {PROCESS_CONFIG.map((item, index) => (
-                        <>
-                            <div key={item.id} className={'flex gap-x-5'}>
+                        <Fragment key={item.id}>
+                            <div className={'flex gap-x-5'}>
                                 <div
                                     className={
                                         'text-4xl sm:text-5xl font-bold pl-3'
@@ -47,7 +47,7 @@ export const ProcessBlock: FC = () => {
                                 </div>
                             </div>
                             {index !== PROCESS_CONFIG.length - 1 && <Divider />}
-                        </>
+                        </Fragment>
                     ))}
                 </div>
             </div>

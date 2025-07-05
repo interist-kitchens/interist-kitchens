@@ -5,29 +5,31 @@ import { mapCategories } from '@/entities/categories/lib';
 import { prisma } from '@/shared/prisma/prisma-client';
 import { dateFormat } from '@/shared/lib';
 import { generateBlurImg } from '@/shared/lib/generateBlurImg';
+import { unstable_cache } from 'next/cache';
 
-export const getCategories = async (): Promise<Categories[] | undefined> => {
-    try {
-        const categories = await prisma.category.findMany({
-            include: {
-                products: true,
-            },
-        });
+export const getCategories = unstable_cache(
+    async (): Promise<Categories[] | undefined> => {
+        try {
+            const categories = await prisma.category.findMany({
+                include: {
+                    products: true,
+                },
+            });
 
-        return await mapCategories(categories);
-    } catch (e) {
-        console.error(e);
-    }
-};
+            return await mapCategories(categories);
+        } catch (e) {
+            console.error(e);
+        }
+    },
+    ['categories'],
+    { tags: ['categories'], revalidate: 3600 }
+);
 
 export const createCategory = createMutation({
     effect: createInternalRequestFx<FormData, void, Error>((data) => ({
         url: '/categories',
         method: 'POST',
-        data,
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
+        body: data,
     })),
 });
 
@@ -46,66 +48,71 @@ export const updateCategory = createMutation({
     >((data) => ({
         url: `/categories/${data.id}`,
         method: 'PUT',
-        data: data.formData,
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
+        body: data.formData,
     })),
 });
 
-export const getCategory = async (id: string): Promise<Categories | null> => {
-    try {
-        const category = await prisma.category.findUnique({
-            where: { id: Number.parseInt(id) },
-        });
+export const getCategory = unstable_cache(
+    async (id: string): Promise<Categories | null> => {
+        try {
+            const category = await prisma.category.findUnique({
+                where: { id: Number.parseInt(id) },
+            });
 
-        if (category) {
-            return {
-                ...category,
-                id: String(id),
-                createdAt: dateFormat(category.createdAt),
-                updatedAt: dateFormat(category.updatedAt),
-                metaTitle: category.metaTitle,
-                metaDescription: category.metaDescription,
-            };
+            if (category) {
+                return {
+                    ...category,
+                    id: String(id),
+                    createdAt: dateFormat(category.createdAt),
+                    updatedAt: dateFormat(category.updatedAt),
+                    metaTitle: category.metaTitle,
+                    metaDescription: category.metaDescription,
+                };
+            }
+        } catch (e) {
+            console.error(e);
         }
-    } catch (e) {
-        console.error(e);
-    }
 
-    return null;
-};
+        return null;
+    },
+    ['categories'],
+    { tags: ['categories'], revalidate: 3600 }
+);
 
-export const getCategoryByAlias = async (
-    alias: string
-): Promise<Categories | null> => {
-    try {
-        const category = await prisma.category.findUnique({
-            where: { alias: alias },
-            include: {
-                products: true,
-            },
-        });
+export const getCategoryByAlias = unstable_cache(
+    async (alias: string): Promise<Categories | null> => {
+        try {
+            const category = await prisma.category.findUnique({
+                where: { alias: alias },
+                include: {
+                    products: true,
+                },
+            });
 
-        if (category) {
-            return {
-                ...category,
-                id: String(category?.id),
-                createdAt: dateFormat(category.createdAt),
-                updatedAt: dateFormat(category.updatedAt),
-                products: category?.products
-                    ? await Promise.all(
-                          category.products.map(async (product) => ({
-                              ...product,
-                              imageBlur: await generateBlurImg(product.image),
-                          }))
-                      )
-                    : [],
-            };
+            if (category) {
+                return {
+                    ...category,
+                    id: String(category?.id),
+                    createdAt: dateFormat(category.createdAt),
+                    updatedAt: dateFormat(category.updatedAt),
+                    products: category?.products
+                        ? await Promise.all(
+                              category.products.map(async (product) => ({
+                                  ...product,
+                                  imageBlur: await generateBlurImg(
+                                      product.image
+                                  ),
+                              }))
+                          )
+                        : [],
+                };
+            }
+        } catch (e) {
+            console.error(e);
         }
-    } catch (e) {
-        console.error(e);
-    }
 
-    return null;
-};
+        return null;
+    },
+    ['categories'],
+    { tags: ['categories'], revalidate: 3600 }
+);

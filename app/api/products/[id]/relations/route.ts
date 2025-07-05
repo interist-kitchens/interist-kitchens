@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/shared/prisma/prisma-client';
 import { $Enums } from '@prisma/client';
+import { revalidateTag } from 'next/cache';
 
-export async function POST(
-    request: Request,
-    { params }: { params: { id: string } }
-) {
+export async function POST(request: Request, props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
     if (!process.env.DATABASE_URL) {
         return NextResponse.json(
             { error: 'DATABASE_URL is not set' },
@@ -47,6 +46,8 @@ export async function POST(
             },
         });
 
+        revalidateTag('products');
+
         return NextResponse.json(relation);
     } catch (error) {
         console.error(error);
@@ -57,10 +58,8 @@ export async function POST(
     }
 }
 
-export async function DELETE(
-    request: Request,
-    { params }: { params: { id: string } }
-) {
+export async function DELETE(request: Request, props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
     if (!process.env.DATABASE_URL) {
         return NextResponse.json(
             { error: 'DATABASE_URL is not set' },
@@ -79,6 +78,8 @@ export async function DELETE(
                 type,
             },
         });
+
+        revalidateTag('products');
 
         return NextResponse.json({ success: true });
     } catch (error) {

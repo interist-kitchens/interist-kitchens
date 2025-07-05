@@ -1,10 +1,9 @@
 import { prisma } from '@/shared/prisma/prisma-client';
 import { NextResponse } from 'next/server';
+import { revalidateTag } from 'next/cache';
 
-export async function PUT(
-    request: Request,
-    { params }: { params: { id: string } }
-) {
+export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
     try {
         const { relatedProductId } = await request.json();
 
@@ -25,6 +24,8 @@ export async function PUT(
                 },
             },
         });
+
+        revalidateTag('products');
 
         return NextResponse.json(coordinate);
     } catch (error) {

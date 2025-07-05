@@ -6,7 +6,7 @@ import { Flex } from 'antd';
 
 type Props = {
     src?: string | StaticImageData;
-    imageBlur?: string;
+    imageBlur?: string | null;
     previewMode?: boolean;
 };
 
@@ -28,7 +28,7 @@ export const ImageWithContent: React.FC<React.PropsWithChildren<Props>> = ({
                     fill
                     priority
                     placeholder={'blur'}
-                    blurDataURL={imageBlur}
+                    blurDataURL={imageBlur ?? ''}
                 />
             )}
             <div className={infoBlockClassName}>

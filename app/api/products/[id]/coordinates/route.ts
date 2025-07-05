@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/shared/prisma/prisma-client';
+import { revalidateTag } from 'next/cache';
 
-export async function POST(
-    request: Request,
-    { params }: { params: { id: string } }
-) {
+export async function POST(request: Request, props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
     try {
         const body = await request.json();
         const coordinate = await prisma.productCoordinates.create({
@@ -15,6 +14,9 @@ export async function POST(
                 relatedProductId: body?.relatedProductId,
             },
         });
+
+        revalidateTag('products');
+
         return NextResponse.json(coordinate);
     } catch (error) {
         return NextResponse.json(error, { status: 500 });
@@ -27,6 +29,9 @@ export async function DELETE(request: Request) {
         await prisma.productCoordinates.delete({
             where: { id: coordinateId },
         });
+
+        revalidateTag('products');
+
         return NextResponse.json({ success: true });
     } catch (error) {
         return NextResponse.json(error, { status: 500 });

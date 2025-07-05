@@ -21,9 +21,7 @@ export const pageCreateAdminModel = atom(() => {
         fn: (res) =>
             ({
                 type: 'error',
-                content: getPrismaTypeError(
-                    res.error.response?.data?.code ?? ''
-                ),
+                content: getPrismaTypeError(res.error.code ?? ''),
             }) as ArgsProps,
         target: messageModel.open,
     });
