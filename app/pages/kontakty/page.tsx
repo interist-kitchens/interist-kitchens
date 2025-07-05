@@ -5,8 +5,8 @@ import { contactsPage } from '@/page-content/pages/model';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'QКухни - Контакты',
-    description: 'Компания QКухни - информация о контактах.',
+    title: 'Interest Mebel - Контакты',
+    description: 'Компания Interest Mebel - информация о контактах.',
 };
 
 export default async function Page() {

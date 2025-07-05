@@ -4,11 +4,9 @@ import { notFound } from 'next/navigation';
 import { categoryListModel } from '@/entities/categories';
 import { CategoryListPage } from '@/page-content/categories';
 
-export async function generateMetadata(
-    props: {
-        params: Promise<{ category: string }>;
-    }
-) {
+export async function generateMetadata(props: {
+    params: Promise<{ category: string }>;
+}) {
     const params = await props.params;
     const scope = fork();
 
@@ -25,7 +23,7 @@ export async function generateMetadata(
             : `${category?.name} на заказ по низким ценам`,
         description: category?.metaDescription?.length
             ? category?.metaDescription
-            : `Компания QКухни предлагает купить кухню от производителя, на заказ. С каталогом выполненных работ вы можете ознакомиться на сайте`,
+            : `Компания Interest Mebel предлагает купить кухню от производителя, на заказ. С каталогом выполненных работ вы можете ознакомиться на сайте`,
     };
 }
 
@@ -41,11 +39,9 @@ export async function generateStaticParams() {
     }));
 }
 
-export default async function Page(
-    props: {
-        params: Promise<{ category: string }>;
-    }
-) {
+export default async function Page(props: {
+    params: Promise<{ category: string }>;
+}) {
     const params = await props.params;
     const scope = fork();
 

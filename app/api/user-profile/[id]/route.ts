@@ -7,7 +7,10 @@ import { getUUID } from 'rc-select/lib/hooks/useId';
 import { $Enums } from '@prisma/client';
 import { revalidateTag } from 'next/cache';
 
-export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
+export async function PUT(
+    request: Request,
+    props: { params: Promise<{ id: string }> }
+) {
     const params = await props.params;
     const session = await getServerSession(authOptions);
 
@@ -54,7 +57,10 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
         if (avatarFile && avatarFile instanceof File && avatarFile.size > 0) {
             const imageName = avatarFile.name || `avatar_${getUUID()}`;
             const blob = await put(`avatars/${imageName}`, avatarFile, {
-                token: process.env.NEXT_PUBLIC_READ_WRITE_TOKEN,
+                token:
+                    process.env.NODE_ENV === 'production'
+                        ? process.env.PROD_READ_WRITE_TOKEN
+                        : process.env.NEXT_PUBLIC_READ_WRITE_TOKEN,
                 access: 'public',
             });
             updateData.image = blob.url;

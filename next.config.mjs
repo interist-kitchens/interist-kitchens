@@ -5,6 +5,10 @@ const nextConfig = {
     env: {
         NEXT_PUBLIC_INTERNAL_API_URL: process.env.NEXT_PUBLIC_INTERNAL_API_URL,
         NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+        DATABASE_URL:
+            process.env.VERCEL_ENV === 'production'
+                ? process.env.PROD_DB_DATABASE_URL
+                : process.env.DATABASE_URL,
     },
     transpilePackages: [
         'rc-util',
@@ -21,13 +25,13 @@ const nextConfig = {
             },
         ],
     },
-    webpack: (config, { dev}) => {
+    webpack: (config, { dev }) => {
         config.module.rules.push({
             test: /\.(mp4|webm|ogg)$/,
             type: 'asset/resource',
             generator: {
                 filename: 'static/media/[name].[hash][ext]',
-                outputPath: `${dev ? "../" : "../../"}`,
+                outputPath: `${dev ? '../' : '../../'}`,
             },
         });
         return config;

@@ -21,7 +21,7 @@ export const Footer: FC = () => {
                 </div>
                 <Typography
                     className={'mt-4 text-center sm:text-left'}
-                >{`© ${dayjs().year()} Все права защищены. ООО «Кухнику от Кукухни».`}</Typography>
+                >{`© ${dayjs().year()} Все права защищены. ООО «Interest Mebel».`}</Typography>
             </Flex>
         </FooterLayout>
     );

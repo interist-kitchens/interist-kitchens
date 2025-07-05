@@ -21,7 +21,9 @@ export const CategoryListing: FC<Props> = async ({ category }) => {
                 ]}
             />
             <div className={'flex flex-col pt-5'}>
-                <Title level={1}>{category.name} от бренда QКухни</Title>
+                <Title level={1}>
+                    {category.name} от бренда Interest Mebel
+                </Title>
                 <div>
                     <div className={'grid lg:grid-cols-2 gap-6'}>
                         {category?.products?.map((product) => (

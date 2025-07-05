@@ -7,9 +7,9 @@ import { generateBlurImg } from '@/shared/lib/generateBlurImg';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Каталог кухонь от производителя QКухни',
+    title: 'Каталог кухонь от производителя Interest Mebel',
     description:
-        'Компания QКухни предлагает купить кухню на заказ от производителя.',
+        'Компания Interest Mebel предлагает купить кухню на заказ от производителя.',
 };
 
 async function preload(): Promise<Categories[]> {

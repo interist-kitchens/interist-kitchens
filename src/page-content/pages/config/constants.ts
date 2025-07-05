@@ -1,5 +1,5 @@
 export const contactsConfig = {
-    name: 'ООО «Кухнику от Кукухни»',
+    name: 'ООО «Interest Mebel»',
     phone: '8 800 511-96-59',
     address: 'г. Омск, ул. Омская, 1',
     addressSecond: ' Россия, Санкт-Петербург, ул. Ракитовская, 22',

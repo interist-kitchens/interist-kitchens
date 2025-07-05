@@ -5,7 +5,10 @@ import { prisma } from '@/shared/prisma/prisma-client';
 import { $Enums } from '@prisma/client';
 import { revalidateTag } from 'next/cache';
 
-export async function DELETE(_: Request, props: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+    _: Request,
+    props: { params: Promise<{ id: string }> }
+) {
     const params = await props.params;
     if (!process.env.DATABASE_URL) {
         return NextResponse.json(
@@ -27,7 +30,10 @@ export async function DELETE(_: Request, props: { params: Promise<{ id: string }
     }
 }
 
-export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
+export async function PUT(
+    request: Request,
+    props: { params: Promise<{ id: string }> }
+) {
     const params = await props.params;
     if (!process.env.DATABASE_URL) {
         return NextResponse.json(
@@ -48,7 +54,10 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
             const imageName = image.name ?? getUUID();
 
             blob = await put(`public/${imageName}`, image, {
-                token: process.env.NEXT_PUBLIC_READ_WRITE_TOKEN,
+                token:
+                    process.env.NODE_ENV === 'production'
+                        ? process.env.PROD_READ_WRITE_TOKEN
+                        : process.env.NEXT_PUBLIC_READ_WRITE_TOKEN,
                 access: 'public',
             });
         } else {
@@ -64,7 +73,10 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
             blobs = await Promise.all(
                 newFiles.map((file) =>
                     put(`public/${file.name}`, file, {
-                        token: process.env.NEXT_PUBLIC_READ_WRITE_TOKEN,
+                        token:
+                            process.env.NODE_ENV === 'production'
+                                ? process.env.PROD_READ_WRITE_TOKEN
+                                : process.env.NEXT_PUBLIC_READ_WRITE_TOKEN,
                         access: 'public',
                     })
                 )

@@ -28,7 +28,7 @@ export async function generateMetadata(props: {
             : `${product?.name} под заказ`,
         description: product?.metaDescription?.length
             ? product?.metaDescription
-            : `${product?.name} от производителя QКухни`,
+            : `${product?.name} от производителя Interest Mebel`,
     };
 }
 

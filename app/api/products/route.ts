@@ -20,7 +20,10 @@ export async function POST(request: Request) {
         const image = formData.get('image') as File;
         const imageName = image.name ?? getUUID();
         const blob = await put(`public/${imageName}`, image, {
-            token: process.env.NEXT_PUBLIC_READ_WRITE_TOKEN,
+            token:
+                process.env.NODE_ENV === 'production'
+                    ? process.env.PROD_READ_WRITE_TOKEN
+                    : process.env.NEXT_PUBLIC_READ_WRITE_TOKEN,
             access: 'public',
         });
 
@@ -31,7 +34,10 @@ export async function POST(request: Request) {
             blobs = await Promise.all(
                 files.map((file) =>
                     put(`public/${file.name}`, file, {
-                        token: process.env.NEXT_PUBLIC_READ_WRITE_TOKEN,
+                        token:
+                            process.env.NODE_ENV === 'production'
+                                ? process.env.PROD_READ_WRITE_TOKEN
+                                : process.env.NEXT_PUBLIC_READ_WRITE_TOKEN,
                         access: 'public',
                     })
                 )
