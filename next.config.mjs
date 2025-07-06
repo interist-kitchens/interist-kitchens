@@ -20,10 +20,12 @@ const nextConfig = {
         remotePatterns: [
             {
                 protocol: 'https',
-                hostname: '0cu49g0vululgtgg.public.blob.vercel-storage.com',
+                hostname:
+                    'b914fd021b76-interest-file.s3.ru1.storage.beget.cloud',
                 port: '',
             },
         ],
+        minimumCacheTTL: 60,
     },
     webpack: (config, { dev }) => {
         config.module.rules.push({

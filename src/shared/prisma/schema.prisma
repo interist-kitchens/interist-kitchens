@@ -1,3 +1,4 @@
+// src/shared/prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,41 +15,48 @@ model User {
   phone     String?
   password  String
   image     String?
+  imageKey  String?   @map("image_key")
   role      UserRole  @default(USER)
-  lastLogin DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  lastLogin DateTime? @map("last_login")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
   orders    Order[]
 
   @@index([email])
+  @@map("users")
 }
 
 model Category {
   id              Int       @id @default(autoincrement())
   name            String
-  metaTitle       String?
-  metaDescription String?
+  metaTitle       String?   @map("meta_title")
+  metaDescription String?   @map("meta_description")
   text            String?
   image           String?
+  imageKey        String?   @map("image_key")
   alias           String    @unique
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
   products        Product[]
+
+  @@map("categories")
 }
 
 model Product {
   id                   Int                  @id @default(autoincrement())
   name                 String
-  metaTitle            String?
-  metaDescription      String?
+  metaTitle            String?              @map("meta_title")
+  metaDescription      String?              @map("meta_description")
   text                 String?
   image                String
+  imageKey             String               @map("image_key")
   images               String[]
+  imageKeys            String[]             @map("image_keys") // Добавлено поле для ключей S3 (массив)
   alias                String               @unique
   price                String
-  createdAt            DateTime             @default(now())
-  updatedAt            DateTime             @updatedAt
-  categoryId           Int
+  createdAt            DateTime             @default(now()) @map("created_at")
+  updatedAt            DateTime             @updatedAt @map("updated_at")
+  categoryId           Int                  @map("category_id")
   colors               ColorsOnProducts[]
   orderItems           OrderItem[]
   categories           Category             @relation(fields: [categoryId], references: [id], onDelete: Restrict)
@@ -63,6 +71,7 @@ model Product {
 
   @@index([alias])
   @@index([categoryId])
+  @@map("products")
 }
 
 model RelatedProducts {
@@ -71,14 +80,15 @@ model RelatedProducts {
 
   // От какого товара связь (источник)
   fromProduct   Product @relation("RelatedFrom", fields: [fromProductId], references: [id], onDelete: Cascade)
-  fromProductId Int
+  fromProductId Int     @map("from_product_id")
 
   // К какому товару связь (цель)
   toProduct   Product @relation("RelatedTo", fields: [toProductId], references: [id], onDelete: Cascade)
-  toProductId Int
+  toProductId Int     @map("to_product_id")
 
   // Уникальный ключ, чтобы избежать дубликатов связей
   @@unique([fromProductId, toProductId, type])
+  @@map("related_products")
 }
 
 enum ProductRelationType {
@@ -92,18 +102,22 @@ model Color {
   id       Int                @id @default(autoincrement())
   name     String
   image    String
+  imageKey String             @map("image_key")
   products ColorsOnProducts[]
+
+  @@map("colors")
 }
 
 model ColorsOnProducts {
-  colorId    Int
-  productId  Int
-  assignedAt DateTime @default(now())
-  assignedBy String
+  colorId    Int      @map("color_id")
+  productId  Int      @map("product_id")
+  assignedAt DateTime @default(now()) @map("assigned_at")
+  assignedBy String   @map("assigned_by")
   color      Color    @relation(fields: [colorId], references: [id])
   product    Product  @relation(fields: [productId], references: [id])
 
   @@id([colorId, productId])
+  @@map("colors_on_products")
 }
 
 model Order {
@@ -114,21 +128,25 @@ model Order {
   email     String
   address   String
   payment   PaymentType @default(CASH)
-  userId    String?
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  userId    String?     @map("user_id")
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
   user      User?       @relation(fields: [userId], references: [id])
-  items     OrderItem[] // Связь с товарами через промежуточную таблицу
+  items     OrderItem[]
+
+  @@map("orders")
 }
 
 model OrderItem {
   id           Int     @id @default(autoincrement())
-  orderId      Int
-  productId    Int
+  orderId      Int     @map("order_id")
+  productId    Int     @map("product_id")
   quantity     Int     @default(1)
-  priceAtOrder String // Цена на момент заказа (защита от изменений)
+  priceAtOrder String  @map("price_at_order") // Цена на момент заказа (защита от изменений)
   order        Order   @relation(fields: [orderId], references: [id])
   product      Product @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
 }
 
 model Callback {
@@ -136,8 +154,10 @@ model Callback {
   name      String
   email     String?
   phone     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("callbacks")
 }
 
 model IndividualOrder {
@@ -145,33 +165,40 @@ model IndividualOrder {
   name      String
   email     String?
   phone     String
-  productId Int
+  productId Int     @map("product_id")
 
   product   Product  @relation(fields: [productId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("individual_orders")
 }
 
 model Slide {
   id                  Int     @id @default(autoincrement())
   title               String?
-  subTitle            String?
-  informerTitle       String?
-  buttonText          String?
+  subTitle            String? @map("sub_title")
+  informerTitle       String? @map("informer_title")
+  buttonText          String? @map("button_text")
   href                String?
-  imageSrc            String
-  informerDescription String?
+  imageSrc            String  @map("image_src")
+  imageKey            String? @map("image_key")
+  informerDescription String? @map("informer_description")
+
+  @@map("slides")
 }
 
 model Page {
   id              Int      @id @default(autoincrement())
   name            String
-  metaTitle       String?
-  metaDescription String?
+  metaTitle       String?  @map("meta_title")
+  metaDescription String?  @map("meta_description")
   text            String
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
   alias           String   @unique
+
+  @@map("pages")
 }
 
 enum UserRole {
@@ -194,12 +221,14 @@ enum PaymentType {
 
 model ProductCoordinates {
   id               Int      @id @default(autoincrement())
-  productId        Int
+  productId        Int      @map("product_id")
   x                Int
   y                Int
-  relatedProductId Int? // Ссылка на связанный товар
+  relatedProductId Int?     @map("related_product_id") // Ссылка на связанный товар
   product          Product  @relation(fields: [productId], references: [id])
   relatedProduct   Product? @relation(fields: [relatedProductId], references: [id], name: "CoordinateRelation")
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@map("product_coordinates")
 }

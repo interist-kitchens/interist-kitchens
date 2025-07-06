@@ -18,6 +18,7 @@
     "@ant-design/nextjs-registry": "^1.0.2",
     "@ant-design/v5-patch-for-react-19": "^1.0.3",
     "@auth/prisma-adapter": "^2.7.4",
+    "@aws-sdk/client-s3": "^3.842.0",
     "@effector/next": "^0.7.0",
     "@farfetched/core": "^0.13.1",
     "@next-auth/prisma-adapter": "^1.0.7",

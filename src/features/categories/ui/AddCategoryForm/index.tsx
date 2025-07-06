@@ -30,7 +30,7 @@ type FieldType = {
     metaTitle?: string;
     metaDescription?: string;
     text?: string;
-    image?: UploadFile;
+    image?: UploadFile[];
     alias: string;
 };
 
@@ -53,8 +53,8 @@ export const AddCategoryForm: FC = () => {
             metaTitle: values.metaTitle ?? '',
             metaDescription: values.metaDescription ?? '',
             text: textDescription,
-            image: values.image?.originFileObj ?? '',
-            imageName: values.image?.name ?? '',
+            image: values.image?.[0]?.originFileObj ?? '',
+            imageName: values.image?.[0]?.name ?? '',
             alias: values.alias ?? transliterateToSlug(values.name),
         };
 

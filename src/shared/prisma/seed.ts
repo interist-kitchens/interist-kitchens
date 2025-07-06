@@ -14,7 +14,8 @@ async function main() {
             metaDescription:
                 'Купить современные кухни под заказ по выгодным ценам и доставкой по России',
             alias: 'sovremennye-kuhni',
-            image: 'https://0cu49g0vululgtgg.public.blob.vercel-storage.com/public/2_d-JJipoj5RziwESbwnEuVhaKkLL4F7lp.webp',
+            image: 'https://b914fd021b76-interest-file.s3.ru1.storage.beget.cloud/uploads/2_d.webp',
+            imageKey: 'uploads/2_d.webp',
         },
     });
     const romeKitchen = await prisma.product.upsert({
@@ -30,13 +31,21 @@ async function main() {
             metaTitle: 'Современная кухня Кухня 1 3 метра',
             metaDescription:
                 'Купить современные кухни Кухня 1 3 метра под заказ по выгодным ценам и доставкой по России',
-            image: 'https://0cu49g0vululgtgg.public.blob.vercel-storage.com/public/11-ZVCXPOPmYTv9UnHs14hCXbjE5l7GO3.webp',
+            image: 'https://b914fd021b76-interest-file.s3.ru1.storage.beget.cloud/uploads/11.webp',
+            imageKey: 'uploads/11.webp',
             images: [
-                'https://0cu49g0vululgtgg.public.blob.vercel-storage.com/public/12-NwvAK5qKf8RNA6l6U3qILCJczYuxOx.webp',
-                'https://0cu49g0vululgtgg.public.blob.vercel-storage.com/public/13-qEgXVnVStgvjNLPXibxWracQqgEqwn.webp',
-                'https://0cu49g0vululgtgg.public.blob.vercel-storage.com/public/14-EJ72wQOlMFYIU1gDwgFhaHiiuPMT1R.webp',
-                'https://0cu49g0vululgtgg.public.blob.vercel-storage.com/public/15-4dhwD8WVHi2I6oxo1LMZec0zUuNgNJ.webp',
-                'https://0cu49g0vululgtgg.public.blob.vercel-storage.com/public/16-n8TdZvluRWK3Z0ix3IYiuiIF3q0TOY.webp',
+                'https://b914fd021b76-interest-file.s3.ru1.storage.beget.cloud/uploads/12.webp',
+                'https://b914fd021b76-interest-file.s3.ru1.storage.beget.cloud/uploads/13.webp',
+                'https://b914fd021b76-interest-file.s3.ru1.storage.beget.cloud/uploads/14.webp',
+                'https://b914fd021b76-interest-file.s3.ru1.storage.beget.cloud/uploads/15.webp',
+                'https://b914fd021b76-interest-file.s3.ru1.storage.beget.cloud/uploads/16.webp',
+            ],
+            imageKeys: [
+                'uploads/12.webp',
+                'uploads/13.webp',
+                'uploads/14.webp',
+                'uploads/15.webp',
+                'uploads/16.webp',
             ],
         },
     });
@@ -53,7 +62,8 @@ async function main() {
             metaTitle: 'Кухня Flag TSS',
             metaDescription:
                 'Купить современные кухни Flag TSS под заказ по выгодным ценам и доставкой по России',
-            image: 'https://0cu49g0vululgtgg.public.blob.vercel-storage.com/public/Flag_TSS_01_1730x1152_min-AkHCGgE9m4wga2ETvkAmC3fhccyDcg.webp',
+            image: 'https://b914fd021b76-interest-file.s3.ru1.storage.beget.cloud/uploads/16.webp',
+            imageKey: 'uploads/16.webp',
         },
     });
     const deliveryPage = await prisma.page.upsert({

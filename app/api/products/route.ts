@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getUUID } from 'rc-select/lib/hooks/useId';
-import { put } from '@vercel/blob';
 import { prisma } from '@/shared/prisma/prisma-client';
 import { $Enums } from '@prisma/client';
 import { revalidateTag } from 'next/cache';
+import { deleteFromS3, uploadToS3 } from '@/shared/lib/s3';
 
 export async function POST(request: Request) {
     if (!process.env.DATABASE_URL) {
@@ -16,35 +16,6 @@ export async function POST(request: Request) {
     try {
         const formData = await request.formData();
 
-        // 1. Загрузка изображений
-        const image = formData.get('image') as File;
-        const imageName = image.name ?? getUUID();
-        const blob = await put(`public/${imageName}`, image, {
-            token:
-                process.env.NODE_ENV === 'production'
-                    ? process.env.PROD_READ_WRITE_TOKEN
-                    : process.env.NEXT_PUBLIC_READ_WRITE_TOKEN,
-            access: 'public',
-        });
-
-        const files = formData.getAll('images[]') as File[];
-        let blobs = null;
-
-        if (Array.isArray(files)) {
-            blobs = await Promise.all(
-                files.map((file) =>
-                    put(`public/${file.name}`, file, {
-                        token:
-                            process.env.NODE_ENV === 'production'
-                                ? process.env.PROD_READ_WRITE_TOKEN
-                                : process.env.NEXT_PUBLIC_READ_WRITE_TOKEN,
-                        access: 'public',
-                    })
-                )
-            );
-        }
-
-        // 2. Парсинг данных товара
         const name = formData.get('name') as string;
         const metaTitle = formData.get('metaTitle') as string;
         const metaDescription = formData.get('metaDescription') as string;
@@ -52,7 +23,85 @@ export async function POST(request: Request) {
         const alias = formData.get('alias') as string;
         const categoryId = formData.get('categoryId') as string;
         const price = formData.get('price') as string;
+
         const relationsEntries = formData.getAll('relations[]');
+
+        const mainImage = formData.get('image') as File | null;
+        let mainImageUrl = '';
+        let mainImageKey = '';
+
+        const additionalImages = formData.getAll('images[]') as File[];
+        let additionalImageUrls: string[] = [];
+        let additionalImageKeys: string[] = [];
+
+        if (!name || !alias || !categoryId || !price) {
+            return NextResponse.json(
+                { error: 'Не заполнены обязательные поля' },
+                { status: 400 }
+            );
+        }
+
+        // 1. Загрузка основного изображения
+        if (mainImage) {
+            try {
+                const uploadResult = await uploadToS3(
+                    process.env.NEXT_PUBLIC_S3_BUCKET ||
+                        'b914fd021b76-interest-file',
+                    mainImage,
+                    mainImage.name ||
+                        `product-${getUUID()}.${mainImage.type.split('/')[1] || 'jpg'}`
+                );
+                mainImageUrl = uploadResult.url;
+                mainImageKey = uploadResult.key;
+            } catch (uploadError) {
+                console.error('Main image upload failed:', uploadError);
+                return NextResponse.json(
+                    { error: 'Ошибка загрузки основного изображения' },
+                    { status: 400 }
+                );
+            }
+        }
+
+        // 2. Загрузка дополнительных изображений
+        if (additionalImages.length > 0) {
+            try {
+                const uploadResults = await Promise.all(
+                    additionalImages.map((file) =>
+                        uploadToS3(
+                            process.env.NEXT_PUBLIC_S3_BUCKET ||
+                                'b914fd021b76-interest-file',
+                            file,
+                            file.name ||
+                                `product-additional-${getUUID()}.${file.type.split('/')[1] || 'jpg'}`
+                        )
+                    )
+                );
+
+                additionalImageUrls = uploadResults.map((r) => r.url);
+                additionalImageKeys = uploadResults.map((r) => r.key);
+            } catch (uploadError) {
+                console.error('Additional images upload failed:', uploadError);
+
+                // Удаляем уже загруженные изображения при ошибке
+                await Promise.all(
+                    [mainImageKey, ...additionalImageKeys]
+                        .filter(Boolean)
+                        .map((key) =>
+                            deleteFromS3(
+                                process.env.NEXT_PUBLIC_S3_BUCKET!,
+                                key!
+                            )
+                        )
+                );
+
+                return NextResponse.json(
+                    { error: 'Ошибка загрузки дополнительных изображений' },
+                    { status: 400 }
+                );
+            }
+        }
+
+        // 5. Валидация связей
         const relations = relationsEntries
             .map((entry) => {
                 try {
@@ -67,33 +116,48 @@ export async function POST(request: Request) {
             productName: string;
         }[];
 
-        // 3. Валидация связей
         if (relations.some((rel) => !rel.relatedProductId || !rel.type)) {
+            await Promise.all(
+                [mainImageKey, ...additionalImageKeys]
+                    .filter(Boolean)
+                    .map((key) =>
+                        deleteFromS3(process.env.NEXT_PUBLIC_S3_BUCKET!, key!)
+                    )
+            );
+
             return NextResponse.json(
                 { error: 'Некорректные данные связей' },
                 { status: 400 }
             );
         }
 
-        // Проверяем существование товаров
+        // 6. Проверка существования связанных товаров
         const relatedProductIds = relations.map((rel) => rel.relatedProductId);
         const existingProducts = await prisma.product.findMany({
             where: { id: { in: relatedProductIds } },
             select: { id: true },
         });
 
-        // Если какие-то товары не найдены
         if (existingProducts.length !== relatedProductIds.length) {
             const missingIds = relatedProductIds.filter(
                 (id) => !existingProducts.some((p) => p.id === id)
             );
+
+            await Promise.all(
+                [mainImageKey, ...additionalImageKeys]
+                    .filter(Boolean)
+                    .map((key) =>
+                        deleteFromS3(process.env.NEXT_PUBLIC_S3_BUCKET!, key!)
+                    )
+            );
+
             return NextResponse.json(
                 { error: `Товары не найдены: ${missingIds.join(', ')}` },
                 { status: 404 }
             );
         }
 
-        // 4. Создаем товар и связи в транзакции
+        // 7. Создание товара и связей в транзакции
         const result = await prisma.$transaction(async (prisma) => {
             // Создаем товар
             const product = await prisma.product.create({
@@ -103,10 +167,12 @@ export async function POST(request: Request) {
                     metaTitle,
                     metaDescription,
                     text,
-                    image: blob ? blob.url : '',
+                    image: mainImageUrl,
+                    imageKey: mainImageKey,
                     categoryId: parseInt(categoryId),
                     price,
-                    images: blobs ? blobs.map((blob) => blob.url) : [],
+                    images: additionalImageUrls,
+                    imageKeys: additionalImageKeys,
                 },
             });
 
@@ -118,12 +184,12 @@ export async function POST(request: Request) {
             // Добавляем связи (если они есть)
             if (validRelations.length > 0) {
                 await prisma.relatedProducts.createMany({
-                    data: relations.map((rel) => ({
+                    data: validRelations.map((rel) => ({
                         fromProductId: product.id,
                         toProductId: rel.relatedProductId,
                         type: rel.type,
                     })),
-                    skipDuplicates: true, // Пропускаем дубликаты
+                    skipDuplicates: true,
                 });
             }
 

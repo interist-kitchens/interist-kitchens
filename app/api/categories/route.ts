@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/shared/prisma/prisma-client';
-import { getUUID } from 'rc-select/lib/hooks/useId';
-import { put } from '@vercel/blob';
+import { revalidateTag } from 'next/cache';
+import { uploadToS3 } from '@/shared/lib/s3';
 
 export async function POST(request: Request) {
     if (!process.env.DATABASE_URL) {
@@ -14,25 +14,55 @@ export async function POST(request: Request) {
     try {
         const formData = await request.formData();
 
-        const image = formData.get('image') as Blob;
-        const imageName = formData.get('imageName') ?? getUUID();
-        let blob = null;
-
-        if (image) {
-            blob = await put(`public/${imageName}`, image, {
-                token:
-                    process.env.NODE_ENV === 'production'
-                        ? process.env.PROD_READ_WRITE_TOKEN
-                        : process.env.NEXT_PUBLIC_READ_WRITE_TOKEN,
-                access: 'public',
-            });
-        }
-
         const name = formData.get('name') as string;
         const metaTitle = formData.get('metaTitle') as string;
         const metaDescription = formData.get('metaDescription') as string;
         const text = formData.get('text') as string;
         const alias = formData.get('alias') as string;
+
+        if (!name || !alias) {
+            return NextResponse.json(
+                { error: 'Имя и алиас категории обязательны' },
+                { status: 400 }
+            );
+        }
+
+        const image = formData.get('image') as Blob | null;
+        const originalFilename = formData.get('imageName') as string | null;
+
+        let imageUrl = '';
+        let s3Key = '';
+
+        if (image) {
+            if (!originalFilename) {
+                return NextResponse.json(
+                    { error: 'Имя файла обязательно' },
+                    { status: 400 }
+                );
+            }
+
+            try {
+                const uploadResult = await uploadToS3(
+                    process.env.NEXT_PUBLIC_S3_BUCKET ||
+                        'b914fd021b76-interest-file',
+                    image,
+                    originalFilename
+                );
+                imageUrl = uploadResult.url;
+                s3Key = uploadResult.key;
+            } catch (uploadError) {
+                console.error('Upload failed:', uploadError);
+                return NextResponse.json(
+                    {
+                        error:
+                            uploadError instanceof Error
+                                ? uploadError.message
+                                : 'Ошибка загрузки файла',
+                    },
+                    { status: 400 }
+                );
+            }
+        }
 
         const category = await prisma.category.create({
             data: {
@@ -41,9 +71,12 @@ export async function POST(request: Request) {
                 metaTitle,
                 metaDescription,
                 text,
-                image: blob ? blob.url : '',
+                image: imageUrl,
+                imageKey: s3Key,
             },
         });
+
+        revalidateTag('categories');
 
         return NextResponse.json(category);
     } catch (error) {

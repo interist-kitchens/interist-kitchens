@@ -79,6 +79,10 @@ export const EditCategoryForm: FC<Props> = ({ category }) => {
                 (values.image?.[0]?.originFileObj
                     ? values.image?.[0]?.originFileObj
                     : values.image?.[0]?.url) ?? '',
+            imageName:
+                (values.image?.[0]?.originFileObj
+                    ? values.image?.[0]?.name
+                    : values.image?.[0]?.url?.split('/').pop()) ?? '',
             alias: values.alias ?? transliterateToSlug(values.name),
         };
 
