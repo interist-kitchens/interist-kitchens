@@ -42,9 +42,7 @@ export const userProfileUpdateModel = atom(() => {
         fn: (res) =>
             ({
                 type: 'error',
-                content:
-                    res?.error?.response?.data?.error ||
-                    'Ошибка при смене пароля',
+                content: res?.error?.error || 'Ошибка при смене пароля',
             }) as ArgsProps,
         target: messageModel.open,
     });

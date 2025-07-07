@@ -33,9 +33,7 @@ export const attributesModel = atom(() => {
         fn: ({ error }) =>
             ({
                 type: 'error',
-                content:
-                    error.response?.data?.error ||
-                    'Ошибка при создании атрибута',
+                content: error.error || 'Ошибка при создании атрибута',
             }) as ArgsProps,
         target: messageModel.open,
     });
