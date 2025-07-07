@@ -55,6 +55,8 @@ export async function PUT(
 
         const relationsRaw = formData.getAll('relations[]');
 
+        const attributesRaw = formData.getAll('attributes[]');
+
         const image = formData.get('image') as File | string;
 
         const files = formData.getAll('images[]') as (File | string)[];
@@ -187,6 +189,14 @@ export async function PUT(
             type: $Enums.ProductRelationType;
         }>;
 
+        const attributes = attributesRaw.map((attr) =>
+            JSON.parse(attr as string)
+        ) as Array<{
+            attributeId: number;
+            value: string;
+            isPublic: boolean;
+        }>;
+
         const result = await prisma.$transaction(async (prisma) => {
             try {
                 // 1. Удаление старых связей
@@ -194,7 +204,12 @@ export async function PUT(
                     where: { fromProductId: Number(params.id) },
                 });
 
-                // 2. Добавление новых связей
+                // 2. Удаляем старые атрибуты
+                await prisma.productAttributeValue.deleteMany({
+                    where: { productId: Number(params.id) },
+                });
+
+                // 3. Добавляем новые связи
                 if (relations.length > 0) {
                     await prisma.relatedProducts.createMany({
                         data: relations.map((rel) => ({
@@ -206,7 +221,20 @@ export async function PUT(
                     });
                 }
 
-                // 3. Обновление товара
+                // 4. Добавляем новые атрибуты
+                if (attributes.length > 0) {
+                    await prisma.productAttributeValue.createMany({
+                        data: attributes.map((attr) => ({
+                            attributeId: attr.attributeId,
+                            productId: Number(params.id),
+                            value: attr.value,
+                            isPublic: attr.isPublic,
+                        })),
+                        skipDuplicates: true,
+                    });
+                }
+
+                // 5. Обновление товара
                 const updatedProduct = await prisma.product.update({
                     where: { id: Number(params.id) },
                     data: {
@@ -227,7 +255,16 @@ export async function PUT(
                             ...newImageKeys,
                         ],
                     },
-                    include: { relatedFrom: { include: { toProduct: true } } },
+                    include: {
+                        relatedFrom: {
+                            include: { toProduct: true },
+                        },
+                        attributes: {
+                            include: {
+                                attribute: true,
+                            },
+                        },
+                    },
                 });
 
                 return updatedProduct;

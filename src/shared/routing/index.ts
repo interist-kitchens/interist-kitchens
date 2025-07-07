@@ -21,6 +21,7 @@ export const paths = {
     contacts: 'kontakty',
     profile: '/profile',
     profileEdit: '/profile/edit',
+    attributesAdmin: '/admin/attributes',
 };
 
 export const protectedRoutes = [

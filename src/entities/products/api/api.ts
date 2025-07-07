@@ -34,6 +34,11 @@ export const getProducts = unstable_cache(
                         },
                     },
                     coordinates: true,
+                    attributes: {
+                        include: {
+                            attribute: true,
+                        },
+                    },
                 },
             });
 
@@ -77,6 +82,11 @@ export const getProduct = unstable_cache(
                     },
                 },
                 coordinates: true,
+                attributes: {
+                    include: {
+                        attribute: true,
+                    },
+                },
             },
         });
 
@@ -109,6 +119,7 @@ export const getProduct = unstable_cache(
                     },
                 })),
                 coordinates: product.coordinates,
+                attributes: product.attributes,
             };
         }
 
@@ -161,6 +172,11 @@ export const getProductByAlias = unstable_cache(
                             },
                         },
                     },
+                    attributes: {
+                        include: {
+                            attribute: true,
+                        },
+                    },
                 },
             });
 
@@ -195,6 +211,7 @@ export const getProductByAlias = unstable_cache(
                         },
                     })),
                     coordinates: product.coordinates,
+                    attributes: product.attributes,
                 };
             }
         } catch (e) {

@@ -1,5 +1,5 @@
 import { atom } from '@/shared/factory/atom';
-import { combine, createEvent, sample } from 'effector';
+import { combine, sample } from 'effector';
 import {
     addCoordinate,
     deleteCoordinate,
@@ -9,35 +9,9 @@ import { messageModel } from '@/shared/lib/messageApi';
 import { ArgsProps } from 'antd/es/message/interface';
 
 export const productCoordinatesModel = atom(() => {
-    const coordinateAdded = createEvent<{
-        productId: string;
-        x: number;
-        y: number;
-        relatedProductId: string | null;
-    }>();
-    const coordinateDeleted = createEvent<{
-        coordinateId: number;
-        productId: string;
-    }>();
-    const coordinateUpdated = createEvent<{
-        coordinateId: number;
-        relatedProductId: string | null;
-    }>();
-
-    sample({
-        clock: coordinateAdded,
-        target: addCoordinate.start,
-    });
-
-    sample({
-        clock: coordinateDeleted,
-        target: deleteCoordinate.start,
-    });
-
-    sample({
-        clock: coordinateUpdated,
-        target: updateCoordinate.start,
-    });
+    const coordinateAdded = addCoordinate.start;
+    const coordinateDeleted = deleteCoordinate.start;
+    const coordinateUpdated = updateCoordinate.start;
 
     sample({
         clock: addCoordinate.$succeeded,

@@ -157,6 +157,17 @@ export async function POST(request: Request) {
             );
         }
 
+        const attributes = formData
+            .getAll('attributes[]')
+            .map((attr) => {
+                try {
+                    return JSON.parse(attr as string);
+                } catch {
+                    return null;
+                }
+            })
+            .filter(Boolean);
+
         // 7. Создание товара и связей в транзакции
         const result = await prisma.$transaction(async (prisma) => {
             // Создаем товар
@@ -173,6 +184,13 @@ export async function POST(request: Request) {
                     price,
                     images: additionalImageUrls,
                     imageKeys: additionalImageKeys,
+                    attributes: {
+                        create: attributes.map((attr) => ({
+                            attributeId: attr.attributeId,
+                            value: attr.value,
+                            isPublic: attr.isPublic ?? true,
+                        })),
+                    },
                 },
             });
 

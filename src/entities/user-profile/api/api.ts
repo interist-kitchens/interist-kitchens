@@ -1,7 +1,11 @@
 import { createMutation } from '@farfetched/core';
 import { createInternalRequestFx } from '@/shared/api/requests';
-import { Error } from '@/entities/categories';
-import { ProfileResponse, User } from '@/entities/user-profile';
+import {
+    ChangePasswordParams,
+    Error,
+    ProfileResponse,
+    User,
+} from '@/entities/user-profile';
 import { prisma } from '@/shared/prisma/prisma-client';
 import { unstable_cache } from 'next/cache';
 
@@ -38,4 +42,14 @@ export const updateUserProfile = createMutation({
         method: 'PUT',
         body: formData,
     })),
+});
+
+export const changePassword = createMutation({
+    effect: createInternalRequestFx<ChangePasswordParams, void, Error>(
+        (data) => ({
+            url: `/user-profile/change-password`,
+            method: 'POST',
+            data,
+        })
+    ),
 });

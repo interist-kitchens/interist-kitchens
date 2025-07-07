@@ -9,16 +9,9 @@ import { cartModel } from '@/entities/leads/model';
 import Image from 'next/image';
 
 type Props = {
-    product: Omit<
+    product: Pick<
         Product,
-        | 'createdAt'
-        | 'updatedAt'
-        | 'metaTitle'
-        | 'metaDescription'
-        | 'categoryId'
-        | 'text'
-        | 'images'
-        | 'coordinates'
+        'id' | 'name' | 'alias' | 'image' | 'price' | 'categories'
     >;
     count: number;
 };

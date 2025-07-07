@@ -24,3 +24,13 @@ export type User = {
     phone: string | null;
     role: $Enums.UserRole;
 };
+
+export type ChangePasswordParams = {
+    userId: string;
+    oldPassword: string;
+    newPassword: string;
+};
+
+export type Error = {
+    error?: string;
+};
