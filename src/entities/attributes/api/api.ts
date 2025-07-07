@@ -24,10 +24,7 @@ export const createAttributes = createMutation({
     effect: createInternalRequestFx<FormData, void, Error>((data) => ({
         url: '/attributes',
         method: 'POST',
-        data,
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
+        body: data,
     })),
 });
 
