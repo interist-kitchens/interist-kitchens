@@ -74,7 +74,7 @@ DROP TABLE "OrderItem";
 DROP TABLE "Page";
 
 -- DropTable
-DROP TABLE "Product";
+DROP TABLE "Product" CASCADE;
 
 -- DropTable
 DROP TABLE "ProductCoordinates";

@@ -1,4 +1,6 @@
 import '@ant-design/v5-patch-for-react-19';
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
 
 import '../styles';
@@ -18,6 +20,8 @@ export function RootLayout({
         <html lang="ru">
             <body className={`antialiased`}>
                 <Providers>{children}</Providers>
+                <Analytics />
+                <SpeedInsights />
             </body>
         </html>
     );

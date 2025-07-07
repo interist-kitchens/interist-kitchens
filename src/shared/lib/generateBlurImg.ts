@@ -47,7 +47,7 @@ export const generateBlurImg = unstable_cache(
     },
     ['blur-image-generation'],
     {
-        revalidate: 3600,
+        revalidate: 60 * 60 * 10,
         tags: ['blur-images'],
     }
 );

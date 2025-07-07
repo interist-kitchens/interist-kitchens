@@ -49,19 +49,28 @@ export const ProductCard: FC<Props> = async ({
             </div>
 
             {/* Вывод атрибутов */}
-            <Title level={4}>Характеристики</Title>
-            <table className="w-full border-collapse">
-                <tbody>
-                    {publicAttributes.map((attr) => (
-                        <tr key={attr.id} className="border-b border-gray-100">
-                            <td className="py-2 font-medium text-gray-600">
-                                {attr.attribute.name}
-                            </td>
-                            <td className="py-2 text-gray-800">{attr.value}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            {publicAttributes?.length > 0 && (
+                <>
+                    <Title level={4}>Характеристики</Title>
+                    <table className="w-full border-collapse">
+                        <tbody>
+                            {publicAttributes?.map((attr) => (
+                                <tr
+                                    key={attr.id}
+                                    className="border-b border-gray-100"
+                                >
+                                    <td className="py-2 font-medium text-gray-600">
+                                        {attr.attribute.name}
+                                    </td>
+                                    <td className="py-2 text-gray-800">
+                                        {attr.value}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </>
+            )}
 
             {buttonsSlot}
         </div>

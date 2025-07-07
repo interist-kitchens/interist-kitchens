@@ -27,6 +27,7 @@ const nextConfig = {
         ],
         minimumCacheTTL: 60,
     },
+    serverExternalPackages: ['@aws-sdk/client-s3'],
     webpack: (config, { dev }) => {
         config.module.rules.push({
             test: /\.(mp4|webm|ogg)$/,

@@ -42,26 +42,26 @@ model Category {
 }
 
 model Product {
-  id                   Int                  @id @default(autoincrement())
+  id                   Int                     @id @default(autoincrement())
   name                 String
-  metaTitle            String?              @map("meta_title")
-  metaDescription      String?              @map("meta_description")
+  metaTitle            String?                 @map("meta_title")
+  metaDescription      String?                 @map("meta_description")
   text                 String?
   image                String
-  imageKey             String               @map("image_key")
+  imageKey             String                  @map("image_key")
   images               String[]
-  imageKeys            String[]             @map("image_keys") // Добавлено поле для ключей S3 (массив)
-  alias                String               @unique
+  imageKeys            String[]                @map("image_keys") // Добавлено поле для ключей S3 (массив)
+  alias                String                  @unique
   price                String
-  createdAt            DateTime             @default(now()) @map("created_at")
-  updatedAt            DateTime             @updatedAt @map("updated_at")
-  categoryId           Int                  @map("category_id")
+  createdAt            DateTime                @default(now()) @map("created_at")
+  updatedAt            DateTime                @updatedAt @map("updated_at")
+  categoryId           Int                     @map("category_id")
   colors               ColorsOnProducts[]
   orderItems           OrderItem[]
-  categories           Category             @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  categories           Category                @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   IndividualOrder      IndividualOrder[]
   coordinates          ProductCoordinates[]
-  coordinateReferences ProductCoordinates[] @relation("CoordinateRelation")
+  coordinateReferences ProductCoordinates[]    @relation("CoordinateRelation")
   attributes           ProductAttributeValue[]
 
   // Связи с другими товарами (как источник)
