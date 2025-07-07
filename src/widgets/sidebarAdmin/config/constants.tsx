@@ -1,6 +1,7 @@
 import { MenuItemType } from 'antd/es/menu/interface';
 import { paths } from '@/shared/routing';
 import {
+    ApartmentOutlined,
     FileOutlined,
     FolderOpenOutlined,
     PhoneOutlined,
@@ -19,6 +20,11 @@ export const menuItems: MenuItemType[] = [
         key: paths.productsAdmin,
         icon: <ProductOutlined />,
         label: 'Товары',
+    },
+    {
+        key: paths.attributesAdmin,
+        icon: <ApartmentOutlined />,
+        label: 'Атрибуты товаров',
     },
     {
         key: paths.pageAdmin,

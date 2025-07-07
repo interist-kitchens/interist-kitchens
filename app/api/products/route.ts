@@ -60,6 +60,17 @@ export async function POST(request: Request) {
             productName: string;
         }[];
 
+        const attributes = formData
+            .getAll('attributes[]')
+            .map((attr) => {
+                try {
+                    return JSON.parse(attr as string);
+                } catch {
+                    return null;
+                }
+            })
+            .filter(Boolean);
+
         // 3. Валидация связей
         if (relations.some((rel) => !rel.relatedProductId || !rel.type)) {
             return NextResponse.json(
@@ -100,6 +111,13 @@ export async function POST(request: Request) {
                     categoryId: parseInt(categoryId),
                     price,
                     images: blobs ? blobs.map((blob) => blob.url) : [],
+                    attributes: {
+                        create: attributes.map((attr) => ({
+                            attributeId: attr.attributeId,
+                            value: attr.value,
+                            isPublic: attr.isPublic ?? true,
+                        })),
+                    },
                 },
             });
 

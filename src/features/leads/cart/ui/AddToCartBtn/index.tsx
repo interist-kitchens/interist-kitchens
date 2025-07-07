@@ -9,16 +9,9 @@ import ClientOnly from '@/shared/ui/ClientOnly';
 import { AddRemoveCartBlock } from '@/entities/leads';
 
 type Props = {
-    product: Omit<
+    product: Pick<
         Product,
-        | 'createdAt'
-        | 'updatedAt'
-        | 'metaTitle'
-        | 'metaDescription'
-        | 'categoryId'
-        | 'text'
-        | 'images'
-        | 'coordinates'
+        'id' | 'name' | 'alias' | 'image' | 'price' | 'categories'
     >;
 };
 
