@@ -48,7 +48,7 @@ export const getProducts = unstable_cache(
         }
     },
     ['products'],
-    { tags: ['products'], revalidate: 3600 }
+    { tags: ['products'] }
 );
 
 export const getProduct = unstable_cache(
@@ -126,7 +126,7 @@ export const getProduct = unstable_cache(
         return null;
     },
     ['products'],
-    { tags: ['products'], revalidate: 3600 }
+    { tags: ['products'] }
 );
 
 export const getProductByAlias = unstable_cache(
@@ -221,7 +221,7 @@ export const getProductByAlias = unstable_cache(
         return null;
     },
     ['products'],
-    { tags: ['products'], revalidate: 3600 }
+    { tags: ['products'] }
 );
 
 export const createProduct = createMutation({

@@ -22,7 +22,7 @@ export const getCategories = unstable_cache(
         }
     },
     ['categories'],
-    { tags: ['categories'], revalidate: 3600 }
+    { tags: ['categories'] }
 );
 
 export const createCategory = createMutation({
@@ -76,7 +76,7 @@ export const getCategory = unstable_cache(
         return null;
     },
     ['categories'],
-    { tags: ['categories'], revalidate: 3600 }
+    { tags: ['categories'] }
 );
 
 export const getCategoryByAlias = unstable_cache(
@@ -114,5 +114,5 @@ export const getCategoryByAlias = unstable_cache(
         return null;
     },
     ['categories'],
-    { tags: ['categories'], revalidate: 3600 }
+    { tags: ['categories'] }
 );
