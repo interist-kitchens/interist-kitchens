@@ -21,9 +21,9 @@ export const ProductListingCard: FC<Props> = ({ category, product }) => {
     return (
         <Link
             href={`${paths.catalog}/${category.alias}/${product.alias}`}
-            className={'flex flex-col'}
+            className={'flex flex-col group'}
         >
-            <div className={'w-full h-[358px] relative'}>
+            <div className={'w-full h-[358px] relative overflow-hidden'}>
                 <Image
                     key={product.image}
                     src={product.image}
@@ -32,11 +32,14 @@ export const ProductListingCard: FC<Props> = ({ category, product }) => {
                     blurDataURL={product.imageBlur ?? ''}
                     fill
                     priority
+                    className={
+                        'object-cover group-hover:scale-105 transition duration-500'
+                    }
                 />
             </div>
             <div
                 className={
-                    'bg-white px-7 py-6 grid sm:grid-cols-2 items-center text-black gap-y-2'
+                    'bg-white px-7 py-6 grid sm:grid-cols-2  text-black gap-y-2 min-h-36'
                 }
             >
                 <div className={'flex flex-col'}>

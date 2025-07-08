@@ -17,19 +17,22 @@ type Props = {
 
 export const ProductCard: FC<Props> = ({ product, href }) => {
     return (
-        <div className={'lg:h-[300px] 2xl:h-[350px] sm:pr-6'}>
+        <article className={'lg:h-[300px] 2xl:h-[350px] sm:pr-6'}>
             <div className={'flex flex-col h-full justify-between'}>
-                <div className={'h-[290px] overflow-hidden'}>
+                <div className={'h-[230px] overflow-hidden relative'}>
                     <Image
                         src={product.image}
                         alt={product.name}
-                        width={420}
-                        height={290}
-                        placeholder={'blur'}
-                        blurDataURL={product.imageBlur ?? ''}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 420px"
+                        placeholder={product.imageBlur ? 'blur' : 'empty'}
+                        blurDataURL={product.imageBlur ?? undefined}
                     />
                 </div>
-                <Link href={href}>
+                <Link
+                    href={href}
+                    aria-label={`Перейти к продукту ${product.name}`}
+                >
                     <Flex vertical className={'text-black'}>
                         <div className={'text-xl'}>{product.name}</div>
                         <div
@@ -38,6 +41,6 @@ export const ProductCard: FC<Props> = ({ product, href }) => {
                     </Flex>
                 </Link>
             </div>
-        </div>
+        </article>
     );
 };
