@@ -29,6 +29,7 @@ export const Providers: FC<PropsWithChildren> = ({ children }) => {
                             colorPrimary: '#5e94b9',
                             colorInfo: '#5e94b9',
                             borderRadius: 8,
+                            fontFamily: 'Geologica, Geologica Fallback',
                         },
                     }}
                 >
