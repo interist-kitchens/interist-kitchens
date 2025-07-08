@@ -3,7 +3,14 @@
 import { Tooltip, Typography } from 'antd';
 import Image from 'next/image';
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
-import { FC, SyntheticEvent, useEffect, useRef, useState } from 'react';
+import {
+    FC,
+    SyntheticEvent,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 
 const AXIOS_SCALE = 0.82;
 
@@ -53,7 +60,8 @@ export const ProductCoordinatesOverlay: FC<Props> = ({
 
     // Следим за изменением размеров контейнера
     useEffect(() => {
-        // Функция для обновления размеров контейнера
+        let timeoutId: NodeJS.Timeout;
+
         const updateSize = () => {
             if (containerRef.current) {
                 const { width, height } =
@@ -62,26 +70,29 @@ export const ProductCoordinatesOverlay: FC<Props> = ({
             }
         };
 
-        // Первоначальное обновление размеров
-        updateSize();
+        const throttledUpdateSize = () => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(updateSize, 100); // Троттлинг 100мс
+        };
 
-        const resizeObserver = new ResizeObserver(updateSize);
+        const resizeObserver = new ResizeObserver(throttledUpdateSize);
 
         if (containerRef.current) {
             resizeObserver.observe(containerRef.current);
+            updateSize(); // Первоначальный вызов
         }
 
         return () => {
             resizeObserver.disconnect();
+            clearTimeout(timeoutId);
         };
     }, []);
 
-    const getScale = () => {
+    const scale = useMemo(() => {
         if (!imageSize || !containerSize.width) return 1;
-        return containerSize.width / imageSize.width;
-    };
-
-    const scale = getScale();
+        const calculatedScale = containerSize.width / imageSize.width;
+        return Math.min(calculatedScale, 2);
+    }, [imageSize, containerSize.width]);
 
     return (
         <div className="relative w-full h-full" ref={containerRef}>
@@ -91,6 +102,8 @@ export const ProductCoordinatesOverlay: FC<Props> = ({
                 fill
                 style={{ objectFit: 'contain' }}
                 onLoad={handleImageLoad}
+                priority
+                quality={85}
             />
 
             {coordinates.map((coord) => {
@@ -114,6 +127,7 @@ export const ProductCoordinatesOverlay: FC<Props> = ({
                                                 className="object-cover rounded"
                                                 loading="lazy"
                                                 sizes="50px"
+                                                quality={75}
                                             />
                                         </div>
                                     </div>

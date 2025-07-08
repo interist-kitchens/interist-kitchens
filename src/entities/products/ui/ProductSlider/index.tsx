@@ -81,7 +81,7 @@ export const ProductSlider: FC<Props> = ({
                                     }
                                     blurDataURL={image.blurImage ?? ''}
                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
-                                    priority={index === 0}
+                                    quality={85}
                                 />
                             )}
                         </div>
