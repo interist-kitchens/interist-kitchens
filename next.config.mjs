@@ -1,4 +1,5 @@
 import withPlaiceholder from '@plaiceholder/next';
+import withBundleAnalyzer from '@next/bundle-analyzer';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -14,7 +15,8 @@ const nextConfig = {
         'rc-util',
         'rc-picker',
         'rc-pagination',
-        '@ant-design/icons-svg',
+        '@ant-design/icons',
+        'antd',
     ],
     images: {
         remotePatterns: [
@@ -28,6 +30,25 @@ const nextConfig = {
         minimumCacheTTL: 60,
     },
     serverExternalPackages: ['@aws-sdk/client-s3'],
+    experimental: {
+        optimizePackageImports: ['@ant-design/icons', 'antd'],
+        reactCompiler: true,
+    },
+    modularizeImports: {
+        antd: {
+            transform: 'antd/es/{{member}}',
+            preventFullImport: true,
+        },
+        '@ant-design/icons': {
+            transform: '@ant-design/icons/es/icons/{{member}}',
+            preventFullImport: true,
+        },
+    },
+    compiler: {
+        reactRemoveProperties: true,
+        removeConsole: { exclude: ['error', 'warn'] },
+        styledComponents: true,
+    },
     webpack: (config, { dev }) => {
         config.module.rules.push({
             test: /\.(mp4|webm|ogg)$/,
@@ -41,4 +62,8 @@ const nextConfig = {
     },
 };
 
-export default withPlaiceholder(nextConfig);
+const bundleAnalyzer = withBundleAnalyzer({
+    enabled: process.env.ANALYZE === 'true',
+});
+
+export default withPlaiceholder(bundleAnalyzer(nextConfig));
