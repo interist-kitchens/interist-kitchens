@@ -2,6 +2,8 @@ import type { Slide } from '@/entities/slides';
 import { prisma } from '@/shared/prisma/prisma-client';
 import { generateBlurImg } from '@/shared/lib/generateBlurImg';
 import { unstable_cache } from 'next/cache';
+import { createMutation } from '@farfetched/core';
+import { createInternalRequestFx } from '@/shared/api/requests';
 
 export const getSlides = unstable_cache(
     async (): Promise<Slide[] | undefined> => {
@@ -19,5 +21,12 @@ export const getSlides = unstable_cache(
         }
     },
     ['slides'],
-    { tags: ['slides'], revalidate: 3600 }
+    { tags: ['slides'] }
 );
+
+export const deleteSlide = createMutation({
+    effect: createInternalRequestFx((id: string) => ({
+        url: `/slider/${id}`,
+        method: 'DELETE',
+    })),
+});
