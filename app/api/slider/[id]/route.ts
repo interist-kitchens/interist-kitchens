@@ -41,7 +41,7 @@ export async function DELETE(
                     slide.imageKey
                 );
             } catch (s3Error) {
-                // Продолжаем слайда, даже если не удалось удалить изображение
+                // Продолжаем удаление слайда, даже если не удалось удалить изображение
                 console.error('Failed to delete image from S3:', s3Error);
             }
         }

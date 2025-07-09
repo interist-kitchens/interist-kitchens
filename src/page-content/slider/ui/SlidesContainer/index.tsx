@@ -40,10 +40,6 @@ export const SlidesContainer = ({ slides }: Props) => {
         }
     }, [reset, isSuccess, router]);
 
-    useEffect(() => {
-        router.refresh();
-    }, [router]);
-
     const handleSubmit = (id: number) => () => {
         if (id) {
             submit(`${id}`);
