@@ -4,6 +4,7 @@ import { generateBlurImg } from '@/shared/lib/generateBlurImg';
 import { unstable_cache } from 'next/cache';
 import { createMutation } from '@farfetched/core';
 import { createInternalRequestFx } from '@/shared/api/requests';
+import type { GlobalError } from '@/shared/api/types';
 
 export const getSlides = unstable_cache(
     async (): Promise<Slide[] | undefined> => {
@@ -28,5 +29,13 @@ export const deleteSlide = createMutation({
     effect: createInternalRequestFx((id: string) => ({
         url: `/slider/${id}`,
         method: 'DELETE',
+    })),
+});
+
+export const createSlide = createMutation({
+    effect: createInternalRequestFx<FormData, void, GlobalError>((data) => ({
+        url: '/slider',
+        method: 'POST',
+        body: data,
     })),
 });
